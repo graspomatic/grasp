@@ -331,7 +331,7 @@ class D2C(object):
                 ang += 4096
             elif ang > 4096:
                 ang -= 4096
-            position = [dxlcx.pick_pos[arm][0] + 750 * armmult,
+            position = [dxlcx.pick_pos[arm][0] + 550 * armmult,
                         dxlcx.pick_pos[arm][1] + 2048 * armmult,
                         ang]
         else:

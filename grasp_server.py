@@ -44,8 +44,8 @@ sock = socket.create_connection(("localhost", 4620))
 sock.settimeout(0.2)
 
 # connection to qnx machine running the experiment
-# qnxsock = socket.create_connection(("100.0.0.2", 4620)) # old version of QNX
-qnxsock = socket.create_connection(("192.168.88.253", 4620)) # new RPi4 version of QNX
+qnxhost = "192.168.88.40"
+qnxsock = socket.create_connection((qnxhost, 4620)) # new RPi4 version of QNX
 
 qnxsock.settimeout(0.2)
 
@@ -594,11 +594,12 @@ async def get_dxl_positions():
     print(pos)
 
 
-async def set_dxl_positions(side=[-1], position=['blah']):
+async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
     # works to set position explicitly using triplet for an arm (e.g., 50, 100, 1050) or prescribed settings (e.g., prep_pick)
     print('setting positions of one arm')
     side = int(side[0])
     position = str(position[0])
+    rotation = int(rotation[0])
 
     print(position)
     print(position.split(','))
@@ -610,7 +611,7 @@ async def set_dxl_positions(side=[-1], position=['blah']):
     if len(position.split(',')) == 1:
         print('heading to move arm to pos')
 
-        dxl.move_arm_to_pos(arm=side, pos=position)
+        dxl.move_arm_to_pos(arm=side, pos=position, rotation=rotation)
         await loop.create_task(wait_for_dxl(50))
         if side == 0:
             await pub.publish_json('WebClient', {"leftarm": position})
@@ -789,14 +790,12 @@ async def magnets(left_status=[-1], right_status=[-1]):
 #     return x, y
 
 async def toggle_touch(status):
-    # sock.sendall(b'%set sensor:control:deactivate=0')
-
     if status:
-        sock.sendall(b'%set sensor:control:activate=0')
-        sock.sendall(b'%set sensor:control:activate=1')
+        sock.sendall(b'%set sensor:control:activate=0\n')
+        sock.sendall(b'%set sensor:control:activate=1\n')
     else:
-        sock.sendall(b'%set sensor:control:deactivate=0')
-        sock.sendall(b'%set sensor:control:deactivate=1')
+        sock.sendall(b'%set sensor:control:deactivate=0\n')
+        sock.sendall(b'%set sensor:control:deactivate=1\n')
 
     b = sock.recv(8192)
     print(b.decode().strip())
