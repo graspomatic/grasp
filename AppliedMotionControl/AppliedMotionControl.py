@@ -221,6 +221,6 @@ class AMC(object):
         scale = 302.66  # number of counts per mm
         return round(mm * scale)
 
- if __name__ == "__main__":
-     x = AMC()
-     print("Status = {}".format(x.get_status()))
+if __name__ == "__main__":
+    x = AMC()
+    print("Status = {}".format(x.get_status()))
