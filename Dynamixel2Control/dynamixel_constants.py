@@ -2,8 +2,8 @@ import numpy as np
 
 BAUDRATE        = 4000000
 # DEVICENAME      = "COM6".encode('utf-8')    # Check which port is being used on your controller
-DEVICENAME      = "COM6"    # Check which port is being used on your controller
-# DEVICENAME              = '/dev/ttyUSB0'    # Check which port is being used on your controller
+#DEVICENAME      = "COM6"    # Check which port is being used on your controller
+DEVICENAME              = '/dev/ttyUSB0'    # Check which port is being used on your controller
 PROTOCOL        = 2                             # See which protocol version is used in the Dynamixel
 
 # Control table addresses for dynamixel x
