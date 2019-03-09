@@ -4,7 +4,7 @@ import MagConstants as magcx
 
 
 class MAGS(object):
-    async def enable(self, side=-1):
+    def enable(self, side=-1):
         with gpiod.Chip(magcx.CHIP) as chip:
             if side == 'right':
                 offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
@@ -38,9 +38,7 @@ class MAGS(object):
             lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
             lines.set_values([0, 1])
 
-            # get delay from constants, turn it into seconds, subtract one ms for processing time
-            await asyncio.sleep(magcx.RELEASE_DUR / 1000 - 0.001)
-
+            await asyncio.sleep(magcx.RELEASE_DUR - 0.001)  # subtract one ms for processing time
             lines.set_values([0, 0])
             vals = lines.get_values()
 
