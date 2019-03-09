@@ -4,20 +4,20 @@ import threading
 
 def turnOff():
     print("made it to turnoff")
+    with gpiod.Chip("gpiochip2") as chip:
+        offsets = [0]
+        values = [0]
+        lines = chip.get_lines(offsets)
+        vals = lines.set_values(values)
 
-    offsets = [0]
-    values = [0]
-    lines = chip.get_lines(offsets)
-    vals = lines.set_values(values)
+        print('set complete')
 
-    print('set complete')
+        print('getting values')
+        vals = lines.get_values()
 
-    print('getting values')
-    vals = lines.get_values()
-
-    for val in vals:
-        print(val, end=' ')
-    print()
+        for val in vals:
+            print(val, end=' ')
+        print()
 
 
 with gpiod.Chip("gpiochip2") as chip:
@@ -30,7 +30,8 @@ with gpiod.Chip("gpiochip2") as chip:
 
     print('set complete')
     timer = threading.Timer(5.0, turnOff)
-    timer.start()
+
+timer.start()
 
 
 
