@@ -12,10 +12,6 @@ with gpiod.Chip("gpiochip2") as chip:
     vals = lines.set_values(values)
 
     print('set complete')
-    for val in vals:
-        print(val, end=' ')
-    print()
-
 
     print('getting values')
     vals = lines.get_values()
