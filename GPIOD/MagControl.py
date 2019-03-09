@@ -1,5 +1,4 @@
 import gpiod
-import sys
 import asyncio
 import MagConstants as magcx
 
@@ -30,5 +29,5 @@ class MAGS(object):
 
 
 
-if __name__ == "__main__":
-    mags = MAGS()
+#if __name__ == "__main__":
+ #   mags = MAGS()
