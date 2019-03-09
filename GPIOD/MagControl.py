@@ -6,7 +6,7 @@ import MagConstants as magcx
 
 class MAGS(object):
     async def disable(self, offsets=[0]):
-        with gpiod.Chip(magcx.chip) as chip:
+        with gpiod.Chip(magcx.CHIP) as chip:
             #offsets = [0]
             values = [1]
 
