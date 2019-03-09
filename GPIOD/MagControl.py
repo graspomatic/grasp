@@ -26,7 +26,7 @@ class MAGS(object):
             print()
 
 
-    asyncio.run(disable(self=1))
+    #asyncio.run(disable(self=1))
 
 
 
