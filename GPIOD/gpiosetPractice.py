@@ -28,7 +28,7 @@ with gpiod.Chip("gpiochip2") as chip:
 
     lines = chip.get_lines(offsets)
     lines.request(consumer="gpioset", type=gpiod.LINE_REQ_DIR_OUT)
-    timer = threading.Timer(0.03, turnOff)
+    timer = threading.Timer(0.025, turnOff)
     vals = lines.set_values(values)
     timer.start()
 
