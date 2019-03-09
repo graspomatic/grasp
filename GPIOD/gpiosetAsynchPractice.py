@@ -13,11 +13,11 @@ async def main():
         lines.request(consumer="gpioset", type=gpiod.LINE_REQ_DIR_OUT)
         vals = lines.set_values(values)
 
-        await asyncio.sleep(0.025)
+        await asyncio.sleep(0.029)
 
         offsets = [0]
         values = [0]
-        lines = chip.get_lines(offsets)
+        #lines = chip.get_lines(offsets)
         vals = lines.set_values(values)
         vals = lines.get_values()
 
