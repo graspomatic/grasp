@@ -3,7 +3,6 @@ import sys
 import threading
 
 def turnOff():
-    print("made it to turnoff")
     with gpiod.Chip("gpiochip2") as chip:
         offsets = [0]
         values = [0]
@@ -11,9 +10,6 @@ def turnOff():
         lines.request(consumer="gpioset", type=gpiod.LINE_REQ_DIR_OUT)
         vals = lines.set_values(values)
 
-        print('set complete')
-
-        print('getting values')
         vals = lines.get_values()
 
         for val in vals:
@@ -32,7 +28,6 @@ with gpiod.Chip("gpiochip2") as chip:
     vals = lines.set_values(values)
     timer.start()
 
-    print('set complete')
 
 
 
