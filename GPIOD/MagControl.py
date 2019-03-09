@@ -8,18 +8,15 @@ class MAGS(object):
     async def disable(self):
         with gpiod.Chip(magcx.CHIP) as chip:
             offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
-            values = [0, 1]
 
             lines = chip.get_lines(offsets)
             lines.request(consumer="gpioset", type=gpiod.LINE_REQ_DIR_OUT)
-            vals = lines.set_values(values)
+            vals = lines.set_values([0, 1])
 
             await asyncio.sleep(0.029)
 
-            values = [0, 0]
-            #lines = chip.get_lines(offsets)
-            vals = lines.set_values(values)
-            vals = lines.get_values()
+            vals = lines.set_values([0, 0])
+#            vals = lines.get_values()
 
             for val in vals:
                 print(val, end=' ')
