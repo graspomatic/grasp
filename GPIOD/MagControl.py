@@ -1,11 +1,12 @@
 import gpiod
 import sys
 import asyncio
+import MagConstants as magcx
 
 
 class MAGS(object):
     async def disable(self, offsets=[0]):
-        with gpiod.Chip("gpiochip2") as chip:
+        with gpiod.Chip(magcx.chip) as chip:
             #offsets = [0]
             values = [1]
 
