@@ -15,8 +15,8 @@ class MAGS(object):
 
             await asyncio.sleep(0.029)
 
-            vals = lines.set_values([0, 0])
-#            vals = lines.get_values()
+            lines.set_values([0, 0])
+            vals = lines.get_values()
 
             for val in vals:
                 print(val, end=' ')
