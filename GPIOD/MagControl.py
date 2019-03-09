@@ -12,6 +12,7 @@ class MAGS(object):
             lines = chip.get_lines(offsets)
             lines.request(consumer="gpioset", type=gpiod.LINE_REQ_DIR_OUT)
             vals = lines.set_values([0, 1])
+            print(vals)
 
             await asyncio.sleep(0.029)
 
