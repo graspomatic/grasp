@@ -4,9 +4,9 @@ import asyncio
 
 
 class MAGS(object):
-    async def disable(self):
+    async def disable(self, offsets=[0]):
         with gpiod.Chip("gpiochip2") as chip:
-            offsets = [0]
+            #offsets = [0]
             values = [1]
 
             lines = chip.get_lines(offsets)
@@ -24,10 +24,6 @@ class MAGS(object):
             for val in vals:
                 print(val, end=' ')
             print()
-
-
-    #asyncio.run(disable(self=1))
-
 
 
 
