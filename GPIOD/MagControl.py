@@ -5,7 +5,7 @@ import MagConstants as magcx
 
 
 class MAGS(object):
-    async def disable(self):
+    async def disable(self, side=-1):
         with gpiod.Chip(magcx.CHIP) as chip:
             if side == 'right':
                 offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
