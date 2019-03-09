@@ -3,8 +3,8 @@ import sys
 
 
 with gpiod.Chip("gpiochip2") as chip:
-    offsets = 0
-    values = 1
+    offsets = [0]
+    values = [1]
 
 
     lines = chip.get_lines(offsets)
