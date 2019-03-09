@@ -1,5 +1,5 @@
 #Pins
-CHIP = "gpiochip2"
+CHIP = "gpiochip0"
 LEFT_HOLD = 65
 LEFT_RELEASE = 64
 RIGHT_HOLD = 62

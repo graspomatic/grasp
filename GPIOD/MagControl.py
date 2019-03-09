@@ -5,9 +5,9 @@ import MagConstants as magcx
 
 
 class MAGS(object):
-    async def disable(self, offsets=[0]):
+    async def disable(self):
         with gpiod.Chip(magcx.CHIP) as chip:
-            #offsets = [0]
+            offsets = [magcx.RIGHT_RELEASE]
             values = [1]
 
             lines = chip.get_lines(offsets)
@@ -16,7 +16,6 @@ class MAGS(object):
 
             await asyncio.sleep(0.029)
 
-            offsets = [0]
             values = [0]
             #lines = chip.get_lines(offsets)
             vals = lines.set_values(values)
