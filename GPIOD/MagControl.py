@@ -38,7 +38,8 @@ class MAGS(object):
             lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
             lines.set_values([0, 1])
 
-            await asyncio.sleep(0.029)
+            # get delay from constants, turn it into seconds, subtract one ms for processing time
+            await asyncio.sleep(magcx.RELEASE_DUR / 1000 - 0.001)
 
             lines.set_values([0, 0])
             vals = lines.get_values()
