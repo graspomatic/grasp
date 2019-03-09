@@ -10,3 +10,16 @@ with gpiod.Chip("gpiochip2") as chip:
     lines = chip.get_lines(offsets)
     lines.request(consumer="gpioset", type=gpiod.LINE_REQ_DIR_OUT)
     vals = lines.set_values(values)
+
+    print('set complete')
+    for val in vals:
+        print(val, end=' ')
+    print()
+
+
+    print('getting values')
+    vals = lines.get_values()
+
+    for val in vals:
+        print(val, end=' ')
+    print()
