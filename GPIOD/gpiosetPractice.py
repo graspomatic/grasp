@@ -24,7 +24,7 @@ with gpiod.Chip("gpiochip2") as chip:
     values = [0]
 
     lines = chip.get_lines(offsets)
-    lines.request(consumer="gpioset", type=gpiod.LINE_REQ_DIR_OUT)
+    #lines.request(consumer="gpioset", type=gpiod.LINE_REQ_DIR_OUT)
     vals = lines.set_values(values)
 
     print('set complete')
