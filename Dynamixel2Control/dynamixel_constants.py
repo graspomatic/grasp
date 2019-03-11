@@ -1,7 +1,7 @@
 import numpy as np
 
 # BAUDRATE        = 4000000
-BAUDRATE        = 9600
+BAUDRATE        = 115200
 # DEVICENAME      = "COM6".encode('utf-8')    # Check which port is being used on your controller
 #DEVICENAME      = "COM6"    # Check which port is being used on your controller
 DEVICENAME              = '/dev/ttyUSB0'    # Check which port is being used on your controller
