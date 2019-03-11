@@ -12,7 +12,7 @@ from struct import pack
 
 class AMC(object):
 
-    def __init__(self, motor_ip="10.10.10.11", motor_port=7775, local_port=60649):
+    def __init__(self, motor_ip="10.10.10.10", motor_port=7775, local_port=60649):
         self.bound_buff = 2  # distance from hardware limits to software limits in mm
         self.motor_ip = motor_ip
         self.motor_port = motor_port

@@ -241,7 +241,6 @@ class D2C(object):
         # each element in motors array corresponds to same element in positions array
         # e.g., sync_set_position([11],[2000])
         # e.g., sync_set_position([11, 12, 13],[2000, 1000, 400])
-
         # Make sure we're given lists
         if type(motors) != list or type(positions) != list:
             print("sync_set_position: Input variables must be type: list!")
