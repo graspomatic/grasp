@@ -259,6 +259,23 @@ class D2C(object):
         self.groupSetPosition.clearParam()                      # clean up
 
 
+    def set_torque_all(self, enable):
+        # loop through all motors and turn the torque on or off
+
+        IDs = sum(dxlcx.IDs, [])  # turn it into a 1-d list
+
+        for id in IDs:
+            self.set_torque(id, enable)
+
+
+
+
+
+
+
+
+
+
     ###################################################
     ## Misc functions
     ###################################################
