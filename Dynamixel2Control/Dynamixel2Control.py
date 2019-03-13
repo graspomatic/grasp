@@ -210,7 +210,7 @@ class D2C(object):
 
 
     ##############################################################
-    ## Synchronized reads/writes for multiple motors
+    ## Reads/writes for multiple motors
     ##############################################################
 
     def sync_get_moving(self):
@@ -266,12 +266,6 @@ class D2C(object):
 
         for id in IDs:
             self.set_torque(id, enable)
-
-
-
-
-
-
 
 
 
