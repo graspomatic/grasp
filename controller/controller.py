@@ -15,7 +15,7 @@ async def handle_request(reader, writer):
     try:
         str, at = message.split('@')
         loop = asyncio.get_event_loop()
-        loop.create_task(say(str, int(at)))
+        loop.create_task(say(str, float(at)))
     except:
         print("Bad message format (should be string@time)")
 
