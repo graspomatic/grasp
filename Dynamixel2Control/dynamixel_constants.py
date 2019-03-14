@@ -1,11 +1,9 @@
-import numpy as np
-
 BAUDRATE        = 4000000
 
 # DEVICENAME      = "COM6".encode('utf-8')    # Check which port is being used on your controller
-#DEVICENAME      = "COM6"    # Check which port is being used on your controller
-DEVICENAME              = '/dev/ttyUSB0'    # Check which port is being used on your controller
-PROTOCOL        = 2                             # See which protocol version is used in the Dynamixel
+# DEVICENAME      = "COM6"    # Check which port is being used on your controller
+DEVICENAME = '/dev/ttyUSB0'   # Check which port is being used on your controller
+PROTOCOL = 2                  # See which protocol version is used in the Dynamixel
 
 # Control table addresses for dynamixel x
 ADDR_OPERATING_MODE     = 11        # operating mode, writeable only when torque disabled
@@ -32,23 +30,6 @@ ADDR_PRESENT_POSITION   = 132       # 4 bytes
 IDs = [[11, 12, 13],                # left
        [21, 22, 23]]                # right
 
-# intermediate positions for transitioning between presentation and neutral positions
-P2N =   np.array([[[3026, 2866, 2000],          # left arm first position
-                  [2544, 3325, 2000],           # left arm second position
-                  [1457, 3369, 2000],
-                  [1193, 2656, 2000]],
-                 [[3026, 2866, 2000],           # right arm first position
-                  [2544, 3325, 2000],           # right arm second position
-                  [1457, 3369, 2000],
-                  [1193, 2656, 2000]]])
 
-N2C = np.array([[[1193, 2656, 2000],          # left arm first position
-                  [1000, 2800, 2000]],
-                 [[1193, 2656, 2000],           # right arm first position
-                  [1000, 2800, 2000]]])
-
-
-
-
-COMM_SUCCESS                = 0                             # Communication Success result value
-COMM_TX_FAIL                = -1001                         # Communication Tx Failed
+COMM_SUCCESS = 0                             # Communication Success result value
+COMM_TX_FAIL = -1001                         # Communication Tx Failed
