@@ -11,6 +11,10 @@ mags=MagControl.MAGS()
 
 
 
+async def say(what, when):
+    await asyncio.sleep(when)
+    print(what)
+
 async def handle_request(reader, writer):
     data = await reader.read(100)
     message = data.decode()
