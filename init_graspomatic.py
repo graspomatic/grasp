@@ -1,13 +1,13 @@
 import AppliedMotionControl as AMC
-x=AMC.AMC()
-y=AMC.AMC(motor_ip="10.10.10.11", local_port=60648)
+x = AMC.AMC()
+y = AMC.AMC(motor_ip="10.10.10.11", local_port=60648)
 
 import Dynamixel2Control
-dxl=Dynamixel2Control.D2C()
+dxl = Dynamixel2Control.D2C()
 
 import MagControl
 import asyncio
-mags=MagControl.MAGS()
+mags = MagControl.MAGS()
 
 
 async def say(what, when):
@@ -16,12 +16,8 @@ async def say(what, when):
 
 
 async def demag(what, when):
-    mags.deenergize('right')
+    asyncio.run(mags.deenergize('right'))
 
-
-# async def stop_after(loop, when):
-#    await asyncio.sleep(when)
-#    loop.stop()
 
 async def handle_request(reader, writer):
     data = await reader.read(100)
