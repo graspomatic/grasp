@@ -16,7 +16,7 @@ async def say(what, when):
 
 
 async def demag(what, when):
-    asyncio.run(mags.deenergize('right'))
+    mags.deenergize('right')
 
 
 async def handle_request(reader, writer):
@@ -27,7 +27,8 @@ async def handle_request(reader, writer):
         str, at = message.split('@')
         loop = asyncio.get_event_loop()
         # loop.create_task(say(str, float(at)))
-        loop.create_task(demag(str, float(at)))
+        # loop.create_task(demag(str, float(at)))
+        loop.create_task(mags.deenergize('right'))
     except:
         print("Bad message format (should be string@time)")
 
