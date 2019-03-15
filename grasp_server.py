@@ -101,7 +101,8 @@ async def handle_request(reader, writer):
 
 
 
-            loop.create_task(fx_list[fx](**req))
+            #loop.create_task(fx_list[fx](**req))
+            loop.create_task(fx_list[fx](side=1))
 
             #print(command)
 
