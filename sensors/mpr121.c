@@ -18,7 +18,7 @@ int main()
   unsigned char filtdata[24];
   int channels_to_read = 6;
   //  mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
-  mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR+1);
+  mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   
   //  if(mpr121_config_an3944(dev) != UPM_SUCCESS){
   //    printf("unable to configure device\n");

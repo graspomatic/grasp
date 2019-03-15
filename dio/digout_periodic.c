@@ -20,6 +20,7 @@ void print_time(struct timespec *tspec)
 int
 main(int argc, char *argv[])
 {
+  int verbose = 0;
   int line_id = 1;
   int value = 0;
   struct gpiod_chip *gpiochip;
@@ -102,7 +103,7 @@ main(int argc, char *argv[])
   for (tot_exp = 0; tot_exp < max_exp;) {
     s = read(fd, &exp, sizeof(uint64_t));
     clock_gettime(CLOCK_REALTIME, &now);
-    print_time(&now);
+    if (verbose) print_time(&now);
 	       
     if (s != sizeof(uint64_t))
       handle_error("read");
