@@ -91,13 +91,13 @@ async def handle_request(reader, writer):
             #arg_string = ", ".join("=".join((str(k), str(v[0]))) for k, v in req.items())
 
             #combined it all and call it
-            command = 'loop.create_task(' + fx + '(' + arg_string + '))'
+            #command = 'loop.create_task(' + fx + '(' + arg_string + '))'
 
 
 
             loop.create_task(fx_list[fx](**req))
 
-            print(command)
+            #print(command)
 
         print(req.keys())
         loop = asyncio.get_event_loop()
