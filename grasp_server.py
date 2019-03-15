@@ -33,7 +33,6 @@ async def put_away(side):
     # if x and y are finished moving, move arm to 'pick' position
 
     # de-energize magnet
-    mags.deenergize(side)
 
     # move arm to 'prep-pick' position
 
@@ -52,11 +51,10 @@ async def retrieve(side, object):
     # move specified arm to 'pick' position
 
     # energize magnet
-    mags.energize(side)
 
     # move specified arm to 'prep-pick' position
 
-    # ensure that object was picked up (i2c showing picked up)
+    # ensure that object was picked up
 
 
 
@@ -69,7 +67,7 @@ async def handle_request(reader, writer):
         loop = asyncio.get_event_loop()
         # loop.create_task(say(str, float(at)))
 
-        loop.create_task(put_away(1))
+        loop.create_task(mags.deenergize(1))
 
     except:
         print("Bad message format (should be string@time)")
