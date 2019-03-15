@@ -37,6 +37,10 @@ async def put_away(side):
 
     # move x-y motors to that empty spot
 
+
+
+
+
     # if x and y are finished moving, move arm to 'pick' position
 
     # de-energize magnet
@@ -86,6 +90,7 @@ async def handle_request(reader, writer):
             fx = req['function'][0].strip()
             req.pop('function')
 
+
             print(fx)
             print(fx_list[fx])
 
@@ -103,6 +108,7 @@ async def handle_request(reader, writer):
 
 
             #loop.create_task(fx_list[fx](**req))
+            loop = asyncio.get_event_loop()
             loop.create_task(fx_list['put_away'](side=1))
 
             #print(command)
