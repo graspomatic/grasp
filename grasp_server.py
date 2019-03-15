@@ -19,7 +19,7 @@ mags = MagControl.MAGS()
 #     mags.deenergize('right')
 
 
-async def put_away(side):
+async def put_away(loop, side):
     # ensure arms are responsive and torque enabled
 
     # move both arms to 'prep_pick' position
@@ -33,9 +33,6 @@ async def put_away(side):
     # if x and y are finished moving, move arm to 'pick' position
 
     # de-energize magnet
-    loop = asyncio.get_event_loop()
-    # loop.create_task(say(str, float(at)))
-
     loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
@@ -69,11 +66,11 @@ async def handle_request(reader, writer):
 
     try:
         str, at = message.split('@')
-        # loop = asyncio.get_event_loop()
+        loop = asyncio.get_event_loop()
         # # loop.create_task(say(str, float(at)))
         #
         # loop.create_task(mags.deenergize(1))
-        put_away(1)
+        put_away(loop, 1)
 
     except:
         print("Bad message format (should be string@time)")
