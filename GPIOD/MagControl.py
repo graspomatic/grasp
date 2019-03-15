@@ -5,13 +5,13 @@ import MagConstants as magcx
 
 class MAGS(object):
     def __init__(self):
-        with gpiod.Chip(magcx.CHIP) as chip:
-            left_offsets = [magcx.LEFT_HOLD, magcx.LEFT_RELEASE]
-            right_offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
-            self.left_lines = chip.get_lines(left_offsets)
-            self.right_lines = chip.get_lines(right_offsets)
-            self.left_lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
-            self.right_lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
+        self.chip = gpiod.Chip(magcx.CHIP)
+        left_offsets = [magcx.LEFT_HOLD, magcx.LEFT_RELEASE]
+        right_offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
+        self.left_lines = self.chip.get_lines(left_offsets)
+        self.right_lines = self.chip.get_lines(right_offsets)
+        self.left_lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
+        self.right_lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
 
 
     async def energize(self, side=-1):
