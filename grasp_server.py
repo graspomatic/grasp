@@ -114,7 +114,9 @@ async def handle_request(reader, writer):
         loop.create_task(put_away(1))
 
     except:
-        print("Bad message format (should be string@time)")
+        # print("Bad message format (should be string@time)")
+        print("Unexpected error:", sys.exc_info()[0])
+
 
     print("Send: %r" % message)
     writer.write(data)
