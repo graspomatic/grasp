@@ -29,6 +29,7 @@ async def handle_request(reader, writer):
         # loop.create_task(say(str, float(at)))
         # loop.create_task(demag(str, float(at)))
         loop.create_task(mags.deenergize('right'))
+
     except:
         print("Bad message format (should be string@time)")
 
