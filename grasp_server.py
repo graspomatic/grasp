@@ -22,6 +22,9 @@ mags = MagControl.MAGS()
 
 
 async def put_away(side):
+    print('putting away')
+    print(side)
+
     loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
 
