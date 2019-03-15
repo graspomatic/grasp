@@ -25,6 +25,18 @@ try:
         amount_received += len(data)
         print('received {!r}'.format(data))
 
+    message = b'?function=dropall&left_object=12&right_object=0'
+    sock.sendall(message)
+
+    # Look for the response
+    amount_received = 0
+    amount_expected = len(message)
+
+    while amount_received < amount_expected:
+        data = sock.recv(16)
+        amount_received += len(data)
+        print('received {!r}'.format(data))
+
 finally:
     print('closing socket')
     sock.close()
