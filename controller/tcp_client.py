@@ -12,7 +12,7 @@ sock.connect(server_address)
 try:
 
     # Send data
-    message = b'?function=present&left_object=12&right_object=0'
+    message = b'?function=put_away&side=0'
     print('sending {!r}'.format(message))
     sock.sendall(message)
 

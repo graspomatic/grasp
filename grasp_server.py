@@ -1,5 +1,7 @@
 from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client intp python dictionary
 
+approved_fx =
+
 
 
 import AppliedMotionControl
@@ -67,6 +69,11 @@ async def retrieve(side, object):
 
     print("retrieve " + str(side) + " on side " + str(object))
 
+fx_list = {
+    'put_away': put_away,
+    'retrieve': retrieve
+}
+
 async def handle_request(reader, writer):
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
@@ -75,8 +82,6 @@ async def handle_request(reader, writer):
         req = parse_qs(urlparse(message).query)
 
         if "function" in req:
-            print(req['function'])
-
             # get name of function we're supposed to call and remove it from dictionary
             fx = req['function'][0].strip()
             req.pop('function')
@@ -87,9 +92,14 @@ async def handle_request(reader, writer):
 
 
             # assemble the rest of the key value pairs into a string
-            arg_string = ", ".join("=".join((str(k), str(v[0]))) for k, v in req.items())
+            #arg_string = ", ".join("=".join((str(k), str(v[0]))) for k, v in req.items())
 
-            command = fx + '(' + arg_string + ')'
+            #combined it all and call it
+            command = 'loop.create_task(' + fx + '(' + arg_string + '))'
+
+
+
+            loop.create_task(fx_list[fx](**req))
 
             print(command)
 
