@@ -33,7 +33,8 @@ async def put_away(side):
     # if x and y are finished moving, move arm to 'pick' position
 
     # de-energize magnet
-    mags.deenergize(side)
+    loop = asyncio.get_event_loop()
+    loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
 
