@@ -77,6 +77,22 @@ async def handle_request(reader, writer):
         if "function" in req:
             print(req['function'])
 
+            # get name of function we're supposed to call and remove it from dictionary
+            fx = req['function'][0].strip()
+            req.pop('function')
+
+            # make sure this function is on the approved list
+            # so we're not just running literally any function
+            # that is sent to the server
+
+
+            # assemble the rest of the key value pairs into a string
+            arg_string = ", ".join("=".join((str(k), str(v[0]))) for k, v in req.items())
+
+            command = fx + '(' + arg_string + ')'
+
+            print(command)
+
         print(req.keys())
         loop = asyncio.get_event_loop()
         # # loop.create_task(say(str, float(at)))
