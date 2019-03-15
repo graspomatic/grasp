@@ -1,0 +1,117 @@
+#include <sys/timerfd.h>
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <sched.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <string.h>
+
+#include <gpiod.h>
+
+#define handle_error(msg)						\
+  do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
+void print_time(struct timespec *tspec)
+{
+  printf("%u.%u\n", tspec->tv_sec, tspec->tv_nsec);
+}
+
+int
+main(int argc, char *argv[])
+{
+  int line_id = 1;
+  int value = 0;
+  struct gpiod_chip *gpiochip;
+  struct gpiod_line *gpioline;
+
+  struct itimerspec new_value;
+  int max_exp, fd;
+  struct timespec now;
+  uint64_t exp, tot_exp;
+  ssize_t s;
+  int res;
+
+  // To set heightened priority (requires su priv)
+  struct sched_param schedparm;
+
+  
+  if ((argc != 2) && (argc != 4)) {
+    fprintf(stderr, "%s init-mssecs [interval-mssecs max-exp]\n",
+	    argv[0]);
+    exit(EXIT_FAILURE);
+  }
+  
+  if (clock_gettime(CLOCK_REALTIME, &now) == -1)
+    handle_error("clock_gettime");
+  
+  /* Create a CLOCK_REALTIME absolute timer with initial
+     expiration and interval as specified in command line */
+  
+  uint64_t desired = (1000000L*atoi(argv[1]));
+  uint64_t sec = (desired / 1000000000L);
+  uint64_t nsec = (desired % 1000000000L);
+  new_value.it_value.tv_sec = now.tv_sec + sec;
+  new_value.it_value.tv_nsec = now.tv_nsec  + nsec; 
+
+  if (argc > 1) {
+    desired = (1000000L*atoi(argv[2]));
+    sec = (desired / 1000000000L);
+    nsec = (desired % 1000000000L);
+    new_value.it_interval.tv_sec = sec;
+    new_value.it_interval.tv_nsec = nsec;
+    max_exp = 1;
+  }
+  if (argc > 2) {
+    max_exp = atoi(argv[3]);
+  }
+
+  gpiochip = gpiod_chip_open("/dev/gpiochip2");
+  if (!gpiochip) {
+    printf("error opening gpiochip\n");
+    return -1;
+  }
+
+  gpioline = gpiod_chip_get_line(gpiochip, line_id);
+  if (!gpioline) {
+    printf("error setting gpio line for output\n");
+    gpiod_chip_close(gpiochip);
+    return -1;
+  }
+  
+  res = gpiod_line_request_output(gpioline, "schedrt", 0);
+  if (res) {
+    gpiod_chip_close(gpiochip);
+    return -1;
+  }
+  
+  gpiod_line_set_value(gpioline, value);
+  value = !value;
+
+  memset(&schedparm, 0, sizeof(schedparm));
+  schedparm.sched_priority = 30; // lowest rt priority
+  sched_setscheduler(0, SCHED_FIFO, &schedparm);
+
+  fd = timerfd_create(CLOCK_REALTIME, 0);
+  if (fd == -1)
+    handle_error("timerfd_create");
+  
+  if (timerfd_settime(fd, TFD_TIMER_ABSTIME, &new_value, NULL) == -1)
+    handle_error("timerfd_settime");
+  
+  for (tot_exp = 0; tot_exp < max_exp;) {
+    s = read(fd, &exp, sizeof(uint64_t));
+    clock_gettime(CLOCK_REALTIME, &now);
+    print_time(&now);
+	       
+    if (s != sizeof(uint64_t))
+      handle_error("read");
+
+    //    gpiod_line_set_value(gpioline, value);
+    value = !value;
+    
+    tot_exp += exp;
+  }
+  
+  exit(EXIT_SUCCESS);
+}

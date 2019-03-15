@@ -1,0 +1,5 @@
+mpr121:	mpr121.o
+	$(CC) -o $@ $< -lupmc_mpr121
+
+mpr121.o:	mpr121.c
+	$(CC) -I/usr/local/include/upm c $<
