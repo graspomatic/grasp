@@ -68,7 +68,7 @@ async def retrieve(side, object):
     print("retrieve " + str(side) + " on side " + str(object))
 
 async def handle_request(reader, writer):
-    data = await reader.read(100)                   # wait for data to become available
+    data = await reader.read(300)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
 
     try:
