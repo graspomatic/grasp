@@ -33,6 +33,10 @@ async def put_away(side):
     # if x and y are finished moving, move arm to 'pick' position
 
     # de-energize magnet
+    loop = asyncio.get_event_loop()
+    # loop.create_task(say(str, float(at)))
+
+    loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
 
@@ -65,10 +69,11 @@ async def handle_request(reader, writer):
 
     try:
         str, at = message.split('@')
-        loop = asyncio.get_event_loop()
-        # loop.create_task(say(str, float(at)))
-
-        loop.create_task(mags.deenergize(1))
+        # loop = asyncio.get_event_loop()
+        # # loop.create_task(say(str, float(at)))
+        #
+        # loop.create_task(mags.deenergize(1))
+        put_away(1)
 
     except:
         print("Bad message format (should be string@time)")
