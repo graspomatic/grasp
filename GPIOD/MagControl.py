@@ -4,18 +4,28 @@ import MagConstants as magcx
 
 
 class MAGS(object):
+    def __init__(self):
+        with gpiod.Chip(magcx.CHIP) as chip:
+            left_offsets = [magcx.LEFT_HOLD, magcx.LEFT_RELEASE]
+            right_offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
+            self.left_lines = chip.get_lines(left_offsets)
+            self.right_lines = chip.get_lines(right_offsets)
+            self.left_lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
+            self.right_lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
+
+
     async def energize(self, side=-1):
         with gpiod.Chip(magcx.CHIP) as chip:
             if side == 1:
-                offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
+                lines = self.right_lines
             elif side == 0:
-                offsets = [magcx.LEFT_HOLD, magcx.LEFT_RELEASE]
+                lines = self.left_lines
             else:
                 print("Enter 0 (left) or 1 (right)")
                 return
 
-            lines = chip.get_lines(offsets)
-            lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
+
+            # lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
             lines.set_values([1, 0])
 
             vals = lines.get_values()
@@ -27,15 +37,15 @@ class MAGS(object):
     async def deenergize(self, side=-1):
         with gpiod.Chip(magcx.CHIP) as chip:
             if side == 1:
-                offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
+                lines = self.right_lines
             elif side == 0:
-                offsets = [magcx.LEFT_HOLD, magcx.LEFT_RELEASE]
+                lines = self.left_lines
             else:
                 print("Enter 0 (left) or 1 (right)")
                 return
 
-            lines = chip.get_lines(offsets)
-            lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
+            # lines = chip.get_lines(offsets)
+            # lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
             lines.set_values([0, 1])
 
             await asyncio.sleep(magcx.RELEASE_DUR - 0.001)  # subtract one ms for processing time
