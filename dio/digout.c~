@@ -1,0 +1,19 @@
+#include "mraa.h"
+#include <stdio.h>
+#include <unistd.h>
+
+void switchChange(); 
+
+int main(){ 
+ mraa_init(); 
+ mraa_gpio_context pin21 = mraa_gpio_init(21);
+ mraa_gpio_dir(pin21, MRAA_GPIO_IN); 
+ mraa_gpio_isr(pin21, MRAA_GPIO_EDGE_BOTH,
+                          &switchChange,NULL);
+ for (;;) { usleep(1000000); };
+ return MRAA_SUCCESS;
+} 
+
+void switchChange(){ 
+ printf("switch \n");
+}
