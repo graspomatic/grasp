@@ -20,6 +20,7 @@ mags = MagControl.MAGS()
 
 
 async def put_away(side):
+    loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
 
     # move both arms to 'prep_pick' position
@@ -33,16 +34,16 @@ async def put_away(side):
     # if x and y are finished moving, move arm to 'pick' position
 
     # de-energize magnet
-    loop = asyncio.get_event_loop()
     loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
 
     # ensure that object was released (i2c not showing anything)
 
-    print("put away " + side)
+    print("put away " + str(side))
 
 async def retrieve(side, object):
+    loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
 
     # move both arms to 'prep_pick' position
@@ -54,12 +55,13 @@ async def retrieve(side, object):
     # move specified arm to 'pick' position
 
     # energize magnet
+    loop.create_task(mags.energize(side))
 
     # move specified arm to 'prep-pick' position
 
     # ensure that object was picked up
 
-    print("retrieve " + side + " " + object)
+    print("retrieve " + str(side) + " " + str(object))
 
 async def handle_request(reader, writer):
     data = await reader.read(100)                   # wait for data to become available
