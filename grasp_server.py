@@ -1,3 +1,7 @@
+from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client
+
+
+
 import AppliedMotionControl
 x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649)
 y = AppliedMotionControl.AMC(motor_ip="10.10.10.11", local_port=60648)
@@ -61,14 +65,14 @@ async def retrieve(side, object):
 
     # ensure that object was picked up
 
-    print("retrieve " + str(side) + " " + str(object))
+    print("retrieve " + str(side) + " on side " + str(object))
 
 async def handle_request(reader, writer):
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
 
     try:
-        str, at = message.split('@')
+        parse_qs(urlparse(message).query)
         loop = asyncio.get_event_loop()
         # # loop.create_task(say(str, float(at)))
         #
