@@ -6,12 +6,12 @@ import MagConstants as magcx
 class MAGS(object):
     async def energize(self, side=-1):
         with gpiod.Chip(magcx.CHIP) as chip:
-            if side == 'right':
+            if side == 1:
                 offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
-            elif side == 'left':
+            elif side == 0:
                 offsets = [magcx.LEFT_HOLD, magcx.LEFT_RELEASE]
             else:
-                print("enter left or right")
+                print("Enter 0 (left) or 1 (right)")
                 return
 
             lines = chip.get_lines(offsets)
@@ -26,12 +26,12 @@ class MAGS(object):
 
     async def deenergize(self, side=-1):
         with gpiod.Chip(magcx.CHIP) as chip:
-            if side == 'right':
+            if side == 1:
                 offsets = [magcx.RIGHT_HOLD, magcx.RIGHT_RELEASE]
-            elif side == 'left':
+            elif side == 0:
                 offsets = [magcx.LEFT_HOLD, magcx.LEFT_RELEASE]
             else:
-                print("enter left or right")
+                print("Enter 0 (left) or 1 (right)")
                 return
 
             lines = chip.get_lines(offsets)
