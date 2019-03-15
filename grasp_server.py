@@ -72,7 +72,9 @@ async def handle_request(reader, writer):
     message = data.decode()                         # decode it as utf-8 i think
 
     try:
-        parse_qs(urlparse(message).query)
+        req = parse_qs(urlparse(message).query)
+        req.keys()
+        print(req.keys())
         loop = asyncio.get_event_loop()
         # # loop.create_task(say(str, float(at)))
         #
