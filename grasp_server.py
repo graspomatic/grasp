@@ -1,9 +1,5 @@
 from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client intp python dictionary
 
-approved_fx =
-
-
-
 import AppliedMotionControl
 x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649)
 y = AppliedMotionControl.AMC(motor_ip="10.10.10.11", local_port=60648)
