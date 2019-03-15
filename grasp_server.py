@@ -82,6 +82,9 @@ async def handle_request(reader, writer):
             fx = req['function'][0].strip()
             req.pop('function')
 
+            print(fx)
+            print(fx_list[fx])
+
             # make sure this function is on the approved list
             # so we're not just running literally any function
             # that is sent to the server
