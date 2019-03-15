@@ -38,6 +38,7 @@ async def put_away(side):
 
     # ensure that object was released (i2c not showing anything)
 
+    print("put away " + side)
 
 async def retrieve(side, object):
     # ensure arms are responsive and torque enabled
@@ -56,7 +57,7 @@ async def retrieve(side, object):
 
     # ensure that object was picked up
 
-
+    print("retrieve " + side + " " + object)
 
 async def handle_request(reader, writer):
     data = await reader.read(100)                   # wait for data to become available
