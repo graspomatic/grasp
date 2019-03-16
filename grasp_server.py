@@ -108,8 +108,9 @@ async def handle_request(reader, writer):
             loop = asyncio.get_event_loop()
             #loop.create_task(fx_list[fx](**req))
 
-            #loop.create_task(fx_list['put_away'](side=1))
-            loop.create_task(fx_list[fx](side=1))
+            #loop.create_task(fx_list['put_away'](side=1))   # works
+            # loop.create_task(fx_list[fx](side=1))            # works with put_away
+            loop.create_task(fx_list[fx](**req))
 
             #print(command)
 
