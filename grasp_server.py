@@ -24,8 +24,7 @@ mags = MagControl.MAGS()
 
 async def put_away(side=[-1]):
     side = int(side[0])
-    print('putting away')
-    print(side)
+    print("put away " + str(side))
 
     loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
@@ -51,7 +50,6 @@ async def put_away(side=[-1]):
 
     # ensure that object was released (i2c not showing anything)
 
-    print("put away " + str(side))
 
 async def retrieve(side=[-1], id=[0]):
     side = int(side[0])
