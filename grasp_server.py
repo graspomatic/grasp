@@ -65,6 +65,14 @@ async def retrieve(side=[-1], id=[0]):
 
     # ensure that object was picked up
 
+
+
+################################################
+
+#  Functions callable from client
+
+#################################################
+
 async def pick_and_place():
     # put away current objects, if any, get new objects, present those objects
     loop.create_task(put_away(side=[0]))
@@ -91,8 +99,11 @@ async def disable_xy():
 
 
 fx_list = {
-    'put_away': put_away,
-    'retrieve': retrieve
+    'pick_and_place': pick_and_place,
+    'put_away_all': put_away_all,
+    'stop_moving': stop_moving,
+    'disable_arms': disable_arms,
+    'disable_xy': disable_xy
 }
 
 async def handle_request(reader, writer):
