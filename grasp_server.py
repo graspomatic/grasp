@@ -1,5 +1,6 @@
-from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client intp python dictionary
+from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client into python dictionary
 import sys
+import asyncio
 
 import AppliedMotionControl
 x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649)
@@ -9,20 +10,11 @@ import Dynamixel2Control
 dxl = Dynamixel2Control.D2C()
 
 import MagControl
-import asyncio
 mags = MagControl.MAGS()
 
 
-# async def say(what, when):
-#     await asyncio.sleep(when)
-#     print(what)
-#
-#
-# async def demag(what, when):
-#     mags.deenergize('right')
 
-
-async def put_away(side=[-1]):
+async def put_away(side = [-1]):
     side = int(side[0])
     print("put away " + str(side))
 
@@ -56,7 +48,6 @@ async def retrieve(side=[-1], id=[0]):
     id = int(id[0])
     print('retrieving side ' + str(side) + ' object ID ' + str(id))
 
-
     # ensure arms are responsive and torque enabled
 
     # move both arms to 'prep_pick' position
@@ -73,6 +64,29 @@ async def retrieve(side=[-1], id=[0]):
     # move specified arm to 'prep-pick' position
 
     # ensure that object was picked up
+
+async def pick_and_place():
+    # put away current objects, if any, get new objects, present those objects
+    loop.create_task(put_away(side=[0]))
+    loop.create_task(retrieve(side=[0]))
+
+
+
+
+async def put_away_all():
+    print('Return both objects')
+
+async def stop_moving():
+    print('stopping movement')
+
+async def disable_arms():
+    print('dsiabling arm motors')
+
+async def disable_xy():
+    print('dsiabling X-Y motors')
+
+
+
 
 
 
