@@ -74,7 +74,7 @@ async def retrieve(side=-1, objid=0):
 
 async def present(arms='neither', hand=-1):
     # present objects on specified arms to specified hand
-    print('Presenting objects on arms ' + str(arms) + ' to hand ' + str(hand))
+    print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
 
     # input variables"
     # arms (list of ints) [0] for left only, [1] for right only, [0 1] for both arms
@@ -88,7 +88,7 @@ async def present(arms='neither', hand=-1):
     # if hand isn't 0 or 1, ask which hand we're supposed to present to
     if hand != 0 & hand != 1:
         print('Specify which hand to present to, 0 (left) or 1 (right)')
-
+        return
 
 
 
@@ -113,11 +113,11 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     left_id = int(left_id[0])
     right_id = int(right_id[0])
 
-    if left_id > -1 & right_id == -1:
+    if left_id > -1 and right_id == -1:
         arms = 'left'
-    elif left_id == -1 & right_id > -1:
+    elif left_id == -1 and right_id > -1:
         arms = 'right'
-    elif left_id > -1 & right_id > -1:
+    elif left_id > -1 and right_id > -1:
         arms = 'both'
     else:
         arms = 'neither'
