@@ -48,6 +48,8 @@ async def put_away(side = -1):
 
     # ensure that object was released (i2c not showing anything)
 
+    return 1
+
 
 async def retrieve(side=-1, objid=0):
     # Get the specified object ID on the specified arm
@@ -122,6 +124,17 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
         arms = 'both'
     else:
         arms = 'neither'
+
+    pending = await asyncio.wait(put_away(side=0))
+
+    print(pending)
+
+
+
+
+
+
+    return
 
     print(str(datetime.datetime.now()))
     t1 = loop.create_future(put_away(side=0))
