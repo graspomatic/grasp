@@ -53,7 +53,7 @@ async def put_away(side=[-1]):
 
     print("put away " + str(side))
 
-async def retrieve(side=[-1], id[0]):
+async def retrieve(side=[-1], id=[0]):
     side = int(side[0])
     id = int(id[0])
     print('retrieving side ' + str(side) + ' object ID ' + str(id))
