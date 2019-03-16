@@ -84,7 +84,7 @@ async def present(arms=[-1], hand=-1):
     if len(arms) == 0:
         print('No arms specified. give me a 0 or 1 or both')
         return
-    else if arms[0] == -1:
+    elif arms[0] == -1:
         print('No arms specified. give me a 0 or 1 or both')
         return
 
