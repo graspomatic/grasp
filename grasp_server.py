@@ -14,10 +14,9 @@ mags = MagControl.MAGS()
 
 
 
-async def put_away(side = [-1]):
+async def put_away(side = -1):
     # Put away the object currently held on specified side
 
-    side = int(side[0])
     print("put away " + str(side))
 
     loop = asyncio.get_event_loop()
@@ -49,12 +48,10 @@ async def put_away(side = [-1]):
     # ensure that object was released (i2c not showing anything)
 
 
-async def retrieve(side=[-1], id=[0]):
+async def retrieve(side=-1, objid=0):
     # Get the specified object ID on the specified arm
 
-    side = int(side[0])
-    id = int(id[0])
-    print('retrieving side ' + str(side) + ' object ID ' + str(id))
+    print('retrieving side ' + str(side) + ' object ID ' + str(objid))
 
     # ensure arms are responsive and torque enabled
 
@@ -73,7 +70,9 @@ async def retrieve(side=[-1], id=[0]):
 
     # ensure that object was picked up
 
-async def present(arms=[-1], hand=[-1]):
+
+
+async def present(arms=[-1], hand=-1):
     # present objects on specified arms to specified hand
     print('Presenting objects on arms ' + str(arms) + ' to hand ' + str(hand))
 
@@ -87,7 +86,7 @@ async def present(arms=[-1], hand=[-1]):
         return
 
     # if hand isn't 0 or 1, ask which hand we're supposed to present to
-    if hand[0] < 0 | hand[0] > 1:
+    if hand < 0 | hand > 1:
         print('Specify which hand to present to, 0 (left) or 1 (right)')
 
 
@@ -110,16 +109,32 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     # left_id (integer) object id to present using left arm
     # right_id (integer) object id to present using right arm
 
-    arms=[]
+    hand = int(hand[0])
+    left_id = int(left_id[0])
+    right_id = int(right_id[0])
+    arms = []
 
-    loop.create_task(put_away(side=[0]))
-    loop.create_task(put_away(side=[1]))
-    if left_id[0] > -1:
-        loop.create_task(retrieve(side=[0], id=left_id))
+
+    loop.create_task(put_away(side=0))
+
+    # wait
+
+    loop.create_task(put_away(side=1))
+
+    # wait
+
+    if left_id > -1:
+        loop.create_task(retrieve(side=0, id=left_id))
         arms.append(0)
-    if right_id[0] > -1:
-        loop.create_task(retrieve(side=[1], id=right_id))
+
+    # wait
+
+    if right_id > -1:
+        loop.create_task(retrieve(side=1, id=right_id))
         arms.append(1)
+
+    # wait
+
     loop.create_task(present(arms=arms, hand=hand))
 
 
