@@ -53,7 +53,11 @@ async def put_away(side=[-1]):
 
     print("put away " + str(side))
 
-async def retrieve(side, object):
+async def retrieve(side=[-1], ID=[0]):
+    side = int(side[0])
+    ID = int(ID[0])
+    print('retrieving side ' + str(side) + ' object ID ' + str(ID))
+
     loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
 
@@ -72,7 +76,7 @@ async def retrieve(side, object):
 
     # ensure that object was picked up
 
-    print("retrieve " + str(side) + " on side " + str(object))
+
 
 fx_list = {
     'put_away': put_away,
