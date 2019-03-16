@@ -1,6 +1,7 @@
 from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client into python dictionary
 import sys
 import asyncio
+import datetime
 
 import AppliedMotionControl
 x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649)
@@ -126,13 +127,16 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     t1 = loop.create_task(put_away(side=0))
 
     # wait
+    print(str(datetime.datetime.now()))
 
     await t1
-
+    print(str(datetime.datetime.now()))
 
     t2 = loop.create_task(put_away(side=1))
+    print(str(datetime.datetime.now()))
 
     await t2
+    print(str(datetime.datetime.now()))
 
     if left_id > -1:
         t3 = loop.create_task(retrieve(side=0, objid=left_id))
