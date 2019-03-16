@@ -93,36 +93,11 @@ async def handle_request(reader, writer):
             fx = req['function'][0].strip()
             req.pop('function')
 
-
             print(fx)
-            print(fx_list[fx])
-
-            # make sure this function is on the approved list
-            # so we're not just running literally any function
-            # that is sent to the server
-
-
-            # assemble the rest of the key value pairs into a string
-            #arg_string = ", ".join("=".join((str(k), str(v[0]))) for k, v in req.items())
-
-            #combined it all and call it
-            #command = 'loop.create_task(' + fx + '(' + arg_string + '))'
 
             loop = asyncio.get_event_loop()
-            #loop.create_task(fx_list[fx](**req))
-
-            #loop.create_task(fx_list['put_away'](side=1))   # works
-            # loop.create_task(fx_list[fx](side=1))            # works with put_away
             loop.create_task(fx_list[fx](**req))
 
-            #print(command)
-
-        print(req.keys())
-        #loop = asyncio.get_event_loop()
-        # # loop.create_task(say(str, float(at)))
-        #
-        # loop.create_task(mags.deenergize(1))
-        # loop.create_task(put_away(1))
 
     except:
         # print("Bad message format (should be string@time)")
