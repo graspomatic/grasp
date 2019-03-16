@@ -72,7 +72,7 @@ async def retrieve(side=-1, objid=0):
 
 
 
-async def present(arms=[-1], hand=-1):
+async def present(arms='neither', hand=-1):
     # present objects on specified arms to specified hand
     print('Presenting objects on arms ' + str(arms) + ' to hand ' + str(hand))
 
@@ -81,15 +81,12 @@ async def present(arms=[-1], hand=-1):
     # hand (list of single int) [0] for left, [1] for right
 
     # if arms is empty or -1, ask for arms
-    if len(arms) == 0:
-        print('No arms specified. give me a 0 or 1 or both')
-        return
-    elif arms[0] == -1:
-        print('No arms specified. give me a 0 or 1 or both')
+    if arms == 'neither':
+        print('No arms specified.')
         return
 
     # if hand isn't 0 or 1, ask which hand we're supposed to present to
-    if hand < 0 | hand > 1:
+    if hand != 0 & hand != 1:
         print('Specify which hand to present to, 0 (left) or 1 (right)')
 
 
@@ -115,7 +112,15 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
-    arms = []
+
+    if left_id > -1 & right_id == -1:
+        arms = 'left'
+    elif left_id == -1 & right_id > -1:
+        arms = 'right'
+    elif left_id > -1 & right_id > -1:
+        arms = 'both'
+    else:
+        arms = 'neither'
 
 
     loop.create_task(put_away(side=0))
@@ -128,15 +133,14 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
 
     if left_id > -1:
         loop.create_task(retrieve(side=0, objid=left_id))
-        arms.append(0)
 
     # wait
 
     if right_id > -1:
         loop.create_task(retrieve(side=1, objid=right_id))
-        arms.append(1)
 
     # wait
+
 
     loop.create_task(present(arms=arms, hand=hand))
 
