@@ -124,7 +124,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
         arms = 'neither'
 
     print(str(datetime.datetime.now()))
-    t1 = loop.create_task(put_away(side=0))
+    t1 = loop.create_future(put_away(side=0))
     print(str(datetime.datetime.now()))
     t1.add_done_callback(loop.create_task(put_away(side=1)))
     print(str(datetime.datetime.now()))
