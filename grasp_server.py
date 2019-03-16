@@ -123,20 +123,18 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     else:
         arms = 'neither'
 
-
+    print(str(datetime.datetime.now()))
     t1 = loop.create_task(put_away(side=0))
-
-    # wait
+    print(str(datetime.datetime.now()))
+    t1.add_done_callback(loop.create_task(put_away(side=1)))
     print(str(datetime.datetime.now()))
 
-    await t1
-    print(str(datetime.datetime.now()))
 
-    t2 = loop.create_task(put_away(side=1))
-    print(str(datetime.datetime.now()))
+    # t2 = loop.create_task(put_away(side=1))
+    # print(str(datetime.datetime.now()))
 
-    await t2
-    print(str(datetime.datetime.now()))
+    # await t2
+    # print(str(datetime.datetime.now()))
 
     if left_id > -1:
         t3 = loop.create_task(retrieve(side=0, objid=left_id))
