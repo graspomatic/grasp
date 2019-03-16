@@ -56,7 +56,7 @@ async def retrieve(side=[-1], id=[0]):
     id = int(id[0])
     print('retrieving side ' + str(side) + ' object ID ' + str(id))
 
-    #loop = asyncio.get_event_loop()
+
     # ensure arms are responsive and torque enabled
 
     # move both arms to 'prep_pick' position
@@ -91,12 +91,8 @@ async def handle_request(reader, writer):
         if "function" in req:
             fx = req['function'][0].strip()         # get name of function we're supposed to call
             req.pop('function')                     # remove it from dictionary
-
             print(fx)
-
-            #loop = asyncio.get_event_loop()
-            loop.create_task(fx_list[fx](**req))
-
+            loop.create_task(fx_list[fx](**req))    # call function with requested arguments
 
     except:
         print("Unexpected error:", sys.exc_info()[0])
@@ -111,7 +107,7 @@ async def handle_request(reader, writer):
 
 
 loop = asyncio.get_event_loop()     # makes a new event loop if one doesnt exist
-coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop) # start a socket server
+coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
 server = loop.run_until_complete(coro)
 
 # Serve requests until Ctrl+C is pressed
