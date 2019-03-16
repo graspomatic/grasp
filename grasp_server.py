@@ -124,13 +124,13 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     # wait
 
     if left_id > -1:
-        loop.create_task(retrieve(side=0, id=left_id))
+        loop.create_task(retrieve(side=0, objid=left_id))
         arms.append(0)
 
     # wait
 
     if right_id > -1:
-        loop.create_task(retrieve(side=1, id=right_id))
+        loop.create_task(retrieve(side=1, objid=right_id))
         arms.append(1)
 
     # wait
