@@ -15,15 +15,21 @@ mags = MagControl.MAGS()
 
 
 async def put_away(side = [-1]):
+    # Put away the object currently held on specified side
+
     side = int(side[0])
     print("put away " + str(side))
 
     loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
 
+    # make sure we know what this arm is holding before putting it back
+
     # move both arms to 'prep_pick' position
 
     # figure out which object is being held on this arm
+    #   if nothing, return as success
+    #   if we don't know, return as fail
 
     # find nearest empty spot on grid
 
@@ -44,6 +50,8 @@ async def put_away(side = [-1]):
 
 
 async def retrieve(side=[-1], id=[0]):
+    # Get the specified object ID on the specified arm
+
     side = int(side[0])
     id = int(id[0])
     print('retrieving side ' + str(side) + ' object ID ' + str(id))
@@ -65,6 +73,28 @@ async def retrieve(side=[-1], id=[0]):
 
     # ensure that object was picked up
 
+async def present(arms=[-1], hand=[-1]):
+    # present objects on specified arms to specified hand
+    print('Presenting objects on arms ' + str(arms) + ' to hand ' + str(hand))
+
+    # input variables"
+    # arms (list of ints) [0] for left only, [1] for right only, [0 1] for both arms
+    # hand (list of single int) [0] for left, [1] for right
+
+    # if arms is empty or -1, ask for arms
+    if len(arms) == 0 | arms[0] == -1:
+        print('No arms specified. give me a 0 or 1 or both')
+        return
+
+    # if hand isn't 0 or 1, ask which hand we're supposed to present to
+    if hand[0] < 0 | hand[0] > 1:
+        print('Specify which hand to present to, 0 (left) or 1 (right)')
+
+
+
+
+
+
 
 
 ################################################
@@ -73,17 +103,27 @@ async def retrieve(side=[-1], id=[0]):
 
 #################################################
 
-async def pick_and_place(present_to=[0], left_id=[-1], right_id=[-1]):
+async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
-    # present_to (integer) is position where we want to present object. 0 (left) or (1) right
+    # hand (integer) is position where we want to present object. 0 (left) or (1) right
     # left_id (integer) object id to present using left arm
     # right_id (integer) object id to present using right arm
 
+    arms=[]
+
     loop.create_task(put_away(side=[0]))
     loop.create_task(put_away(side=[1]))
-    loop.create_task(retrieve(side=[0], id=left_id))
-    loop.create_task(retrieve(side=[1], id=right_id))
+    if left_id[0] > -1:
+        loop.create_task(retrieve(side=[0], id=left_id))
+        arms.append(0)
+    if right_id[0] > -1:
+        loop.create_task(retrieve(side=[1], id=right_id))
+        arms.append(1)
+    loop.create_task(present(arms=arms, hand=hand))
+
+
+
 
 
 
