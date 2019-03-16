@@ -20,7 +20,7 @@ async def put_away(side = -1):
 
     print("put away " + str(side))
 
-    loop = asyncio.get_event_loop()
+    #loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
 
     # make sure we know what this arm is holding before putting it back
@@ -42,7 +42,7 @@ async def put_away(side = -1):
     # if x and y are finished moving, move arm to 'pick' position
 
     # de-energize magnet
-    loop.create_task(mags.deenergize(side))
+    #loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
 
@@ -125,9 +125,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     else:
         arms = 'neither'
 
-    pending = await asyncio.wait(put_away(side=0))
+    completed, pending = await asyncio.wait(put_away(side=0))
 
-    print(pending)
+    print(completed)
 
 
 
