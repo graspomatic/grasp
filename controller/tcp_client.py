@@ -12,7 +12,8 @@ sock.connect(server_address)
 try:
 
     # Send data
-    message = b'?function=put_away&side=0'
+    message = b'?function=put_away'
+    # message = b'?function=put_away&side=0'
     print('sending {!r}'.format(message))
     sock.sendall(message)
 
