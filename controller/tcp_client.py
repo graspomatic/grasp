@@ -13,7 +13,7 @@ def sendReq():
     try:
 
         # Send data
-        message = b'?function=retrieve&id=13&side=0'
+        message = '?function=retrieve&id=13&side=0'
         # message = b'?function=put_away&side=0'
         print('sending {!r}'.format(message))
         sock.sendall(message)
