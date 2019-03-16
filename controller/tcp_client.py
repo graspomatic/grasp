@@ -1,7 +1,7 @@
 import socket
 
 
-def sendReq():
+def sendReq(message):
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -13,10 +13,10 @@ def sendReq():
     try:
 
         # Send data
-        message = '?function=retrieve&id=13&side=0'
+        #message = b'?function=retrieve&id=13&side=0'
         # message = b'?function=put_away&side=0'
         print('sending {!r}'.format(message))
-        sock.sendall(message)
+        sock.sendall(str.encode(message))
 
         # Look for the response
         amount_received = 0
