@@ -86,21 +86,19 @@ async def handle_request(reader, writer):
     message = data.decode()                         # decode it as utf-8 i think
 
     try:
-        req = parse_qs(urlparse(message).query)
+        req = parse_qs(urlparse(message).query)     # grab the key/value pairs sent after ? in the URL
 
         if "function" in req:
-            # get name of function we're supposed to call and remove it from dictionary
-            fx = req['function'][0].strip()
-            req.pop('function')
+            fx = req['function'][0].strip()         # get name of function we're supposed to call
+            req.pop('function')                     # remove it from dictionary
 
             print(fx)
 
-            loop = asyncio.get_event_loop()
+            #loop = asyncio.get_event_loop()
             loop.create_task(fx_list[fx](**req))
 
 
     except:
-        # print("Bad message format (should be string@time)")
         print("Unexpected error:", sys.exc_info()[0])
 
 
