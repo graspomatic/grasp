@@ -73,10 +73,17 @@ async def retrieve(side=[-1], id=[0]):
 
 #################################################
 
-async def pick_and_place():
+async def pick_and_place(present_to=[0], left_id=[-1], right_id=[-1]):
     # put away current objects, if any, get new objects, present those objects
+    # input variables:
+    # present_to (integer) is position where we want to present object. 0 (left) or (1) right
+    # left_id (integer) object id to present using left arm
+    # right_id (integer) object id to present using right arm
+
     loop.create_task(put_away(side=[0]))
-    loop.create_task(retrieve(side=[0]))
+    loop.create_task(put_away(side=[1]))
+    loop.create_task(retrieve(side=[0], id=left_id))
+    loop.create_task(retrieve(side=[1], id=right_id))
 
 
 
