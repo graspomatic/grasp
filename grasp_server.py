@@ -56,7 +56,7 @@ async def retrieve(side=[-1], id=[0]):
     id = int(id[0])
     print('retrieving side ' + str(side) + ' object ID ' + str(id))
 
-    loop = asyncio.get_event_loop()
+    #loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
 
     # move both arms to 'prep_pick' position
