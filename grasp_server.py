@@ -50,7 +50,10 @@ async def put_away(side = -1):
 
 
     # de-energize magnet
-    await wait_for_dxl()
+    # await wait_for_dxl()
+    dx = loop.create_task(wait_for_dxl())
+    await dx
+
     d = loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
