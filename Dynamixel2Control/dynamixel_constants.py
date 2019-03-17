@@ -34,8 +34,8 @@ IDs = [[11, 12, 13],                # left
        [21, 22, 23]]                # right
 
 # threshold for considering movement complete
-threshs = [[20, 20, 20],
-           [20, 20, 20]]
+threshs = [[2, 2, 2],
+           [2, 2, 2]]
 
 # power to be used for movement
 moving_pwms = [[850, 800, 300],
