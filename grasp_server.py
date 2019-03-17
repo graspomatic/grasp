@@ -20,7 +20,7 @@ async def put_away(side = -1):
 
     print("put away " + str(side))
 
-    #loop = asyncio.get_event_loop()
+    loop = asyncio.get_event_loop()
     # ensure arms are responsive and torque enabled
 
     # make sure we know what this arm is holding before putting it back
@@ -42,13 +42,14 @@ async def put_away(side = -1):
     # if x and y are finished moving, move arm to 'pick' position
 
     # de-energize magnet
-    #loop.create_task(mags.deenergize(side))
+    d = loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
 
     # ensure that object was released (i2c not showing anything)
 
-    return 1
+    await d
+    return d
 
 
 async def retrieve(side=-1, objid=0):
@@ -172,6 +173,12 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
 
 async def put_away_all():
     print('Return both objects')
+    loop = asyncio.get_event_loop()
+
+    a = await put_away(0)
+
+    print a
+
 
 async def stop_moving():
     print('stopping movement')
@@ -207,6 +214,7 @@ async def handle_request(reader, writer):
             req.pop('function')                     # remove it from dictionary
             print(fx)
             loop.create_task(fx_list[fx](**req))    # call function with requested arguments
+            #asyncio.run(fx_list[fx](**req))
 
     except:
         print("Unexpected error:", sys.exc_info()[0])
