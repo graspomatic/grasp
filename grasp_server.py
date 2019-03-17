@@ -177,7 +177,7 @@ async def put_away_all():
 
     a = await put_away(0)
 
-    print a
+    print(a)
 
 
 async def stop_moving():
