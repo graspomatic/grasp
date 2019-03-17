@@ -191,8 +191,8 @@ async def stop_moving():
 
 async def enable_arms():
     print('enabling arm motors')
-    loop = asyncio.get_event_loop()
-    e_state = loop.create_task(dxl.set_torque_all(1))
+
+    dxl.set_torque_all(1)
 
 async def disable_arms():
     print('disabling arm motors')
