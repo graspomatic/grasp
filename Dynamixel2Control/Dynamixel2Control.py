@@ -276,6 +276,15 @@ class D2C(object):
         for id, thresh in zip(IDs, threshs):
             self.set_moving_thresh(id, thresh)
 
+    def set_moving_pwms(self):
+        # loop through all motors and set the moving threshold
+
+        IDs = sum(dxlcx.IDs, [])  # turn it into a 1-d list
+        moving_pwms = sum(dxlcx.moving_pwms, [])
+
+        for id, moving_pwm in zip(IDs, moving_pwms):
+            self.set_goal_pwm(id, moving_pwm)
+
 
 
 

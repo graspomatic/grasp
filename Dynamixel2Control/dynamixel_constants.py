@@ -33,6 +33,9 @@ IDs = [[11, 12, 13],                # left
 threshs = [[10, 20, 30],
            [40, 50, 60]]
 
+moving_pwms = [[400, 800, 800],
+               [400, 800, 800]]
+
 
 COMM_SUCCESS = 0                             # Communication Success result value
 COMM_TX_FAIL = -1001                         # Communication Tx Failed
