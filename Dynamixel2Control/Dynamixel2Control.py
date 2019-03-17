@@ -325,7 +325,7 @@ class D2C(object):
 
         # move motors
         print('moving motors ' + str(dxlcx.IDs[arm]) + ' to position ' + str(position))
-        dxl.sync_set_position(dxlcx.IDs[arm], position)
+        self.sync_set_position(dxlcx.IDs[arm], position)
 
 
 
