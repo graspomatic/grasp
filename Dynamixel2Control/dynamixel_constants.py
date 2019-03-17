@@ -36,6 +36,21 @@ threshs = [[10, 20, 30],
 moving_pwms = [[400, 885, 885],
                [400, 885, 885]]
 
+pick_pos = [[2000, 3250, 2052],
+            [1550, 1030, 1980]]
+
+# pos_pick = [[2000, 3250, 2052],
+#             [1550, 1030, 1980]]
+#
+# pos_prep_pick = [[1350, 3250, 2052],
+#             [1700, 1030, 1980]]
+#
+# pos_prep_present = [[1800, 1220, 2052],
+#             [1800, 3050, 1980]]
+#
+# pos_present = [[1300, 1220, 2052],
+#             [2300, 3050, 1980]]
+
 
 COMM_SUCCESS = 0                             # Communication Success result value
 COMM_TX_FAIL = -1001                         # Communication Tx Failed
