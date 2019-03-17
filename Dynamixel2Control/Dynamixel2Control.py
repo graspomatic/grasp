@@ -285,7 +285,7 @@ class D2C(object):
         for id, moving_pwm in zip(IDs, moving_pwms):
             self.set_goal_pwm(id, moving_pwm)
 
-    def move_arm_to_pos(self, arm=-1, pos='unspecified'):
+    def move_arm_to_pos(self, arm=-1, pos='unspecified', rotation=0):
         # moves arm to a specified position
         # args:
         # arm (int) 0 (left) or 1 (right)
@@ -299,28 +299,49 @@ class D2C(object):
 
 
         if pos == 'pick':
-            print('you chose pick for arm' + str(arm))
-            print(dxlcx.pick_pos[arm][0])
-            print(dxlcx.pick_pos[arm][1])
-            print(dxlcx.pick_pos[arm][2])
+            print('you chose pick for arm ' + str(arm))
+
+            position = [dxlcx.pick_pos[arm][0],
+                        dxlcx.pick_pos[arm][1],
+                        dxlcx.pick_pos[arm][2]]
+            #
+            # print(dxlcx.pick_pos[arm][0])
+            # print(dxlcx.pick_pos[arm][1])
+            # print(dxlcx.pick_pos[arm][2])
 
         elif pos == 'prep_pick':
-            print('you chose prep_pick for arm' + str(arm))
-            print(dxlcx.pick_pos[arm][0] + 150 * armmult)
-            print(dxlcx.pick_pos[arm][1])
-            print(dxlcx.pick_pos[arm][2])
+            print('you chose prep_pick for arm ' + str(arm))
+
+            position = [dxlcx.pick_pos[arm][0] + 150 * armmult,
+                        dxlcx.pick_pos[arm][1],
+                        dxlcx.pick_pos[arm][2]]
+
+            # print(dxlcx.pick_pos[arm][0] + 150 * armmult)
+            # print(dxlcx.pick_pos[arm][1])
+            # print(dxlcx.pick_pos[arm][2])
 
         elif pos == 'prep_present':
-            print('you chose prep_present for arm' + str(arm))
-            print(dxlcx.pick_pos[arm][0] + 250 * armmult)
-            print(dxlcx.pick_pos[arm][1] + 2048 * armmult)
-            print(dxlcx.pick_pos[arm][2])
+            print('you chose prep_present for arm ' + str(arm))
+
+            position = [dxlcx.pick_pos[arm][0] + 250 * armmult,
+                        dxlcx.pick_pos[arm][1] + 2048 * armmult,
+                        dxlcx.pick_pos[arm][2] + rotation]
+
+
+            # print(dxlcx.pick_pos[arm][0] + 250 * armmult)
+            # print(dxlcx.pick_pos[arm][1] + 2048 * armmult)
+            # print(dxlcx.pick_pos[arm][2])
 
         elif pos == 'present':
-            print('you chose present for arm' + str(arm))
-            print(dxlcx.pick_pos[arm][0] + 750 * armmult)
-            print(dxlcx.pick_pos[arm][1] + 2048 * armmult)
-            print(dxlcx.pick_pos[arm][2])
+            print('you chose present for arm ' + str(arm))
+
+            position = [dxlcx.pick_pos[arm][0] + 750 * armmult,
+                        dxlcx.pick_pos[arm][1] + 2048 * armmult,
+                        dxlcx.pick_pos[arm][2] + rotation]
+
+            # print(dxlcx.pick_pos[arm][0] + 750 * armmult)
+            # print(dxlcx.pick_pos[arm][1] + 2048 * armmult)
+            # print(dxlcx.pick_pos[arm][2])
 
         else:
             print('invalid position specified')
@@ -329,6 +350,7 @@ class D2C(object):
 
 
 
+        print('moving motors ' + str(dxlcx.IDs[arm]) + ' to position ' + str(position) )
 
 
 
