@@ -207,6 +207,7 @@ async def initialize_dxl():
     dxl.set_torque_all(0)
     dxl.set_moving_thresh_all()     # needs torque off
     dxl.set_torque_all(1)
+    dxl.set_moving_pwms()
 
 
 

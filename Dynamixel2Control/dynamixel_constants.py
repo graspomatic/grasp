@@ -1,4 +1,4 @@
-BAUDRATE        = 4000000
+BAUDRATE        = 1000000
 
 # DEVICENAME      = "COM6".encode('utf-8')    # Check which port is being used on your controller
 # DEVICENAME      = "COM6"    # Check which port is being used on your controller
@@ -33,8 +33,8 @@ IDs = [[11, 12, 13],                # left
 threshs = [[10, 20, 30],
            [40, 50, 60]]
 
-moving_pwms = [[400, 800, 800],
-               [400, 800, 800]]
+moving_pwms = [[400, 885, 885],
+               [400, 885, 885]]
 
 
 COMM_SUCCESS = 0                             # Communication Success result value
