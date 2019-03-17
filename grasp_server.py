@@ -173,11 +173,14 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
 
 async def put_away_all():
     print('Return both objects')
-    loop = asyncio.get_event_loop()
+    # loop = asyncio.get_event_loop()
 
-    a = await put_away(0)
+    left = await put_away(0)
+    print('done with left')
+    right = await put_away(0)
+    print('done with right')
 
-    print(a)
+
 
 
 async def stop_moving():
