@@ -220,7 +220,7 @@ class D2C(object):
         moving = []
         for i in range(0, len(dxlcx.IDs)):                          # for each arm
             for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
-                moving.append(self.groupMoving.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_MOVING, 1))
+                moving.append(self.groupMoving.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_MOVING_STATUS, 1))
 
         return moving
 
