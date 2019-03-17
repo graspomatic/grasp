@@ -108,8 +108,8 @@ async def present(arms='neither', hand=-1):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    moving = [1,1,1,1,1,1]
-    while sum(moving):
+    moving = [1, 1, 1, 1, 1, 1]
+    while sum(moving) > 0:
         print(moving)
         print(sum(moving))
         moving = dxl.sync_get_moving()
