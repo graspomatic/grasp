@@ -45,6 +45,7 @@ async def put_away(side = -1):
 
 
     # if x and y are finished moving, move arm to 'pick' position
+    await wait_for_dxl()
     dxl.move_arm_to_pos(arm=side, pos='pick')
 
     # de-energize magnet
@@ -104,6 +105,15 @@ async def present(arms='neither', hand=-1):
         print('Specify which hand to present to, 0 (left) or 1 (right)')
         return
 
+
+async def wait_for_dxl():
+    print('waiting for dynamixel motors to stop moving')
+    moving = [1,1,1,1,1,1]
+    while sum(moving):
+        print(moving)
+        print(sum(moving))
+        moving = dxl.sync_get_moving()
+    return 1
 
 
 
@@ -187,7 +197,7 @@ async def put_away_all():
 
     left = await put_away(0)
     print('done with left')
-    right = await put_away(0)
+    right = await put_away(1)
     print('done with right')
 
 
