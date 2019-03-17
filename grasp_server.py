@@ -45,15 +45,19 @@ async def put_away(side = -1):
 
 
     # if x and y are finished moving, move arm to 'pick' position
-    await wait_for_dxl()
-    # dxl.move_arm_to_pos(arm=side, pos='pick')
+
+    dxl.move_arm_to_pos(arm=side, pos='pick')
+
 
     # de-energize magnet
+    await wait_for_dxl()
     d = loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
-    # dxl.move_arm_to_pos(arm=side, pos='prep_pick')
-    # await d
+
+    await d
+    dxl.move_arm_to_pos(arm=side, pos='prep_pick')
+
 
 
 
