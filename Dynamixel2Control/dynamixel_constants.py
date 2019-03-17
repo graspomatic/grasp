@@ -30,6 +30,9 @@ ADDR_PRESENT_POSITION   = 132       # 4 bytes
 IDs = [[11, 12, 13],                # left
        [21, 22, 23]]                # right
 
+threshs = [[10, 20, 30],
+           [40, 50, 60]]
+
 
 COMM_SUCCESS = 0                             # Communication Success result value
 COMM_TX_FAIL = -1001                         # Communication Tx Failed

@@ -197,12 +197,15 @@ async def disable_arms():
     print('disabling arm motors')
     dxl.set_torque_all(0)
 
-
 async def enable_xy():
     print('enabling x-y motors')
 
 async def disable_xy():
     print('disabling X-Y motors')
+
+async def initialize_dxl():
+    dxl.set_torque_all()
+    dxl.set_moving_thresh_all()
 
 
 

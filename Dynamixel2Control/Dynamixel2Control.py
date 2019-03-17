@@ -267,6 +267,15 @@ class D2C(object):
         for id in IDs:
             self.set_torque(id, enable)
 
+    def set_moving_thresh_all(self):
+        # loop through all motors and set the moving threshold
+
+        IDs = sum(dxlcx.IDs, [])  # turn it into a 1-d list
+        threshs = sum(dxlcx.threshs, [])
+
+        for id, thresh in zip(IDs, threshs):
+            self.set_moving_thresh(id, thresh)
+
 
 
 
