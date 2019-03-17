@@ -45,6 +45,9 @@ async def put_away(side = -1):
     d = loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
+    await d
+
+
 
     # ensure that object was released (i2c not showing anything)
 
@@ -186,11 +189,21 @@ async def put_away_all():
 async def stop_moving():
     print('stopping movement')
 
+async def enable_arms():
+    print('enabling arm motors')
+    loop = asyncio.get_event_loop()
+    e_state = loop.create_task(dxl.set_torque_all(1))
+
 async def disable_arms():
-    print('dsiabling arm motors')
+    print('disabling arm motors')
+
+
+
+async def enable_xy():
+    print('enabling x-y motors')
 
 async def disable_xy():
-    print('dsiabling X-Y motors')
+    print('disabling X-Y motors')
 
 
 
@@ -201,7 +214,9 @@ fx_list = {
     'pick_and_place': pick_and_place,
     'put_away_all': put_away_all,
     'stop_moving': stop_moving,
+    'enable_arms': enable_arms,
     'disable_arms': disable_arms,
+    'enable_xy': enable_xy,
     'disable_xy': disable_xy
 }
 

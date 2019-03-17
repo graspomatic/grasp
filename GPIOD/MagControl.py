@@ -24,8 +24,6 @@ class MAGS(object):
                 print("Enter 0 (left) or 1 (right)")
                 return
 
-
-            # lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
             lines.set_values([1, 0])
 
             vals = lines.get_values()
@@ -44,8 +42,6 @@ class MAGS(object):
                 print("Enter 0 (left) or 1 (right)")
                 return
 
-            # lines = chip.get_lines(offsets)
-            # lines.request(consumer="", type=gpiod.LINE_REQ_DIR_OUT)
             lines.set_values([0, 1])
 
             await asyncio.sleep(magcx.RELEASE_DUR - 0.001)  # subtract one ms for processing time
