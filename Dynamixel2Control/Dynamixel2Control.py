@@ -300,6 +300,8 @@ class D2C(object):
             print('please give rotation in degrees in range -180 to 180')
             return 0
 
+
+
         armmult = arm * 2 - 1   # produces -1 for left and 1 for right
 
         # depending on arm and position specified, determine the dxl positions for three motors
@@ -326,6 +328,7 @@ class D2C(object):
         # move motors
         print('moving motors ' + str(dxlcx.IDs[arm]) + ' to position ' + str(position))
         self.sync_set_position(dxlcx.IDs[arm], position)
+        return 1
 
 
 

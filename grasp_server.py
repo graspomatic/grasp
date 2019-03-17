@@ -17,15 +17,20 @@ mags = MagControl.MAGS()
 
 async def put_away(side = -1):
     # Put away the object currently held on specified side
-
     print("put away " + str(side))
 
+    # error checking
+    if side != 0 and side != 1:
+        print('specify side=0 (left) or side=1 (right)')
+        return 0
+
     loop = asyncio.get_event_loop()
-    # ensure arms are responsive and torque enabled
 
     # make sure we know what this arm is holding before putting it back
 
     # move both arms to 'prep_pick' position
+    dxl.move_arm_to_pos(arm=0, pos='prep_pick')
+    dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
     # figure out which object is being held on this arm
     #   if nothing, return as success
@@ -40,19 +45,21 @@ async def put_away(side = -1):
 
 
     # if x and y are finished moving, move arm to 'pick' position
+    dxl.move_arm_to_pos(arm=side, pos='pick')
 
     # de-energize magnet
     d = loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
-    await d
+    dxl.move_arm_to_pos(arm=side, pos='prep_pick')
+    # await d
 
 
 
     # ensure that object was released (i2c not showing anything)
 
-    await d
-    return d
+    # await d
+    # return d
 
 
 async def retrieve(side=-1, objid=0):
@@ -207,7 +214,7 @@ async def initialize_dxl():
     dxl.set_torque_all(0)
     dxl.set_moving_thresh_all()     # needs torque off
     dxl.set_torque_all(1)
-    dxl.set_moving_pwms()
+
     print('dxl motors initialized')
 
 

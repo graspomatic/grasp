@@ -26,31 +26,23 @@ ADDR_MOVING             = 122       # 1 byte
 ADDR_MOVING_STATUS      = 123       # 1 byte
 ADDR_PRESENT_POSITION   = 132       # 4 bytes
 
+COMM_SUCCESS = 0                             # Communication Success result value
+COMM_TX_FAIL = -1001                         # Communication Tx Failed
 
+# motor ids
 IDs = [[11, 12, 13],                # left
        [21, 22, 23]]                # right
 
-threshs = [[10, 20, 30],
-           [40, 50, 60]]
+# threshold for considering movement complete
+threshs = [[20, 20, 20],
+           [20, 20, 20]]
 
-moving_pwms = [[300, 200, 300],
-               [300, 200, 300]]
+# power to be used for movement
+moving_pwms = [[850, 800, 300],
+               [850, 800, 300]]
 
+# position of all motors when in the 'pick' arm position
 pick_pos = [[2000, 3250, 2048],
-            [1550, 1030, 2048]]
-
-# pos_pick = [[2000, 3250, 2052],
-#             [1550, 1030, 1980]]
-#
-# pos_prep_pick = [[1350, 3250, 2052],
-#             [1700, 1030, 1980]]
-#
-# pos_prep_present = [[1800, 1220, 2052],
-#             [1800, 3050, 1980]]
-#
-# pos_present = [[1300, 1220, 2052],
-#             [2300, 3050, 1980]]
+            [1550, 1030, 1980]]
 
 
-COMM_SUCCESS = 0                             # Communication Success result value
-COMM_TX_FAIL = -1001                         # Communication Tx Failed
