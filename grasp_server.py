@@ -222,7 +222,8 @@ fx_list = {
     'enable_arms': enable_arms,
     'disable_arms': disable_arms,
     'enable_xy': enable_xy,
-    'disable_xy': disable_xy
+    'disable_xy': disable_xy,
+    'initialize_dxl': initialize_dxl
 }
 
 async def handle_request(reader, writer):
