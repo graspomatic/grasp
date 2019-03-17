@@ -302,33 +302,28 @@ class D2C(object):
 
         armmult = arm * 2 - 1   # produces -1 for left and 1 for right
 
+        # depending on arm and position specified, determine the dxl positions for three motors
         if pos == 'pick':
             position = [dxlcx.pick_pos[arm][0],
                         dxlcx.pick_pos[arm][1],
                         dxlcx.pick_pos[arm][2]]
-
         elif pos == 'prep_pick':
             position = [dxlcx.pick_pos[arm][0] + 150 * armmult,
                         dxlcx.pick_pos[arm][1],
                         dxlcx.pick_pos[arm][2]]
-
         elif pos == 'prep_present':
             position = [dxlcx.pick_pos[arm][0] + 250 * armmult,
                         dxlcx.pick_pos[arm][1] + 2048 * armmult,
                         dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)]
-
         elif pos == 'present':
             position = [dxlcx.pick_pos[arm][0] + 750 * armmult,
                         dxlcx.pick_pos[arm][1] + 2048 * armmult,
                         dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)]
-
         else:
             print('invalid position specified')
             return 0
 
-
-
-
+        # move motors
         print('moving motors ' + str(dxlcx.IDs[arm]) + ' to position ' + str(position))
         dxl.sync_set_position(dxlcx.IDs[arm], position)
 
