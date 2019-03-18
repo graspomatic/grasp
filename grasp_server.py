@@ -70,21 +70,31 @@ async def retrieve(side=-1, objid=0):
 
     print('retrieving side ' + str(side) + ' object ID ' + str(objid))
 
+    # error checking
+    if side != 0 and side != 1:
+        print('specify side=0 (left) or side=1 (right)')
+        return 0
+
     # ensure arms are responsive and torque enabled
 
     # move both arms to 'prep_pick' position
+    dxl.move_arm_to_pos(arm=0, pos='prep_pick')
+    dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
     # find x-y position of requested object
 
     # move x-y motors to that spot for the specified arm
 
     # move specified arm to 'pick' position
+    await loop.create_task(wait_for_dxl())
+    dxl.move_arm_to_pos(arm=side, pos='pick')
 
     # energize magnet
-    loop.create_task(mags.energize(side))
+    await loop.create_task(wait_for_dxl())
+    await loop.create_task(mags.energize(side))
 
     # move specified arm to 'prep-pick' position
-
+    dxl.move_arm_to_pos(arm=side, pos='prep_pick')
 
     # ensure that object was picked up
 
