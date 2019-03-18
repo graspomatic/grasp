@@ -276,7 +276,7 @@ async def handle_request(reader, writer):
             print(fx)
 
             if fx == 'abort':
-                await abort()
+                loop.create_task(abort())
             else:
                 active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
 
