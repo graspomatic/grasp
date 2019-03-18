@@ -37,6 +37,11 @@ class D2C(object):
             for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
                 self.groupGetPosition.addParam(dxlcx.IDs[i][ii])    # add this motor to list
 
+        self.groupGetGoalPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION,4)
+        for i in range(0, len(dxlcx.IDs)):  # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
+                self.groupGetGoalPosition.addParam(dxlcx.IDs[i][ii])  # add this motor to list
+
         self.groupSetPosition = dxlfx.GroupSyncWrite(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION, 4)
 
 
@@ -232,6 +237,17 @@ class D2C(object):
         for i in range(0, len(dxlcx.IDs)):                          # for each arm
             for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
                 position.append(self.groupGetPosition.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_PRESENT_POSITION, 4))
+
+        return position
+
+    def sync_get_goal_position(self):
+        result = self.groupGetGoalPosition.txRxPacket()
+        self.error_handler('sync_get_goal_position: ', result, 0)
+
+        position = []
+        for i in range(0, len(dxlcx.IDs)):                          # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
+                position.append(self.groupGetGoalPosition.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_GOAL_POSITION, 4))
 
         return position
 
