@@ -207,12 +207,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
 async def put_away_all():
     print('Return both objects')
 
-    left = loop.create_task(put_away(0))
-
-    # left.cancel()
+    left = await put_away(0)
     print('done with left')
-
-    right = loop.create_task(put_away(1))
+    right = await put_away(1)
     print('done with right')
 
 
