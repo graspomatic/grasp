@@ -285,7 +285,7 @@ async def handle_request(reader, writer):
                 else:
                     active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
                     result = 'accepted'
-        else
+        else:
             result = 'not_a_function'
 
     except:
