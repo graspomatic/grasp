@@ -280,6 +280,7 @@ async def handle_request(reader, writer):
             else:
                 active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
 
+            await active_task
 
             #await abort() # works
             # active_task.cancel()
