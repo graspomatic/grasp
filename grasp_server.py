@@ -240,7 +240,9 @@ async def initialize_dxl():
 
     print('dxl motors initialized')
 
-
+async def abort():
+    global active_task
+    active_task.cancel()
 
 
 
@@ -254,12 +256,14 @@ fx_list = {
     'disable_arms': disable_arms,
     'enable_xy': enable_xy,
     'disable_xy': disable_xy,
-    'initialize_dxl': initialize_dxl
+    'initialize_dxl': initialize_dxl,
+    'abort': abort
 }
 
 async def handle_request(reader, writer):
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
+    global active_task
 
     try:
         req = parse_qs(urlparse(message).query)     # grab the key/value pairs sent after ? in the URL
@@ -268,9 +272,11 @@ async def handle_request(reader, writer):
             fx = req['function'][0].strip()         # get name of function we're supposed to call
             req.pop('function')                     # remove it from dictionary
             print(fx)
-            looping = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
-            await asyncio.sleep(0.3)
-            looping.cancel()
+            active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
+
+
+
+            # active_task.cancel()
 
 
     except:
