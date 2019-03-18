@@ -16,7 +16,7 @@ mags = MagControl.MAGS()
 
 
 async def put_away(side = -1):
-    # Put away the object currently held on specified side
+    # Put away the object currently held on specified side in the nearest empty spot
     print("put away " + str(side))
 
     # error checking
@@ -24,7 +24,7 @@ async def put_away(side = -1):
         print('specify side=0 (left) or side=1 (right)')
         return 0
 
-    loop = asyncio.get_event_loop()
+    # loop = asyncio.get_event_loop()
 
     # make sure we know what this arm is holding before putting it back
 
@@ -148,9 +148,6 @@ async def wait_for_dxl():
         a = dxl.sync_get_position()
         b = dxl.sync_get_goal_position()
         distance = max([abs(x) for x in [c - d for c, d in zip(a, b)]])
-        print(a)
-        print(b)
-        print(distance)
         await asyncio.sleep(0.01)
 
     return 1
@@ -186,7 +183,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     else:
         arms = 'neither'
 
+    # if holding anything in left arm
     await put_away(0)
+    # if holding anything in right arm
     await put_away(1)
     if left_id > -1:  await retrieve(side=0, objid=left_id)
     if right_id > -1: await retrieve(side=1, objid=right_id)
