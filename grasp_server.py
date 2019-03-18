@@ -118,11 +118,31 @@ async def present(arms='neither', hand=-1):
         print('Specify which hand to present to, 0 (left) or 1 (right)')
         return
 
+    # move specified arms to prep_present
+    if arms == 'both':
+        dxl.move_arm_to_pos(arm=0, pos='prep_present')
+        dxl.move_arm_to_pos(arm=1, pos='prep_present')
+    elif arms == 'left':
+        dxl.move_arm_to_pos(arm=0, pos='prep_present')
+    elif arms == 'right':
+        dxl.move_arm_to_pos(arm=1, pos='prep_present')
+
+    # move xy to present to specified hand
+
+    # once xy is in position, move specified arms to present
+    if arms == 'both':
+        dxl.move_arm_to_pos(arm=0, pos='present')
+        dxl.move_arm_to_pos(arm=1, pos='present')
+    elif arms == 'left':
+        dxl.move_arm_to_pos(arm=0, pos='present')
+    elif arms == 'right':
+        dxl.move_arm_to_pos(arm=1, pos='present')
+
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
     distance_thresh = 30
-    distance = 10000;
+    distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
         b = dxl.sync_get_goal_position()
