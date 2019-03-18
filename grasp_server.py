@@ -274,10 +274,14 @@ async def handle_request(reader, writer):
             fx = req['function'][0].strip()         # get name of function we're supposed to call
             req.pop('function')                     # remove it from dictionary
             print(fx)
-            active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
+
+            if fx == 'abort':
+                await abort()
+            else:
+                active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
 
 
-            await abort()
+            #await abort() # works
             # active_task.cancel()
 
 
