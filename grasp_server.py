@@ -268,8 +268,10 @@ async def handle_request(reader, writer):
             fx = req['function'][0].strip()         # get name of function we're supposed to call
             req.pop('function')                     # remove it from dictionary
             print(fx)
-            loop.create_task(fx_list[fx](**req))    # call function with requested arguments
-            #asyncio.run(fx_list[fx](**req))
+            looping = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
+
+            looping.cancel()
+
 
     except:
         print("Unexpected error:", sys.exc_info()[0])
