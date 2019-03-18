@@ -116,14 +116,16 @@ async def present(arms='neither', hand=-1):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    moving = [8, 8, 8, 8, 8, 8]
-    while max(moving) > 0:
-        print(moving)
-        print(sum(moving))
-        moving = dxl.sync_get_moving()
-        print('returned from dxl: ')
-        print(moving)
-        print(sum(moving))
+    distance_thresh = 30
+    distance = 10000;
+    while distance > distance_thresh:
+        a = dxl.sync_get_position()
+        b = dxl.sync_get_goal_position()
+        distance = max([abs(x) for x in [c - d for c, d in zip(a, b)]])
+        print(a)
+        print(b)
+        print(distance)
+
     return 1
 
 
