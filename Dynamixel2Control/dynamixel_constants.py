@@ -38,8 +38,8 @@ threshs = [[2, 2, 2],
            [2, 2, 2]]
 
 # power to be used for movement
-moving_pwms = [[850, 800, 300],
-               [850, 800, 300]]
+moving_pwms = [[880, 880, 300],
+               [880, 880, 300]]
 
 # position of all motors when in the 'pick' arm position
 pick_pos = [[2000, 3250, 2048],
