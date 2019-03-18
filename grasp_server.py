@@ -242,6 +242,8 @@ async def initialize_dxl():
 
 async def abort():
     global active_task
+    print('canceling')
+    print(active_task)
     active_task.cancel()
 
 
@@ -275,7 +277,7 @@ async def handle_request(reader, writer):
             active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
 
 
-
+            await abort()
             # active_task.cancel()
 
 
