@@ -263,6 +263,7 @@ fx_list = {
 }
 
 async def handle_request(reader, writer):
+    result = ''
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
     global active_task
@@ -277,24 +278,23 @@ async def handle_request(reader, writer):
 
             if fx == 'abort':
                 loop.create_task(abort())
+                result = 'aborted'
             else:
-                print('asdfasdfkjhasdlkfjhasdflkjhasdlkjhasdkjfhasdlfkjhsadlkjhadsflkhasdfkljasdfkasdfasdfasfd')
-                print(asyncio.all_tasks(loop))
-                print(len(asyncio.all_tasks(loop)))
-                active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
-
-
-
-            #await abort() # works
-            # active_task.cancel()
-
+                if len(asyncio.all_tasks(loop)) > 1:  # if we're already doing something
+                    result = 'busy'
+                else:
+                    active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
+                    result = 'accepted'
+        else
+            result = 'not_a_function'
 
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        result = 'error'
 
 
     print("Send: %r" % message)
-    writer.write(data)
+    writer.write(result)
     await writer.drain()
 
     print("Close the client socket")
