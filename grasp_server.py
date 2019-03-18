@@ -205,17 +205,14 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
 
 
 async def put_away_all():
-    # loop = asyncio.get_event_loop()  # makes a new event loop if one doesnt exist
     print('Return both objects')
-
-    #left = await put_away(0) # works but cant be canceled?
 
     left = loop.create_task(put_away(0))
 
-
-    left.cancel()
+    # left.cancel()
     print('done with left')
-    right = await put_away(1)
+
+    right = loop.create_task(put_away(1))
     print('done with right')
 
 
