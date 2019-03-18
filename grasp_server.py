@@ -1,7 +1,7 @@
 from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client into python dictionary
 import sys
 import asyncio
-global active_task = 0
+active_task = 0
 
 import AppliedMotionControl
 x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649)
