@@ -208,6 +208,7 @@ async def put_away_all():
     print('Return both objects')
 
     left = await put_away(0)
+    left.cancel()
     print('done with left')
     right = await put_away(1)
     print('done with right')
@@ -236,6 +237,7 @@ async def initialize_dxl():
     dxl.set_torque_all(0)
     dxl.set_moving_thresh_all()     # needs torque off
     dxl.set_torque_all(1)
+    dxl.set_moving_pwms()
 
     print('dxl motors initialized')
 
