@@ -269,7 +269,7 @@ async def handle_request(reader, writer):
             req.pop('function')                     # remove it from dictionary
             print(fx)
             looping = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
-            await asyncio.sleep(0.4)
+            await asyncio.sleep(0.3)
             looping.cancel()
 
 
