@@ -295,9 +295,7 @@ async def handle_request(reader, writer):
         print("Unexpected error:", sys.exc_info()[0])
         result = 'error'
 
-
-    print("Send: %r" % message)
-    writer.write(result)
+    writer.write(result.encode())
     await writer.drain()
 
     print("Close the client socket")
