@@ -244,7 +244,10 @@ async def abort():
     global active_task
     print('canceling')
     print(active_task)
-    active_task.cancel()
+    try:
+        active_task.cancel()
+    except:
+        print('we dont have anything to cancel!')
 
 
 
