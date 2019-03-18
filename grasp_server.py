@@ -280,6 +280,7 @@ async def handle_request(reader, writer):
             else:
                 print('asdfasdfkjhasdlkfjhasdflkjhasdlkjhasdkjfhasdlfkjhsadlkjhadsflkhasdfkljasdfkasdfasdfasfd')
                 print(asyncio.all_tasks(loop))
+                print(len(asyncio.all_tasks(loop)))
                 active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
 
 
