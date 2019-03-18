@@ -60,6 +60,7 @@ async def put_away(side = -1):
 
 
     # ensure that object was released (i2c not showing anything)
+    await loop.create_task(wait_for_dxl())
 
     # await d
     # return d
@@ -186,16 +187,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
         arms = 'neither'
 
     await put_away(0)
-    print('left is put away')
     await put_away(1)
-    print('right is put away')
-    if left_id > -1:
-        await retrieve(side=0, objid=10)
-        print('retrieved object on left side')
-    if right_id > -1:
-        await retrieve(side=1, objid=11)
-        print('retrieved object on left side')
-
+    if left_id > -1:  await retrieve(side=0, objid=left_id)
+    if right_id > -1: await retrieve(side=1, objid=right_id)
     await present(arms=arms, hand=hand)
 
 
@@ -206,17 +200,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
 
 async def put_away_all():
     print('Return both objects')
-
-    left = await put_away(0)
-    print('done with left')
-    right = await put_away(1)
-    print('done with right')
-
-
-
-
-async def stop_moving():
-    print('stopping movement')
+    await put_away(0)
+    await put_away(1)
 
 async def enable_arms():
     print('enabling arm motors')
@@ -253,10 +238,10 @@ async def abort():
 
 
 
+
 fx_list = {
     'pick_and_place': pick_and_place,
     'put_away_all': put_away_all,
-    'stop_moving': stop_moving,
     'enable_arms': enable_arms,
     'disable_arms': disable_arms,
     'enable_xy': enable_xy,
