@@ -266,7 +266,7 @@ fx_list = {
 }
 
 async def handle_request(reader, writer):
-    result = ''
+    result = 'init'
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
     global active_task
