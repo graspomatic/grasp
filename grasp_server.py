@@ -150,7 +150,7 @@ async def wait_for_dxl():
         print(a)
         print(b)
         print(distance)
-        await asyncio.wait(0.01)
+        await asyncio.sleep(0.01)
 
     return 1
 
