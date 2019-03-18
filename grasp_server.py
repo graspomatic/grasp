@@ -50,15 +50,10 @@ async def put_away(side = -1):
 
 
     # de-energize magnet
-    # await wait_for_dxl()
-    dx = loop.create_task(wait_for_dxl())
-    await dx
-
-    d = loop.create_task(mags.deenergize(side))
+    await loop.create_task(wait_for_dxl())
+    await loop.create_task(mags.deenergize(side))
 
     # move arm to 'prep-pick' position
-
-    await d
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
 
 
@@ -159,44 +154,18 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     else:
         arms = 'neither'
 
-    completed, pending = await asyncio.wait(put_away(side=0))
-
-    print(completed)
-
-
-
-
-
-
-    return
-
-    print(str(datetime.datetime.now()))
-    t1 = loop.create_future(put_away(side=0))
-    print(str(datetime.datetime.now()))
-    t1.add_done_callback(loop.create_task(put_away(side=1)))
-    print(str(datetime.datetime.now()))
-
-
-    # t2 = loop.create_task(put_away(side=1))
-    # print(str(datetime.datetime.now()))
-
-    # await t2
-    # print(str(datetime.datetime.now()))
-
+    await put_away(0)
+    print('left is put away')
+    await put_away(1)
+    print('right is put away')
     if left_id > -1:
-        t3 = loop.create_task(retrieve(side=0, objid=left_id))
-        await t3
-
-
-
+        await retrieve(side=0, objid=10)
+        print('retrieved object on left side')
     if right_id > -1:
-        t4 = loop.create_task(retrieve(side=1, objid=right_id))
-        await t4
+        await retrieve(side=1, objid=11)
+        print('retrieved object on left side')
 
-    # wait
-
-
-    loop.create_task(present(arms=arms, hand=hand))
+    await present(arms=arms, hand=hand)
 
 
 
