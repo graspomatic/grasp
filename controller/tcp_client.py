@@ -20,7 +20,7 @@ def sendReq(message):
 
         # Look for the response
         amount_received = 0
-        amount_expected = 10
+        amount_expected = 1
 
         while amount_received < amount_expected:
             data = sock.recv(32)
