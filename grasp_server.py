@@ -171,7 +171,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     if arms == 'left':
         await retrieve(side=0, objid=left_id)
-    if arms == 'right':
+    elif arms == 'right':
         await retrieve(side=1, objid=right_id)
     else:
         # determine if its faster to get left or right first
