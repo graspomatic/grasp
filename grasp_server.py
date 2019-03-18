@@ -278,9 +278,10 @@ async def handle_request(reader, writer):
             if fx == 'abort':
                 loop.create_task(abort())
             else:
+                print(asyncio.current_task(loop))
                 active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
 
-            await active_task
+
 
             #await abort() # works
             # active_task.cancel()
