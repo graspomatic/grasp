@@ -24,13 +24,10 @@ async def put_away(side = -1):
         print('specify side=0 (left) or side=1 (right)')
         return 0
 
-    # loop = asyncio.get_event_loop()
-
-    # make sure we know what this arm is holding before putting it back
-
     # move both arms to 'prep_pick' position
     dxl.move_arm_to_pos(arm=0, pos='prep_pick')
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
+
 
     # figure out which object is being held on this arm
     #   if nothing, return as success
@@ -39,10 +36,6 @@ async def put_away(side = -1):
     # find nearest empty spot on grid
 
     # move x-y motors to that empty spot
-
-
-
-
 
     # if x and y are finished moving, move arm to 'pick' position
 
@@ -56,27 +49,19 @@ async def put_away(side = -1):
     # move arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
 
-
-
-
     # ensure that object was released (i2c not showing anything)
     await loop.create_task(wait_for_dxl())
 
-    # await d
-    # return d
 
 
 async def retrieve(side=-1, objid=0):
     # Get the specified object ID on the specified arm
-
     print('retrieving side ' + str(side) + ' object ID ' + str(objid))
 
     # error checking
     if side != 0 and side != 1:
         print('specify side=0 (left) or side=1 (right)')
         return 0
-
-    # ensure arms are responsive and torque enabled
 
     # move both arms to 'prep_pick' position
     dxl.move_arm_to_pos(arm=0, pos='prep_pick')
@@ -87,7 +72,6 @@ async def retrieve(side=-1, objid=0):
     # move x-y motors to that spot for the specified arm
 
     # move specified arm to 'pick' position
-    await loop.create_task(wait_for_dxl())
     dxl.move_arm_to_pos(arm=side, pos='pick')
 
     # energize magnet
@@ -98,10 +82,11 @@ async def retrieve(side=-1, objid=0):
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
 
     # ensure that object was picked up
+    await loop.create_task(wait_for_dxl())
 
 
 
-async def present(arms='neither', hand=-1):
+async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
     # present objects on specified arms to specified hand
     print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
 
@@ -120,24 +105,18 @@ async def present(arms='neither', hand=-1):
         return
 
     # move specified arms to prep_present
-    if arms == 'both':
-        dxl.move_arm_to_pos(arm=0, pos='prep_present')
-        dxl.move_arm_to_pos(arm=1, pos='prep_present')
-    elif arms == 'left':
-        dxl.move_arm_to_pos(arm=0, pos='prep_present')
-    elif arms == 'right':
-        dxl.move_arm_to_pos(arm=1, pos='prep_present')
+    if arms == 'both' or arms == 'left':
+        dxl.move_arm_to_pos(arm=0, pos='prep_present', rotation=left_angle)
+    if arms == 'both' or arms == 'right':
+        dxl.move_arm_to_pos(arm=1, pos='prep_present', rotation=right_angle)
 
     # move xy to present to specified hand
 
     # once xy is in position, move specified arms to present
-    if arms == 'both':
-        dxl.move_arm_to_pos(arm=0, pos='present')
-        dxl.move_arm_to_pos(arm=1, pos='present')
-    elif arms == 'left':
-        dxl.move_arm_to_pos(arm=0, pos='present')
-    elif arms == 'right':
-        dxl.move_arm_to_pos(arm=1, pos='present')
+    if arms == 'both' or arms == 'left':
+        dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle)
+    if arms == 'both' or arms == 'right':
+        dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle)
 
 
 async def wait_for_dxl():
@@ -163,7 +142,7 @@ async def wait_for_dxl():
 
 #################################################
 
-async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
+async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0], right_angle=[0]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
@@ -173,6 +152,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
+    left_angle = int(left_angle[0])
+    right_angle = int(right_angle[0])
 
     if left_id > -1 and right_id == -1:
         arms = 'left'
@@ -187,9 +168,17 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1]):
     await put_away(0)
     # if holding anything in right arm
     await put_away(1)
-    if left_id > -1:  await retrieve(side=0, objid=left_id)
-    if right_id > -1: await retrieve(side=1, objid=right_id)
-    await present(arms=arms, hand=hand)
+
+    if arms == 'left':
+        await retrieve(side=0, objid=left_id)
+    if arms == 'right':
+        await retrieve(side=1, objid=right_id)
+    else:
+        # determine if its faster to get left or right first
+        await retrieve(side=0, objid=left_id)
+        await retrieve(side=1, objid=right_id)
+
+    await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
 
 
 
