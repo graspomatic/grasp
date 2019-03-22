@@ -170,7 +170,7 @@ class path_find():
                     orders.append(np.array([['d'], [1], xy]))  # add this location to list
                     panel, empties = self.change_panel_entry(panel, xy[0] + self.right_offset[0], xy[1] + self.right_offset[1], drop[1], empties)  # update panel
 
-        return panel, orders, empties
+        return panel, orders
 
 
 
