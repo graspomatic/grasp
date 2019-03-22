@@ -25,7 +25,7 @@ class path_find():
     def change_panel_entry(self, panel, x, y, new_val, empties):
         loc = np.where(np.logical_and(panel[:, :, 1] == x, panel[:, :, 2] == y))
         panel[loc[0][0], loc[1][0], 0] = new_val
-        empties = find_empty_spots(panel)
+        empties = self.find_empty_spots(panel)
         print(panel)
         print(empties)
         return panel, empties
@@ -34,7 +34,7 @@ class path_find():
         # find empty spot nearest reference
         dist_list = []
         for i in range(np.ma.size(empties, 0)):
-            dist_list.append(distance(ref, empties[i]))
+            dist_list.append(self.distance(ref, empties[i]))
         val, idx = min((val, idx) for (idx, val) in enumerate(dist_list))
         return empties[idx]
 
@@ -44,7 +44,7 @@ class path_find():
             for ii in empties:
                 if not np.array_equal(i, ii):
                     # if we're here, we know we have two different grid locations
-                    d = distance(i, ii - right_offset)
+                    d = self.distance(i, ii - right_offset)
                     if d < shortest[2]:
                         shortest = [i, ii - right_offset, d]
         return shortest
