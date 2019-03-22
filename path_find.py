@@ -62,9 +62,6 @@ class path_find():
             address = row[0][1:] - offset
             return address
 
-
-
-
     def plan_path(self, drop, pick, panel, empties, mid_point, right_offset):
 
         # error checking
@@ -148,6 +145,7 @@ class path_find():
                     add = mid_point
 
                 xy = self.find_nearest(add, empties)                             # find empty spot
+                print(xy)
                 orders.append(np.array(['d', 0, xy]))                       # add this location to list
                 panel, empties = self.change_panel_entry(panel, xy[0], xy[1], drop[0], empties)    # update panel
 
