@@ -1,6 +1,9 @@
 from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client into python dictionary
 import sys
 import asyncio
+import redis
+import numpy as np
+import json
 active_task = 0
 
 import AppliedMotionControl
