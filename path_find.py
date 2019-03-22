@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class path_find():
     def __init__(self):
         self.panel = np.array([[[1, 10., 10.], [2, 20., 10.], [3, 30., 10.]],
@@ -10,19 +11,18 @@ class path_find():
 
         self.mid_point = np.array([20, 18])  # when only putting away something, aim for this spot
 
-        self.empties = find_empty_spots(self.panel)
+        self.empties = self.find_empty_spots(self.panel)
 
-    def distance(a, b):
+    def distance(self, a, b):
         dif = np.subtract(a, b)
-        c = np.sqrt(dif.dot(dif))
-        return c
+        return np.sqrt(dif.dot(dif))
 
-    def find_empty_spots(panel):
+    def find_empty_spots(self, panel):
         empty_spots = panel[:, :, 0] == 0
         empty_coords = panel[empty_spots]
         return empty_coords[:,1:]
 
-    def change_panel_entry(panel, x, y, new_val, empties):
+    def change_panel_entry(self, panel, x, y, new_val, empties):
         loc = np.where(np.logical_and(panel[:, :, 1] == x, panel[:, :, 2] == y))
         panel[loc[0][0], loc[1][0], 0] = new_val
         empties = find_empty_spots(panel)
@@ -30,7 +30,7 @@ class path_find():
         print(empties)
         return panel, empties
 
-    def find_nearest(ref, empties):
+    def find_nearest(self, ref, empties):
         # find empty spot nearest reference
         dist_list = []
         for i in range(np.ma.size(empties, 0)):
@@ -38,7 +38,7 @@ class path_find():
         val, idx = min((val, idx) for (idx, val) in enumerate(dist_list))
         return empties[idx]
 
-    def find_nearest_pair(empties, right_offset):
+    def find_nearest_pair(self, empties, right_offset):
         shortest = np.array([np.array([0, 0]), np.array([0, 0]), 1000000])
         for i in empties:
             for ii in empties:
@@ -49,7 +49,7 @@ class path_find():
                         shortest = [i, ii - right_offset, d]
         return shortest
 
-    def get_address(panel, id, offset):
+    def get_address(self, panel, id, offset):
         if id < 1:
             return 0
 
@@ -65,7 +65,7 @@ class path_find():
 
 
 
-    def plan_path(drop, pick, panel, empties, mid_point, right_offset):
+    def plan_path(self, drop, pick, panel, empties, mid_point, right_offset):
 
         # error checking
         if not isinstance(drop, list):
