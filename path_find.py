@@ -134,7 +134,6 @@ class path_find():
                 orders.append(np.array([['p'], [1], add]))  # add this location to list
                 panel, empties = self.change_panel_entry(panel, add[0] + right_offset[0], add[1] + right_offset[1], 0, empties)  # update panel
 
-
         else:                   # we know that the required objects are on the board
             if drop[0]:         # if we need to drop an object from the left arm
                 if pick[0]:
@@ -151,6 +150,7 @@ class path_find():
 
             if pick[0]:         # if we need to pick up an object on the left arm
                 add = self.get_address(panel, pick[0], np.array([0, 0]))
+                print(add)
                 orders.append(np.array([['p'], [0], add]))                      # add this location to list
                 panel, empties = self.change_panel_entry(panel, add[0], add[1], 0, empties)        # update panel
 
