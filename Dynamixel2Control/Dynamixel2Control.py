@@ -25,6 +25,12 @@ class D2C(object):
         else:
             print("Failed to change the baud rate!")
 
+        # check connection to motors
+        if not self.sync_get_position():
+            print("Failed to connect to servos, 12v power missing?")
+        else:
+            print("Communicating with servos")
+
         # Set up groups for sync reads and writes
         self.groupMoving = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_MOVING, 1)
         for i in range(0, len(dxlcx.IDs)):                          # for each arm
