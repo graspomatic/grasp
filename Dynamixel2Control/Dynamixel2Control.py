@@ -371,6 +371,6 @@ class D2C(object):
         self.port_handler.closePort()
 
 
-if __name__ == "__main__":
-    dxl = D2C()
+# if __name__ == "__main__":
+#     dxl = D2C()
 
