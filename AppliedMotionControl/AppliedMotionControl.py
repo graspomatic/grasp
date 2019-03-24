@@ -2,6 +2,7 @@ import socket
 import time
 from struct import pack
 
+
 class AMC(object):
 
     def __init__(self, motor_ip="10.10.10.10", motor_port=7775, local_port=60649):
@@ -213,6 +214,7 @@ class AMC(object):
         scale = 302.66  # number of counts per mm
         return round(mm * scale)
 
-if __name__ == "__main__":
-    x = AMC()
-    print("Status = {}".format(x.get_status()))
+
+# if __name__ == "__main__":
+#     x = AMC()
+#     print("Status = {}".format(x.get_status()))
