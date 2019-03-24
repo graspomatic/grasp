@@ -16,6 +16,12 @@ dxl = Dynamixel2Control.D2C()
 import MagControl
 mags = MagControl.MAGS()
 
+import path_find
+pf = path_find.path_find()
+
+import redis
+r=redis.Redis()
+
 
 
 async def put_away(side = -1):
@@ -276,6 +282,13 @@ async def handle_request(reader, writer):
 
     print("Close the client socket")
     writer.close()
+
+
+# verify redis connection
+if r.ping():
+    print('redis connected')
+else:
+    print('redis not connected')
 
 
 loop = asyncio.get_event_loop()     # makes a new event loop if one doesnt exist
