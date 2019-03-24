@@ -1,7 +1,6 @@
 from urllib.parse import urlparse, parse_qs  # used for parsing input from TCP client into python dictionary
 import sys
 import asyncio
-import redis
 import numpy as np
 import json
 active_task = 0
@@ -20,7 +19,7 @@ import path_find
 pf = path_find.path_find()
 
 import redis
-r=redis.Redis()
+r = redis.Redis()
 
 
 

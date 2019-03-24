@@ -1,4 +1,3 @@
-# import os
 import numpy as np
 import dynamixel_sdk as dxlfx                    # Uses Dynamixel SDK library
 import dynamixel_constants as dxlcx

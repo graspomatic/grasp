@@ -1,11 +1,3 @@
-#cmd
-#cd pycharmprojects
-#cd appliedmotioncontrol
-#python -i appliedmotioncontrol.py
-#x.get_position()
-#exit()
-
-
 import socket
 import time
 from struct import pack
