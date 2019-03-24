@@ -44,6 +44,8 @@ class D2C(object):
         self.groupSetPosition = dxlfx.GroupSyncWrite(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION, 4)
 
         # check connection to motors
+        result = self.sync_get_position()
+        print(result)
         if not self.sync_get_position():
             print("Failed to connect to servos, 12v power missing?")
         else:
