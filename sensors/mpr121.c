@@ -17,8 +17,8 @@ int main()
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
-  //  mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
-  mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
+  mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
+  mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
   
   //  if(mpr121_config_an3944(dev) != UPM_SUCCESS){
   //    printf("unable to configure device\n");
@@ -30,6 +30,18 @@ int main()
 
   for (i=0; i<n || print_output; i++){
     // read nchannels (8 bits in LB and 2 bits in high byte) all at once
+    if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG,
+			  filtdata, channels_to_read*2) != UPM_SUCCESS) {
+      printf("Error while reading filtered data\n");
+    }
+    else {
+      if (print_output) {
+	int j, m;
+	printf("Dev:");
+	for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+	  printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
+	}
+
     if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG,
 			  filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
@@ -41,6 +53,7 @@ int main()
 	for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
 	  printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
 	}
+
 	printf("\n");
         usleep(500000);
       }
