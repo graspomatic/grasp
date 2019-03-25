@@ -36,11 +36,13 @@ int main()
     }
     else {
       if (print_output) {
-	int j, m;
-	printf("Dev:");
-	for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-	  printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
-	}
+        int j, m;
+        printf("Dev:");
+        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+          printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
+    	}
+      }
+    }
 
     if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG,
 			  filtdata, channels_to_read*2) != UPM_SUCCESS) {
@@ -48,11 +50,13 @@ int main()
     }
     else {
       if (print_output) {
-	int j, m;
-	printf("Dev2:");
-	for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-	  printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
-	}
+        int j, m;
+        printf("Dev2:");
+        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+          printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
+        }
+      }
+    }
 
 	printf("\n");
         usleep(500000);
