@@ -45,10 +45,8 @@ class D2C(object):
 
         # check connection to motors
         result = self.sync_get_position()
-        print(result)
         if sum(result):
             print("Communicating with servos")
-
         else:
             print("Failed to connect to servos, 12v power missing?")
 

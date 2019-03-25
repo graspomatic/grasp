@@ -19,7 +19,7 @@ import path_find
 pf = path_find.path_find()
 
 import redis
-r = redis.Redis()
+r = redis.Redis(host='localhost', port=6379, db=0)
 
 
 
