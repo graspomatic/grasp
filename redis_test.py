@@ -4,10 +4,10 @@ import time
 r = redis.Redis()
 
 
-
+print('starting')
 start = time.time()
 
-for i in range(1000):
+for i in range(100):
     r.set('foo', 'bar')
 
 end = time.time()
