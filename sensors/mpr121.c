@@ -58,12 +58,12 @@ int main()
       }
     }
 
+   if (print_output) {
 	printf("\n");
         usleep(500000);
-      }
-    }	
+   }
   }
-  
+
   mpr121_close(dev2);
   
   return 0;
