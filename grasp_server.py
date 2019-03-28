@@ -222,8 +222,11 @@ async def initialize_dxl():
 
     print('dxl motors initialized')
 
-async def magnets(left_status = -1, right_status = -1):
+async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
+
+    left_status = int(left_status[0])
+    right_status = int(right_status[0])
 
     print('in magnets')
     print(left_status)
