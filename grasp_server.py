@@ -163,6 +163,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     left_angle = int(left_angle[0])
     right_angle = int(right_angle[0])
 
+    #arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
         arms = 'left'
     elif left_id == -1 and right_id > -1:
@@ -221,6 +222,19 @@ async def initialize_dxl():
 
     print('dxl motors initialized')
 
+async def magnets(left_status = -1, right_status = -1):
+    # left_status = 0 means turn off that magnet, 1 turn on
+
+    if left_status == 0:
+        await loop.create_task(mags.deenergize(0))
+    elif left_status == 1:
+        await loop.create_task(mags.energize(0))
+
+    if right_status == 0:
+        await loop.create_task(mags.deenergize(1))
+    elif right_status == 1:
+        await loop.create_task(mags.energize(1))
+
 async def abort():
     global active_task
     print('canceling')
@@ -243,6 +257,7 @@ fx_list = {
     'enable_xy': enable_xy,
     'disable_xy': disable_xy,
     'initialize_dxl': initialize_dxl,
+    'magnets': magnets,
     'abort': abort
 }
 
