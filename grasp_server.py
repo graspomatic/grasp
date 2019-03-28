@@ -227,8 +227,10 @@ async def magnets(left_status = -1, right_status = -1):
 
     if left_status == 0:
         await loop.create_task(mags.deenergize(0))
+        print('left should be off')
     elif left_status == 1:
         await loop.create_task(mags.energize(0))
+        print('left should be on')
 
     if right_status == 0:
         await loop.create_task(mags.deenergize(1))
