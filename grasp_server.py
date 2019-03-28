@@ -225,6 +225,7 @@ async def initialize_dxl():
 async def magnets(left_status = -1, right_status = -1):
     # left_status = 0 means turn off that magnet, 1 turn on
 
+    print('in magnets')
     if left_status == 0:
         await loop.create_task(mags.deenergize(0))
         print('left should be off')
