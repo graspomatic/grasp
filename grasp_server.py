@@ -148,6 +148,8 @@ async def redis_interact(req, vari, val = 0):
     elif req == 'set':
         r.set(vari, json.dumps(val.tolist()))
 
+    time.sleep(4)
+
 
 
 
