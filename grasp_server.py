@@ -243,7 +243,7 @@ async def change_address(row, col, id):
 
     add = np.where(panel[:,:,2] == id)
 
-    for i in range len(a[0]):
+    for i in range(len(a[0])):
         print i
 
 
