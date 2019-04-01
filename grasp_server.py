@@ -310,7 +310,7 @@ def init_panel():
     d = 3   # depth (should be 3 for x, y, and ID
 
     panel = np.zeros((h, w, d))
-    panelJSON = panel.tolist()
+    panelJSON = json.dumps(panel.tolist())
     r.set('panel', panelJSON)
 
 
