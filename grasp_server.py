@@ -148,7 +148,7 @@ async def redis_interact(req, vari, val = 0):
     elif req == 'set':
         r.set(vari, json.dumps(val.tolist()))
 
-    time.sleep(4)
+    await asyncio.sleep(10)
 
 
 
@@ -326,7 +326,7 @@ async def handle_request(reader, writer):
                 else:
                     # loop = asyncio.new_event_loop()
                     # asyncio.set_event_loop(loop)
-                    active_task = asyncio.create_task(fx_list[fx](**req))    # call function with requested arguments
+                    active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
                     result = 'accepted'
         else:
             result = 'not_a_function'
