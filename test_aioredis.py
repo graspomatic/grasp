@@ -6,9 +6,11 @@ async def main():
     # Redis client bound to single connection (no auto reconnection).
     redis = await aioredis.create_redis(
         'redis://localhost')
+    await redis.set('my-key', 'v')
+    await redis.set('my-key', 'va')
+    await redis.set('my-key', 'val')
+    await redis.set('my-key', 'valu')
     await redis.set('my-key', 'value')
-    val = await redis.get('my-key')
-    print(val)
 
     # gracefully closing underlying connection
     redis.close()
