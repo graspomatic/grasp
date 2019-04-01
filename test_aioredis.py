@@ -18,6 +18,7 @@ async def main():
 
 
 async def main2():
+    print('main22222222')
     # Redis client bound to single connection (no auto reconnection).
     redis = await aioredis.create_redis(
         'redis://localhost')
