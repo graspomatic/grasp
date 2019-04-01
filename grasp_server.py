@@ -252,7 +252,7 @@ async def change_address(row, col, id):
     for i in range(len(add[0])):
         print(add[0][i])
         print(add[1][i])
-        panel(add[0][i],add[1][i],2) = 0
+        panel[add[0][i], add[1][i], 2] = 0
 
     panel[row, col, 2] = id
 
