@@ -3,7 +3,8 @@ import sys
 import asyncio
 import numpy as np
 import json
-import time
+import aioredis
+
 active_task = 0
 
 import AppliedMotionControl
@@ -19,8 +20,10 @@ mags = MagControl.MAGS()
 import path_find
 pf = path_find.path_find()
 
-import redis
-r = redis.Redis(host='localhost', port=6379, db=0)
+# import redis
+# r = redis.Redis(host='localhost', port=6379, db=0)
+import aioredis
+redis = aioredis.create_redis('redis://localhost')
 
 
 
