@@ -256,7 +256,7 @@ async def change_address(row, col, shapeid):
     shapeid = int(shapeid[0])
 
     # get the panel values from redis
-    panel = redis_interact('get', 'panel')
+    loop.create_task(redis_interact('get', 'panel'))
     # panel = np.array(json.loads(r.get('panel')))
 
     # find if object is already on panel and remove it if so
