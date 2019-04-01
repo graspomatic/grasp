@@ -244,15 +244,11 @@ async def change_address(row, col, id):
     id = int(id[0])
 
     panel = np.array(json.loads(r.get('panel')))
-    print(panel)
-
-
-
     add = np.where(panel[:,:,2] == id)
-    print(add)
 
     for i in range(len(add[0])):
-        print(i)
+        print(add[i][0])
+        print(add[i][0])
 
 
 async def abort():
