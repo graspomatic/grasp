@@ -140,6 +140,16 @@ async def wait_for_dxl():
 
     return 1
 
+async def redis_interact(req, vari, val = 0):
+    if req == 'get':
+        a = np.array(json.loads(r.get(vari)))
+        return a
+
+    elif req == 'set':
+        r.set(vari, json.dumps(val.tolist()))
+
+
+
 
 
 
@@ -189,11 +199,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         await retrieve(side=1, objid=right_id)
 
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
-
-
-
-
-
 
 
 async def put_away_all():
@@ -251,7 +256,8 @@ async def change_address(row, col, shapeid):
     shapeid = int(shapeid[0])
 
     # get the panel values from redis
-    panel = np.array(json.loads(r.get('panel')))
+    panel = redis_interact('get', 'panel')
+    # panel = np.array(json.loads(r.get('panel')))
 
     # find if object is already on panel and remove it if so
     add = np.where(panel[:, :, 2] == shapeid)
@@ -262,9 +268,9 @@ async def change_address(row, col, shapeid):
     panel[row, col, 2] = shapeid
 
     # update redis
-    r.set('panel', json.dumps(panel.tolist()))
+    redis_interact('set', 'panel', panel)
+    # r.set('panel', json.dumps(panel.tolist()))
 
-    await time.sleep(10)
 
 async def abort():
     global active_task
