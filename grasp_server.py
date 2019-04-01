@@ -244,12 +244,17 @@ async def change_address(row, col, id):
     id = int(id[0])
 
     panel = np.array(json.loads(r.get('panel')))
+
+    # find if object is already on panel and remove it if so
     add = np.where(panel[:,:,2] == id)
     print(add)
 
     for i in range(len(add[0])):
         print(add[0][i])
         print(add[1][i])
+        panel(add[0][i],add[1][i],2) = 0
+
+    panel[row, col, 2] = id
 
 
 async def abort():
