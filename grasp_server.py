@@ -326,7 +326,7 @@ async def handle_request(reader, writer):
                 else:
                     # loop = asyncio.new_event_loop()
                     # asyncio.set_event_loop(loop)
-                    active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
+                    active_task = asyncio.create_task(fx_list[fx](**req))    # call function with requested arguments
                     result = 'accepted'
         else:
             result = 'not_a_function'
