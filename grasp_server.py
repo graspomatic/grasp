@@ -310,7 +310,8 @@ def init_panel():
     d = 3   # depth (should be 3 for x, y, and ID
 
     panel = np.zeros((h, w, d))
-    r.set('panel', panel)
+    panelJSON = panel.tolist()
+    r.set('panel', panelJSON)
 
 
 # verify redis connection
