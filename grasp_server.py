@@ -228,15 +228,10 @@ async def magnets(left_status = [-1], right_status = [-1]):
     left_status = int(left_status[0])
     right_status = int(right_status[0])
 
-    print('in magnets')
-    print(left_status)
-
     if left_status == 0:
         await loop.create_task(mags.deenergize(0))
-        print('left should be off')
     elif left_status == 1:
         await loop.create_task(mags.energize(0))
-        print('left should be on')
 
     if right_status == 0:
         await loop.create_task(mags.deenergize(1))
@@ -251,6 +246,8 @@ async def abort():
         active_task.cancel()
     except:
         print('we dont have anything to cancel!')
+
+
 
 
 
@@ -306,8 +303,20 @@ async def handle_request(reader, writer):
     writer.close()
 
 
+# check redis for panel variable and initialize it if it doesn't exist
+def init_panel():
+    w = 2   # columns in panel
+    h = 1   # rows
+    d = 3   # depth (should be 3 for x, y, and ID
+
+    panel = np.zeros((h-1, w-1, d-1))
+    r.set('panel', panel)
+
+
 # verify redis connection
 if r.ping():
+    if not r.exists('panel'):
+        init_panel()
     print('redis connected')
 else:
     print('redis not connected')
