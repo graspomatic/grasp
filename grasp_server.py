@@ -238,25 +238,25 @@ async def magnets(left_status = [-1], right_status = [-1]):
     elif right_status == 1:
         await loop.create_task(mags.energize(1))
 
-async def change_address(row, col, id):
+async def change_address(row, col, shapeid):
+    # changes the address of a specified shape on the panel
     row = int(row[0])
     col = int(col[0])
-    id = int(id[0])
+    id = int(shapeid[0])
 
+    # get the panel values from redis
     panel = np.array(json.loads(r.get('panel')))
 
     # find if object is already on panel and remove it if so
-    add = np.where(panel[:,:,2] == id)
-    print(add)
-
+    add = np.where(panel[:, :, 2] == id)
     for i in range(len(add[0])):
-        print(add[0][i])
-        print(add[1][i])
         panel[add[0][i], add[1][i], 2] = 0
 
+    # put shape at new address
     panel[row, col, 2] = id
 
-    r.set('panel', json.dumps(panel.tolist()))
+    # update redis
+    loop.create_task(r.set('panel', json.dumps(panel.tolist())))
 
 
 async def abort():
