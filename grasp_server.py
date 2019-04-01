@@ -3,6 +3,7 @@ import sys
 import asyncio
 import numpy as np
 import json
+import time
 active_task = 0
 
 import AppliedMotionControl
@@ -222,6 +223,7 @@ async def initialize_dxl():
 
     print('dxl motors initialized')
 
+
 async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
 
@@ -240,6 +242,7 @@ async def magnets(left_status = [-1], right_status = [-1]):
         await loop.create_task(mags.deenergize(1))
     elif right_status == 1:
         await loop.create_task(mags.energize(1))
+
 
 async def change_address(row, col, shapeid):
     # changes the address of a specified shape on the panel
@@ -260,6 +263,10 @@ async def change_address(row, col, shapeid):
 
     # update redis
     r.set('panel', json.dumps(panel.tolist()))
+
+    time.sleep(10)
+
+
 
 
 async def abort():
