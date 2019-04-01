@@ -140,15 +140,15 @@ async def wait_for_dxl():
 
     return 1
 
-async def redis_interact(req, vari, val = 0):
-    if req == 'get':
-        a = np.array(json.loads(r.get(vari)))
-        return a
-
-    elif req == 'set':
-        r.set(vari, json.dumps(val.tolist()))
-
-    await asyncio.sleep(10)
+# async def redis_interact(req, vari, val = 0):
+#     if req == 'get':
+#         a = np.array(json.loads(r.get(vari)))
+#         return a
+#
+#     elif req == 'set':
+#         r.set(vari, json.dumps(val.tolist()))
+#
+#     await asyncio.sleep(10)
 
 
 
@@ -270,8 +270,10 @@ async def change_address(row, col, shapeid):
     panel[row, col, 2] = shapeid
 
     # update redis
-    loop.create_task(redis_interact('set', 'panel', panel))
+    # loop.create_task(redis_interact('set', 'panel', panel))
     # r.set('panel', json.dumps(panel.tolist()))
+
+    await r.set('panel', json.dumps(panel.tolist()))
 
 
 async def abort():
