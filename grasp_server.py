@@ -256,8 +256,8 @@ async def change_address(row, col, shapeid):
     shapeid = int(shapeid[0])
 
     # get the panel values from redis
-    loop.create_task(redis_interact('get', 'panel'))
-    # panel = np.array(json.loads(r.get('panel')))
+    # loop.create_task(redis_interact('get', 'panel'))
+    panel = np.array(json.loads(r.get('panel')))
 
     # find if object is already on panel and remove it if so
     add = np.where(panel[:, :, 2] == shapeid)
@@ -268,7 +268,7 @@ async def change_address(row, col, shapeid):
     panel[row, col, 2] = shapeid
 
     # update redis
-    redis_interact('set', 'panel', panel)
+    loop.create_task(redis_interact('set', 'panel', panel))
     # r.set('panel', json.dumps(panel.tolist()))
 
 
