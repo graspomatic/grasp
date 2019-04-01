@@ -238,6 +238,15 @@ async def magnets(left_status = [-1], right_status = [-1]):
     elif right_status == 1:
         await loop.create_task(mags.energize(1))
 
+async def change_address(row, col, id):
+    panel = np.array(json.loads(r.get('panel')))
+
+    add = np.where(panel[:,:,2] == id)
+
+    for i in range len(a[0]):
+        print i
+
+
 async def abort():
     global active_task
     print('canceling')
@@ -263,6 +272,7 @@ fx_list = {
     'disable_xy': disable_xy,
     'initialize_dxl': initialize_dxl,
     'magnets': magnets,
+    'change_address': change_address,
     'abort': abort
 }
 
