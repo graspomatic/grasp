@@ -8,3 +8,5 @@ echo "$HOME/grasp/controller" >> "$SITEDIR/grasp.pth"
 cp startup.sh /etc/init.d/startup.sh
 chmod +x /etc/init.d/startup.sh
 update-rc.d startup.sh defaults
+
+cp redis.conf /etc/redis/redis.conf
