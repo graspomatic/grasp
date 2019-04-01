@@ -309,7 +309,7 @@ def init_panel():
     h = 1   # rows
     d = 3   # depth (should be 3 for x, y, and ID
 
-    panel = np.zeros((h-1, w-1, d-1))
+    panel = np.zeros((h, w, d))
     r.set('panel', panel)
 
 
