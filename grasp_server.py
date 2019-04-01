@@ -264,10 +264,7 @@ async def change_address(row, col, shapeid):
     # update redis
     r.set('panel', json.dumps(panel.tolist()))
 
-    time.sleep(10)
-
-
-
+    await time.sleep(10)
 
 async def abort():
     global active_task
