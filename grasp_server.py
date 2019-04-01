@@ -256,6 +256,8 @@ async def change_address(row, col, id):
 
     panel[row, col, 2] = id
 
+    r.set('panel', json.dumps(panel.tolist()))
+
 
 async def abort():
     global active_task
