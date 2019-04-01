@@ -239,9 +239,9 @@ async def magnets(left_status = [-1], right_status = [-1]):
         await loop.create_task(mags.energize(1))
 
 async def change_address(row, col, id):
-    print(row)
-    print(col)
-    print(id)
+    row = int(row[0])
+    col = int(col[0])
+    id = int(id[0])
 
     panel = np.array(json.loads(r.get('panel')))
     print(panel)
