@@ -4,6 +4,7 @@ import asyncio
 import numpy as np
 import json
 import aioredis
+import time
 
 active_task = 0
 
@@ -256,7 +257,18 @@ async def magnets(left_status = [-1], right_status = [-1]):
 
 async def change_address(row, col, shapeid):
     # start connecting to redis
-    redis = await aioredis.create_redis('redis://localhost', loop=loop)
+
+    start = time.time()
+
+    for i in range(1000):
+
+        redis = await aioredis.create_redis('redis://localhost', loop=loop)
+        redis.close()
+        await redis.wait_closed()
+
+    end=time.time()
+    print(end-start)
+    return
 
 
 
