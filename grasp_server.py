@@ -267,8 +267,6 @@ async def change_address(row, col, shapeid):
     panel = await redis.get('panel')
     panel = np.array(json.loads(panel))
 
-    print(panel)
-
     # find if object is already on panel and remove it if so
     add = np.where(panel[:, :, 2] == shapeid)
     for i in range(len(add[0])):
@@ -320,9 +318,11 @@ async def handle_request(reader, writer):
 
     result = 'init'
 
-    redis = await aioredis.create_redis('redis://localhost', loop=loop)
+    # redis = await aioredis.create_redis('redis://localhost', loop=loop)
+    redis = aioredis.create_redis('redis://localhost', loop=loop)
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
+    await redis
     global active_task
 
     try:
