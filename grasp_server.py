@@ -326,7 +326,7 @@ async def handle_request(reader, writer):
 
     result = 'init'
 
-    redis = await aioredis.create_redis('redis://localhost')
+    redis = await aioredis.create_redis('redis://localhost', loop=loop)
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
     global active_task
@@ -343,7 +343,7 @@ async def handle_request(reader, writer):
                 loop.create_task(abort())
                 result = 'aborted'
             else:
-                if len(asyncio.all_tasks(loop)) > 1:  # if we're already doing something
+                if len(asyncio.all_tasks(loop)) > 2:  # if we're already doing something
                     result = 'busy'
                 else:
                     # loop = asyncio.new_event_loop()
