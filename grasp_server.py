@@ -268,6 +268,8 @@ async def change_address(row, col, shapeid):
     # print(end-start)
     # return
 
+    global redis
+
 
 
     # changes the address of a specified shape on the panel
@@ -328,7 +330,11 @@ fx_list = {
 }
 
 async def handle_request(reader, writer):
+    global redis
+
     result = 'init'
+
+    redis = await aioredis.create_redis('redis://localhost', loop=loop)
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
     global active_task
@@ -365,6 +371,9 @@ async def handle_request(reader, writer):
     print("Close the client socket")
     writer.close()
 
+    redis.close()
+    await redis.wait_closed()
+
 
 # check redis for panel variable and initialize it if it doesn't exist
 def init_panel():
@@ -386,16 +395,6 @@ def init_panel():
     # to retrieve:
     # np.array(json.loads(r.get('panel')))
 
-async def connect_to_redis():
-    global redis
-    redis = await aioredis.create_redis('redis://localhost', loop=loop)
-
-
-async def close_redis():
-    redis.close()
-    await redis.wait_closed()
-
-
 
 
 # verify redis connection
@@ -409,7 +408,6 @@ async def close_redis():
 
 loop = asyncio.get_event_loop()     # makes a new event loop if one doesnt exist
 coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
-loop.create_task(connect_to_redis())
 server = loop.run_until_complete(coro)
 
 # Serve requests until Ctrl+C is pressed
