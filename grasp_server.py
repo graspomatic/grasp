@@ -270,6 +270,8 @@ async def change_address(row, col, shapeid):
 
     global redis
 
+    print(redis)
+
 
 
     # changes the address of a specified shape on the panel
@@ -282,6 +284,8 @@ async def change_address(row, col, shapeid):
     # panel = np.array(json.loads(r.get('panel')))
     panel = await redis.get('panel')
     panel = np.array(json.loads(panel))
+
+    print(panel)
 
     # find if object is already on panel and remove it if so
     add = np.where(panel[:, :, 2] == shapeid)
