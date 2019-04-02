@@ -268,6 +268,8 @@ async def change_address(row, col, shapeid):
     # print(end-start)
     # return
 
+    print('hell')
+
     global redis
 
     print(redis)
