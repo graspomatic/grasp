@@ -318,11 +318,9 @@ async def handle_request(reader, writer):
 
     result = 'init'
 
-    # redis = await aioredis.create_redis('redis://localhost', loop=loop)
-    redis = aioredis.create_redis('redis://localhost', loop=loop)
+    redis = await aioredis.create_redis('redis://localhost', loop=loop)
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
-    await redis
     global active_task
 
     try:
