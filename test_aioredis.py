@@ -4,8 +4,8 @@ import aioredis
 
 async def main():
     # Redis client bound to single connection (no auto reconnection).
-    redis = await aioredis.create_redis(
-        'redis://localhost')
+    # redis = await aioredis.create_redis(
+    #     'redis://localhost')
     await redis.set('my-key', 'v')
     await redis.set('my-key', 'va')
     await redis.set('my-key', 'val')
@@ -13,15 +13,14 @@ async def main():
     await redis.set('my-key', 'value')
 
     # gracefully closing underlying connection
-    redis.close()
-    await redis.wait_closed()
+    # redis.close()
+    # await redis.wait_closed()
 
 
 async def main2():
     print('main22222222')
     # Redis client bound to single connection (no auto reconnection).
-    redis = await aioredis.create_redis(
-        'redis://localhost')
+
     # await redis.set('my-key', 'vale')
     val = await redis.get('my-key')
     print(val)
@@ -44,10 +43,12 @@ async def main2():
 
 
     # gracefully closing underlying connection
-    redis.close()
-    await redis.wait_closed()
+    # redis.close()
+    # await redis.wait_closed()
 
 if __name__ == '__main__':
+    redis = await
+    aioredis.create_redis('redis://localhost')
     asyncio.get_event_loop().run_until_complete(main())
     asyncio.get_event_loop().run_until_complete(main2())
     # asyncio.get_event_loop().create_task(main())
