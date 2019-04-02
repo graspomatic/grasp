@@ -23,7 +23,7 @@ pf = path_find.path_find()
 # import redis
 # r = redis.Redis(host='localhost', port=6379, db=0)
 import aioredis
-r = aioredis.create_redis('redis://localhost')
+# r = aioredis.create_redis('redis://localhost')
 
 
 
@@ -255,6 +255,11 @@ async def magnets(left_status = [-1], right_status = [-1]):
 
 
 async def change_address(row, col, shapeid):
+    # start connecting to redis
+    redis = await aioredis.create_redis('redis://localhost', loop=loop)
+
+
+
     # changes the address of a specified shape on the panel
     row = int(row[0])
     col = int(col[0])
@@ -262,7 +267,9 @@ async def change_address(row, col, shapeid):
 
     # get the panel values from redis
     # loop.create_task(redis_interact('get', 'panel'))
-    panel = np.array(json.loads(r.get('panel')))
+    # panel = np.array(json.loads(r.get('panel')))
+    panel = await redis.get('my-key')
+    panel = np.array(json.loads(panel))
 
     # find if object is already on panel and remove it if so
     add = np.where(panel[:, :, 2] == shapeid)
@@ -276,7 +283,7 @@ async def change_address(row, col, shapeid):
     # loop.create_task(redis_interact('set', 'panel', panel))
     # r.set('panel', json.dumps(panel.tolist()))
 
-    await r.set('panel', json.dumps(panel.tolist()))
+    await redis.set('panel', json.dumps(panel.tolist()))
 
 
 async def abort():
@@ -369,12 +376,12 @@ def init_panel():
 
 
 # verify redis connection
-if r.ping():
-    if not r.exists('panel'):
-        init_panel()
-    print('redis connected')
-else:
-    print('redis not connected')
+# if r.ping():
+#     if not r.exists('panel'):
+#         init_panel()
+#     print('redis connected')
+# else:
+#     print('redis not connected')
 
 
 loop = asyncio.get_event_loop()     # makes a new event loop if one doesnt exist

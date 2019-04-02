@@ -47,7 +47,7 @@ async def main2():
     # await redis.wait_closed()
 
 if __name__ == '__main__':
-    redis = await aioredis.create_redis('redis://localhost')
+    redis = aioredis.create_redis('redis://localhost')
 
     asyncio.get_event_loop().run_until_complete(main())
     asyncio.get_event_loop().run_until_complete(main2())
