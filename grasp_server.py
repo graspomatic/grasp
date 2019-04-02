@@ -254,13 +254,7 @@ async def magnets(left_status = [-1], right_status = [-1]):
 
 
 async def change_address(row, col, shapeid):
-    print('hell')
-
     global redis
-
-    print(redis)
-
-
 
     # changes the address of a specified shape on the panel
     row = int(row[0])
@@ -288,8 +282,8 @@ async def change_address(row, col, shapeid):
     # r.set('panel', json.dumps(panel.tolist()))
 
     await redis.set('panel', json.dumps(panel.tolist()))
-    # redis.close()
-    # await redis.wait_closed()
+    redis.close()
+    await redis.wait_closed()
 
 
 async def abort():
@@ -363,8 +357,7 @@ async def handle_request(reader, writer):
     print("Close the client socket")
     writer.close()
 
-    redis.close()
-    await redis.wait_closed()
+
 
 
 # check redis for panel variable and initialize it if it doesn't exist
