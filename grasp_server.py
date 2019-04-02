@@ -4,6 +4,7 @@ import asyncio
 import numpy as np
 import json
 import aioredis
+import atexit
 import time
 
 active_task = 0
@@ -255,17 +256,17 @@ async def magnets(left_status = [-1], right_status = [-1]):
 async def change_address(row, col, shapeid):
     # start connecting to redis
 
-    start = time.time()
-
-    for i in range(1000):
-
-        redis = await aioredis.create_redis('redis://localhost', loop=loop)
-        redis.close()
-        await redis.wait_closed()
-
-    end=time.time()
-    print(end-start)
-    return
+    # start = time.time()
+    #
+    # for i in range(1000):
+    #
+    #     redis = await aioredis.create_redis('redis://localhost', loop=loop)
+    #     redis.close()
+    #     await redis.wait_closed()
+    #
+    # end=time.time()
+    # print(end-start)
+    # return
 
 
 
@@ -293,8 +294,8 @@ async def change_address(row, col, shapeid):
     # r.set('panel', json.dumps(panel.tolist()))
 
     await redis.set('panel', json.dumps(panel.tolist()))
-    redis.close()
-    await redis.wait_closed()
+    # redis.close()
+    # await redis.wait_closed()
 
 
 async def abort():
@@ -385,6 +386,17 @@ def init_panel():
     # to retrieve:
     # np.array(json.loads(r.get('panel')))
 
+async def connect_to_redis():
+    global redis
+    redis = await aioredis.create_redis('redis://localhost', loop=loop)
+
+
+async def close_redis():
+    redis.close()
+    await redis.wait_closed()
+
+
+
 
 # verify redis connection
 # if r.ping():
@@ -397,6 +409,7 @@ def init_panel():
 
 loop = asyncio.get_event_loop()     # makes a new event loop if one doesnt exist
 coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
+loop.create_task(connect_to_redis())
 server = loop.run_until_complete(coro)
 
 # Serve requests until Ctrl+C is pressed
