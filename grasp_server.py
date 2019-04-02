@@ -294,6 +294,14 @@ async def abort():
         print('we dont have anything to cancel!')
 
 
+async def connect_redis():
+    global redis
+    redis = await aioredis.create_redis('redis://localhost', loop=loop)
+
+    print(redis.get('panel'))
+
+
+
 
 
 
@@ -314,11 +322,11 @@ fx_list = {
 }
 
 async def handle_request(reader, writer):
-    global redis
+    # global redis
 
     result = 'init'
 
-    redis = await aioredis.create_redis('redis://localhost', loop=loop)
+    # redis = await aioredis.create_redis('redis://localhost', loop=loop)
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
     global active_task
@@ -390,6 +398,7 @@ def init_panel():
 
 
 loop = asyncio.get_event_loop()     # makes a new event loop if one doesnt exist
+loop.create_task(connect_redis())
 coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
 server = loop.run_until_complete(coro)
 
