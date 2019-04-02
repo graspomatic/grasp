@@ -238,9 +238,6 @@ async def initialize_dxl():
 async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
 
-    p=r.get('panel')
-    print(p)
-
     left_status = int(left_status[0])
     right_status = int(right_status[0])
 
