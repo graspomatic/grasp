@@ -284,6 +284,8 @@ async def change_address(row, col, shapeid):
     # r.set('panel', json.dumps(panel.tolist()))
 
     await redis.set('panel', json.dumps(panel.tolist()))
+    redis.close()
+    await redis.wait_closed()
 
 
 async def abort():
