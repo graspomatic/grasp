@@ -236,6 +236,8 @@ async def initialize_dxl():
     print('dxl motors initialized')
 
 async def find_bounds(axis = 'a', direction = -1):
+    axis = str(axis[0])
+    direction = int(direction[0])
     print('finding bounds for axis ' + axis + ' in direction ' + str(direction))
 
     if axis != 'x' and axis != 'y':
