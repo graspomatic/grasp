@@ -158,6 +158,7 @@ class AMC(object):
         self.wait_for_stop()                # wait until it stops
         self.move_distance_mm(buf, vel=0.2)    # move away from bound 1000 units
         self.wait_for_stop()                # wait until it stops
+        self.read_udp_all()
         pos = self.get_position()           # get that position
         print('found position as:')
         print(pos)
