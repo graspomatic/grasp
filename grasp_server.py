@@ -208,10 +208,12 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
 
 
-async def put_away_all():
-    print('Return both objects')
-    await put_away(0)
-    await put_away(1)
+async def put_away(side=[-1]):
+    side = int(side[0])
+    if side == 0 or side == 2:
+        await put_away(0)
+    if side == 1 or side == 2:
+        await put_away(1)
 
 async def enable_arms():
     print('enabling arm motors')
@@ -353,7 +355,7 @@ async def abort():
 
 fx_list = {
     'pick_and_place': pick_and_place,
-    'put_away_all': put_away_all,
+    'put_away': put_away,
     'enable_arms': enable_arms,
     'disable_arms': disable_arms,
     'enable_xy': enable_xy,
