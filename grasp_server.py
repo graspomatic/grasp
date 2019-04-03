@@ -298,14 +298,6 @@ async def connect_redis():
     global redis
     redis = await aioredis.create_redis('redis://localhost', loop=loop)
 
-    print(redis.get('panel'))
-
-
-
-
-
-
-
 
 
 fx_list = {
@@ -322,11 +314,7 @@ fx_list = {
 }
 
 async def handle_request(reader, writer):
-    # global redis
-
     result = 'init'
-
-    # redis = await aioredis.create_redis('redis://localhost', loop=loop)
     data = await reader.read(100)                   # wait for data to become available
     message = data.decode()                         # decode it as utf-8 i think
     global active_task
@@ -346,8 +334,6 @@ async def handle_request(reader, writer):
                 if len(asyncio.all_tasks(loop)) > 2:  # if we're already doing something
                     result = 'busy'
                 else:
-                    # loop = asyncio.new_event_loop()
-                    # asyncio.set_event_loop(loop)
                     active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
                     result = 'accepted'
         else:
