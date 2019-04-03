@@ -253,7 +253,23 @@ async def find_bounds(axis = ['a'], direction = [-1]):
     else:
         await y.find_bound(direction)
 
+async def move_distance_mm(axis = ['a'], distance = [0]):
+    axis = str(axis[0])
+    distance = int(distance[0])
+    print('moving ' + axis + ' distance ' + str(distance))
 
+    if axis != 'x' and axis != 'y':
+        print('axis must be "x" or "y"')
+        return
+
+    if distance == 0:
+        print('distance must be non-zero')
+        return
+
+    if axis == 'x':
+        await x.move_distance_mm(distance)
+    else:
+        await y.move_distance_mm(distance)
 
 
 
@@ -319,6 +335,7 @@ fx_list = {
     'disable_xy': disable_xy,
     'initialize_dxl': initialize_dxl,
     'find_bounds': find_bounds,
+    'move_distance_mm': move_distance_mm,
     'magnets': magnets,
     'change_address': change_address,
     'abort': abort
