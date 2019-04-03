@@ -249,9 +249,9 @@ async def find_bounds(axis = ['a'], direction = [-1]):
         return
 
     if axis == 'x':
-        x.find_bound(direction)
+        await x.find_bound(direction)
     else:
-        y.find_bound(direction)
+        await y.find_bound(direction)
 
 
 
