@@ -89,7 +89,6 @@ class AMC(object):
 
     def move_location(self, location, accel=25.0, vel=3.0):
         # move to a location based on distance from CW bound in mm
-        decel = accel
 
         #first make sure that CW and CCW bounds have been set
         if not self.check_bounds():
@@ -113,8 +112,8 @@ class AMC(object):
             return
 
         cmds = ['AC' + str(accel),  # units rev/s/s
-                'DE' + str(decel),  # units rev/s/s
-                'VE' + str(vel),  # units rev/s
+                'DE' + str(accel),  # units rev/s/s
+                'VE' + str(vel),    # units rev/s
                 'FP' + str(target)]
 
         self.send_command(cmds)
@@ -147,6 +146,9 @@ class AMC(object):
             dval = "HO-200"
             limit = "LM"
             buf = self.bound_buff
+        else:
+            print('direction must be 0 or 1')
+            return
 
         # parameters for finding cw or ccw bound
         cmds = ['HA1100', 'HL1100', 'HA2100', 'HL2100', 'HA3100',
