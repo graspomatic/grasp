@@ -401,7 +401,7 @@ except KeyboardInterrupt:
     pass
 
 # Close the server
-loop.create_task(disconnect_redis())
+loop.run_until_complete(disconnect_redis())
 server.close()
 loop.run_until_complete(server.wait_closed())
 loop.close()
