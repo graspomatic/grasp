@@ -271,7 +271,32 @@ async def move_distance_mm(axis = ['a'], distance = [0]):
     else:
         await y.move_distance_mm(distance)
 
+async def move_to_location(axis = ['a'], location = [-1], accel = [25], vel = [3]):
+    axis = str(axis[0])
+    location = float(location[0])
+    accel = float(accel[0])
+    vel = float(vel[0])
 
+    if axis != 'x' and axis != 'y':
+        print('axis must be "x" or "y"')
+        return
+
+    if location < 0:
+        print('distance must be positive int or float')
+        return
+
+    if accel < 0:
+        print('accel must be positive int or float')
+        return
+
+    if vel < 0:
+        print('vel must be positive int or float')
+        return
+
+    if axis == 'x':
+        await x.move_location(location=location, accel=accel, vel=vel)
+    else:
+        await y.move_location(location=location, accel=accel, vel=vel)
 
 async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
@@ -336,6 +361,7 @@ fx_list = {
     'initialize_dxl': initialize_dxl,
     'find_bounds': find_bounds,
     'move_distance_mm': move_distance_mm,
+    'move_to_location': move_to_location,
     'magnets': magnets,
     'change_address': change_address,
     'abort': abort

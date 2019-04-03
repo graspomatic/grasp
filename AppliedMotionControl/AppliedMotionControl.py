@@ -87,8 +87,9 @@ class AMC(object):
         self.send_command(cmds)
         self.wait_for_stop()
 
-    def move_location(self, location, accel=25.0, decel=25.0, vel=3.0):
+    def move_location(self, location, accel=25.0, vel=3.0):
         # move to a location based on distance from CW bound in mm
+        decel = accel
 
         #first make sure that CW and CCW bounds have been set
         if not self.check_bounds():
