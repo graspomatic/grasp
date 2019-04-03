@@ -255,7 +255,7 @@ async def find_bounds(axis = ['a'], direction = [-1]):
 
 async def move_distance_mm(axis = ['a'], distance = [0]):
     axis = str(axis[0])
-    distance = int(distance[0])
+    distance = float(distance[0])
     print('moving ' + axis + ' distance ' + str(distance))
 
     if axis != 'x' and axis != 'y':
