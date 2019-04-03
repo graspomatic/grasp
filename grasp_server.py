@@ -210,9 +210,12 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
 async def put_away(side=[-1]):
     side = int(side[0])
+    print(side)
     if side == 0 or side == 2:
+        print('put away left')
         await put_away(0)
     if side == 1 or side == 2:
+        print('put away right')
         await put_away(1)
 
 async def enable_arms():
