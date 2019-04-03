@@ -359,7 +359,7 @@ async def handle_request(reader, writer):
                 loop.create_task(abort())
                 result = 'aborted'
             else:
-                if len(asyncio.all_tasks(loop)) > 1:  # if we're already doing something
+                if len(asyncio.all_tasks(loop)) > 2:  # if we're already doing something
                     result = 'busy'
                 else:
                     active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
