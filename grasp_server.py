@@ -248,7 +248,7 @@ async def find_bounds(axis = ['a'], direction = [-1]):
         print('direction must be 0 (ccw) or 1 (cw)')
         return
 
-    x.find_bound(direction)
+    axis.find_bound(direction)
 
 
 
