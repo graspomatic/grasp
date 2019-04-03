@@ -235,6 +235,11 @@ async def initialize_dxl():
 
     print('dxl motors initialized')
 
+async def find_bounds(axis = 'a', direction = -1):
+    print('finding bounds for axis ' + axis + ' in direction ' + str(direction))
+
+
+
 
 async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
@@ -254,16 +259,13 @@ async def magnets(left_status = [-1], right_status = [-1]):
 
 
 async def change_address(row, col, shapeid):
-    global redis
-
     # changes the address of a specified shape on the panel
+    global redis
     row = int(row[0])
     col = int(col[0])
     shapeid = int(shapeid[0])
 
     # get the panel values from redis
-    # loop.create_task(redis_interact('get', 'panel'))
-    # panel = np.array(json.loads(r.get('panel')))
     panel = await redis.get('panel')
     panel = np.array(json.loads(panel))
 
@@ -276,12 +278,8 @@ async def change_address(row, col, shapeid):
     panel[row, col, 2] = shapeid
 
     # update redis
-    # loop.create_task(redis_interact('set', 'panel', panel))
-    # r.set('panel', json.dumps(panel.tolist()))
-
     await redis.set('panel', json.dumps(panel.tolist()))
-    # redis.close()
-    # await redis.wait_closed()
+
 
 
 async def abort():
@@ -304,6 +302,7 @@ fx_list = {
     'enable_xy': enable_xy,
     'disable_xy': disable_xy,
     'initialize_dxl': initialize_dxl,
+    'find_bounds': find_bounds,
     'magnets': magnets,
     'change_address': change_address,
     'abort': abort
@@ -349,28 +348,31 @@ async def handle_request(reader, writer):
 
 
 # check redis for panel variable and initialize it if it doesn't exist
-def init_panel():
-    w = 2   # columns in panel
-    h = 1   # rows
-    d = 3   # depth (should be 3 for x, y, and ID
-
-    panel = np.zeros((h, w, d))
-    panel[0, 0, 0] = 11.1
-    panel[0, 0, 1] = 11.2
-    panel[0, 0, 2] = 73
-    panel[0, 1, 0] = 21.1
-    panel[0, 1, 1] = 21.2
-    panel[0, 1, 2] = 74
-
-    panelJSON = json.dumps(panel.tolist())
-    r.set('panel', panelJSON)
+# def init_panel():
+#     global redis
+#     w = 2   # columns in panel
+#     h = 1   # rows
+#     d = 3   # depth (should be 3 for x, y, and ID
+#
+#     panel = np.zeros((h, w, d))
+#     panel[0, 0, 0] = 11.1
+#     panel[0, 0, 1] = 11.2
+#     panel[0, 0, 2] = 73
+#     panel[0, 1, 0] = 21.1
+#     panel[0, 1, 1] = 21.2
+#     panel[0, 1, 2] = 74
+#
+#     panelJSON = json.dumps(panel.tolist())
+#     r.set('panel', panelJSON)
 
     # to retrieve:
     # np.array(json.loads(r.get('panel')))
 
+
 async def connect_redis():
     global redis
     redis = await aioredis.create_redis('redis://localhost', loop=loop)
+
 
 async def disconnect_redis():
     global redis
