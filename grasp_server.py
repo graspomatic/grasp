@@ -294,10 +294,6 @@ async def abort():
         print('we dont have anything to cancel!')
 
 
-async def connect_redis():
-    global redis
-    redis = await aioredis.create_redis('redis://localhost', loop=loop)
-
 
 
 fx_list = {
@@ -372,6 +368,15 @@ def init_panel():
     # to retrieve:
     # np.array(json.loads(r.get('panel')))
 
+async def connect_redis():
+    global redis
+    redis = await aioredis.create_redis('redis://localhost', loop=loop)
+
+async def disconnect_redis():
+    global redis
+    redis.close()
+    await redis.wait_closed()
+
 
 
 # verify redis connection
@@ -396,6 +401,7 @@ except KeyboardInterrupt:
     pass
 
 # Close the server
+loop.create_task(disconnect_redis())
 server.close()
 loop.run_until_complete(server.wait_closed())
 loop.close()
