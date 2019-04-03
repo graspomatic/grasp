@@ -238,6 +238,16 @@ async def initialize_dxl():
 async def find_bounds(axis = 'a', direction = -1):
     print('finding bounds for axis ' + axis + ' in direction ' + str(direction))
 
+    if axis != 'x' and axis != 'y':
+        print('axis must be "x" or "y"')
+        return
+
+    if direction != 0 and direction != 1:
+        print('direction must be 0 (ccw) or 1 (cw)')
+        return
+
+    x.find_bound(direction)
+
 
 
 
