@@ -154,11 +154,11 @@ class AMC(object):
         cmds = ['HA1100', 'HL1100', 'HA2100', 'HL2100', 'HA3100',
                 'HL3100', 'HV15', 'HV25', 'HV35', 'HC0.8', dval, 'HS0']
 
+        self.send_command(limit + str(0))  # set current position to software limit
         self.send_command(cmds)             # start moving towards bound
         self.wait_for_stop()                # wait until it stops
         self.move_distance_mm(buf, vel=0.2)    # move away from bound 1000 units
         self.wait_for_stop()                # wait until it stops
-        self.read_udp_all()
         pos = self.get_position()           # get that position
         print('found position as:')
         print(pos)
