@@ -226,9 +226,8 @@ async def disable_arms():
     print('disabling arm motors')
     dxl.set_torque_all(0)
 
-async def handle_dxl_errors():
-    print('checking for dxl errors and resetting motors if necessary')
-    res = 0     # flag to change if any resetting has occurred
+async def check_dxl_errors():
+    print('checking for dxl errors')
     errs = dxl.sync_error_status()
     print(errs)
 
@@ -367,7 +366,7 @@ fx_list = {
     'put_away': put_away,
     'enable_arms': enable_arms,
     'disable_arms': disable_arms,
-    'handle_dxl_errors': handle_dxl_errors,
+    'check_dxl_errors': check_dxl_errors,
     'enable_xy': enable_xy,
     'disable_xy': disable_xy,
     'initialize_dxl': initialize_dxl,
