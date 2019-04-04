@@ -228,7 +228,7 @@ async def disable_arms():
 
 async def check_dxl_errors():
     print('checking for dxl errors')
-    errs = await loop.create_task(dxl.sync_error_status())
+    errs = dxl.sync_error_status()
     print(errs)
 
 async def enable_xy():
@@ -263,7 +263,7 @@ async def find_bounds(axis = ['a'], direction = [-1]):
     else:
         await y.find_bound(direction)
 
-async def move_distance_mm(axis = ['a'], distance = [0]):
+async def move_xy_distance_mm(axis = ['a'], distance = [0]):
     axis = str(axis[0])
     distance = float(distance[0])
     print('moving ' + axis + ' distance ' + str(distance))
@@ -281,7 +281,7 @@ async def move_distance_mm(axis = ['a'], distance = [0]):
     else:
         await y.move_distance_mm(distance)
 
-async def move_to_location(axis = ['a'], location = [-1], accel = [25], vel = [3]):
+async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel = [3]):
     axis = str(axis[0])
     location = float(location[0])
     accel = float(accel[0])
@@ -371,8 +371,8 @@ fx_list = {
     'disable_xy': disable_xy,
     'initialize_dxl': initialize_dxl,
     'find_bounds': find_bounds,
-    'move_distance_mm': move_distance_mm,
-    'move_to_location': move_to_location,
+    'move_xy_distance_mm': move_xy_distance_mm,
+    'move_xy_to_location': move_xy_to_location,
     'magnets': magnets,
     'change_address': change_address,
     'abort': abort
