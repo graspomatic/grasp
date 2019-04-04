@@ -224,6 +224,16 @@ async def put_away(side=[-1]):
         print('put away right')
         await return_object(1)
 
+
+async def initialize_dxl(level=[1]):
+    level = float(level[0])
+    dxl.set_torque_all(0)
+    dxl.set_moving_thresh_all()  # needs torque off
+    dxl.set_torque_all(1)
+    dxl.set_moving_pwms(level)
+
+    print('dxl motors initialized')
+
 async def enable_arms():
     print('enabling arm motors')
     dxl.set_torque_all(1)
@@ -231,6 +241,10 @@ async def enable_arms():
 async def disable_arms():
     print('disabling arm motors')
     dxl.set_torque_all(0)
+
+async def get_dxl_positions():
+    print('getting positions of all 6 dxl motors')
+    dxl.sync_get_position()
 
 async def check_dxl_errors():
     print('checking for dxl errors')
@@ -243,14 +257,6 @@ async def enable_xy():
 async def disable_xy():
     print('disabling X-Y motors')
 
-async def initialize_dxl(level=[1]):
-    level = float(level[0])
-    dxl.set_torque_all(0)
-    dxl.set_moving_thresh_all()     # needs torque off
-    dxl.set_torque_all(1)
-    dxl.set_moving_pwms(level)
-
-    print('dxl motors initialized')
 
 
 async def find_bounds(axis = ['a'], direction = [-1]):
@@ -372,16 +378,20 @@ async def abort():
 fx_list = {
     'pick_and_place': pick_and_place,
     'put_away': put_away,
+
+    'initialize_dxl': initialize_dxl,
     'enable_arms': enable_arms,
     'disable_arms': disable_arms,
     'check_dxl_errors': check_dxl_errors,
+
     'enable_xy': enable_xy,
     'disable_xy': disable_xy,
-    'initialize_dxl': initialize_dxl,
     'find_bounds': find_bounds,
     'move_xy_distance_mm': move_xy_distance_mm,
     'move_xy_to_location': move_xy_to_location,
+
     'magnets': magnets,
+
     'change_address': change_address,
     'abort': abort
 }
