@@ -228,7 +228,7 @@ async def disable_arms():
 
 async def check_dxl_errors():
     print('checking for dxl errors')
-    errs = dxl.sync_error_status()
+    errs = await dxl.sync_error_status()
     print(errs)
 
 async def enable_xy():
