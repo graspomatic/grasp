@@ -52,7 +52,7 @@ async def return_object(side = -1):
     # move x-y motors to that empty spot
 
     # if x and y are finished moving, move arm to 'pick' position
-
+    await loop.create_task(wait_for_dxl())
     dxl.move_arm_to_pos(arm=side, pos='pick')
 
 
