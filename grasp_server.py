@@ -229,11 +229,8 @@ async def disable_arms():
 async def handle_dxl_errors():
     print('checking for dxl errors and resetting motors if necessary')
     res = 0     # flag to change if any resetting has occurred
-    dxl.get_error_status()
-
-    for i in range(0, len(dxlcx.IDs)):  # for each arm
-        for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
-            moving.append(self.groupMoving.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_MOVING_STATUS, 1))
+    errs = dxl.sync_error_status()
+    print(errs)
 
 async def enable_xy():
     print('enabling x-y motors')
