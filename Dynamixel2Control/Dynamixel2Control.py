@@ -207,9 +207,9 @@ class D2C(object):
 
     def reboot(self, motor):
         # if a motor is in an error state, needs to be rebooted either via hardware or this function
-        val, result, error = self.packet_handler.reboot(self.port_handler, motor)
+        result, error = self.packet_handler.reboot(self.port_handler, motor)
         self.error_handler('get_moving_status: ', result, error)
-        return val
+        return result
 
     def get_goal_pwm(self, motor):
         val, result, error = self.packet_handler.read2ByteTxRx(self.port_handler, motor, dxlcx.ADDR_GOAL_PWM)
