@@ -200,7 +200,14 @@ class D2C(object):
         return val
 
     def get_error_status(self, motor):
+        # should normally be 0, have seen 32 on motor 12 when it ran into something and couldnt move (overload error)
         val, result, error = self.packet_handler.read1ByteTxRx(self.port_handler, motor, dxlcx.ADDR_HARDWARE_ERROR)
+        self.error_handler('get_moving_status: ', result, error)
+        return val
+
+    def reboot(self, motor):
+        # if a motor is in an error state, needs to be rebooted either via hardware or this function
+        val, result, error = self.packet_handler.reboot(self.port_handler, motor)
         self.error_handler('get_moving_status: ', result, error)
         return val
 
