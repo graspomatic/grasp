@@ -14,6 +14,7 @@ ADDR_VELOCITY_LIMIT     = 44        # 4 bytes, writeable only when torque disabl
 ADDR_MAX_POSITION       = 48        # 4 bytes, writeable only when torque disabled, must be >= min
 ADDR_MIN_POSITION       = 52        # 4 bytes, writeable only when torque disabled
 ADDR_TORQUE_ENABLE      = 64        # 1 byte
+ADDR_HARDWARE_ERROR     = 70        # 1 byte
 ADDR_POSITION_D_GAIN    = 80        # 2 bytes
 ADDR_POSITION_I_GAIN    = 82        # 2 bytes
 ADDR_POSITION_P_GAIN    = 84        # 2 bytes

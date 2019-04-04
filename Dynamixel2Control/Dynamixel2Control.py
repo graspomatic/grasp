@@ -199,6 +199,11 @@ class D2C(object):
         self.error_handler('get_moving_status: ', result, error)
         return val
 
+    def get_error_status(self, motor):
+        val, result, error = self.packet_handler.read1ByteTxRx(self.port_handler, motor, dxlcx.ADDR_HARDWARE_ERROR)
+        self.error_handler('get_moving_status: ', result, error)
+        return val
+
     def get_goal_pwm(self, motor):
         val, result, error = self.packet_handler.read2ByteTxRx(self.port_handler, motor, dxlcx.ADDR_GOAL_PWM)
         self.error_handler('get_goal_pwm: ', result, error)
