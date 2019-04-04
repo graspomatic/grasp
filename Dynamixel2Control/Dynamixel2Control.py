@@ -31,6 +31,11 @@ class D2C(object):
             for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
                 self.groupMoving.addParam(dxlcx.IDs[i][ii])         # add this motor to list
 
+        self.groupErrorStatus = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_HARDWARE_ERROR, 1)
+        for i in range(0, len(dxlcx.IDs)):                          # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
+                self.groupErrorStatus.addParam(dxlcx.IDs[i][ii])         # add this motor to list
+
         self.groupGetPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_PRESENT_POSITION, 4)
         for i in range(0, len(dxlcx.IDs)):                          # for each arm
             for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
@@ -42,6 +47,8 @@ class D2C(object):
                 self.groupGetGoalPosition.addParam(dxlcx.IDs[i][ii])  # add this motor to list
 
         self.groupSetPosition = dxlfx.GroupSyncWrite(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION, 4)
+
+
 
         # check connection to motors
         result = self.sync_get_position()
@@ -246,6 +253,17 @@ class D2C(object):
                 moving.append(self.groupMoving.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_MOVING_STATUS, 1))
 
         return moving
+
+    def sync_error_status(self):
+        result = self.groupErrorStatus.txRxPacket()
+        self.error_handler('sync_error_status: ', result, 0)
+
+        errs = []
+        for i in range(0, len(dxlcx.IDs)):                          # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
+                errs.append(self.groupErrorStatus.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_HARDWARE_ERROR, 1))
+
+        return errs
 
     def sync_get_position(self):
         result = self.groupGetPosition.txRxPacket()
