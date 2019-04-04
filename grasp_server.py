@@ -181,6 +181,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     left_angle = int(left_angle[0])
     right_angle = int(right_angle[0])
 
+    if hand == -1:
+        print('specify which hand to present to, 0 or 1 for left or right')
+        return
+
     #arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
         arms = 'left'
@@ -209,6 +213,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
 
 async def put_away(side=[-1]):
+    # side = 0 for left, 1 for right, 2 for both
     side = int(side[0])
     print(side)
     if side == 0 or side == 2:

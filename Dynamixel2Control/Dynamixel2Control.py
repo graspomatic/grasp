@@ -362,7 +362,7 @@ class D2C(object):
                         dxlcx.pick_pos[arm][1],
                         dxlcx.pick_pos[arm][2]]
         elif pos == 'prep_pick':
-            position = [dxlcx.pick_pos[arm][0] + 150 * armmult,
+            position = [dxlcx.pick_pos[arm][0] + 200 * armmult,
                         dxlcx.pick_pos[arm][1],
                         dxlcx.pick_pos[arm][2]]
         elif pos == 'prep_present':
