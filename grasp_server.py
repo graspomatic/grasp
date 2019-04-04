@@ -383,6 +383,7 @@ fx_list = {
     'initialize_dxl': initialize_dxl,
     'enable_arms': enable_arms,
     'disable_arms': disable_arms,
+    'get_dxl_positions': get_dxl_positions,
     'check_dxl_errors': check_dxl_errors,
 
     'enable_xy': enable_xy,
