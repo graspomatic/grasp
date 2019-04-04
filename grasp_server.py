@@ -197,9 +197,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         arms = 'neither'
 
     # if holding anything in left arm
-    await return_object(0)
+    # await return_object(0)
     # if holding anything in right arm
-    # await return_object(1)
+    await return_object(1)
 
     if arms == 'left':
         await retrieve(side=0, objid=left_id)
@@ -244,7 +244,8 @@ async def disable_arms():
 
 async def get_dxl_positions():
     print('getting positions of all 6 dxl motors')
-    dxl.sync_get_position()
+    pos = dxl.sync_get_position()
+    print(pos)
 
 async def check_dxl_errors():
     print('checking for dxl errors')
