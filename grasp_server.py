@@ -199,7 +199,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     # if holding anything in left arm
     await return_object(0)
     # if holding anything in right arm
-    await return_object(1)
+    # await return_object(1)
 
     if arms == 'left':
         await retrieve(side=0, objid=left_id)
