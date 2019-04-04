@@ -56,6 +56,7 @@ async def return_object(side = -1):
     dxl.move_arm_to_pos(arm=side, pos='pick')
 
 
+
     # de-energize magnet
     await loop.create_task(wait_for_dxl())
     await loop.create_task(mags.deenergize(side))
@@ -135,7 +136,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    distance_thresh = 30
+    distance_thresh = 10
     distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
