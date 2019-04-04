@@ -321,21 +321,24 @@ class D2C(object):
 
     def set_moving_thresh_all(self):
         # loop through all motors and set the moving threshold
-
         IDs = sum(dxlcx.IDs, [])  # turn it into a 1-d list
         threshs = sum(dxlcx.threshs, [])
 
         for id, thresh in zip(IDs, threshs):
             self.set_moving_thresh(id, thresh)
 
-    def set_moving_pwms(self):
+    def set_moving_pwms(self, level=1):
         # loop through all motors and set the moving threshold
+        # level is the proportion of max PWM strength to use
+        if level > 1 or level < 0:
+            print('level must be between 0 and 1')
 
         IDs = sum(dxlcx.IDs, [])  # turn it into a 1-d list
         moving_pwms = sum(dxlcx.moving_pwms, [])
 
         for id, moving_pwm in zip(IDs, moving_pwms):
-            self.set_goal_pwm(id, moving_pwm)
+            pwm = round(moving_pwm * level)
+            self.set_goal_pwm(id, pwm)
 
     def move_arm_to_pos(self, arm=-1, pos='unspecified', rotation=0):
         # moves arm to a specified position
