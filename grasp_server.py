@@ -405,23 +405,15 @@ async def handle_request(reader, writer):
     global active_task
 
     try:
-        print('message')
-        print(message)
+        print('message: ' + message)
+
         message = message.split(' ')[1]
         req = parse_qs(urlparse(message).query)     # grab the key/value pairs sent after ? in the URL
 
-
-        print('split')
-        print(message)
-        print('parsed')
-        print(urlparse(message))
-        print('dboule parsed')
-        print(parse_qs(urlparse(message).query))
         if "function" in req:
             fx = req['function'][0].strip()         # get name of function we're supposed to call
             req.pop('function')                     # remove it from dictionary
             print(req)
-            print(fx)
 
             if fx == 'abort':
                 loop.create_task(abort())
