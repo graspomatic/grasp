@@ -482,7 +482,8 @@ async def disconnect_redis():
 
 loop = asyncio.get_event_loop()     # makes a new event loop if one doesnt exist
 loop.create_task(connect_redis())
-coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
+coro = asyncio.start_server(handle_request, '128.148.110.89', 8888, loop=loop)  # start a socket server
+# coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
 server = loop.run_until_complete(coro)
 
 # Serve requests until Ctrl+C is pressed
