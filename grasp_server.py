@@ -405,11 +405,12 @@ async def handle_request(reader, writer):
     global active_task
 
     try:
-        req = parse_qs(urlparse(message).query)     # grab the key/value pairs sent after ? in the URL
-
         print('message')
         print(message)
-        message=message.split(' ')[1]
+        message = message.split(' ')[1]
+        req = parse_qs(urlparse(message).query)     # grab the key/value pairs sent after ? in the URL
+
+
         print('split')
         print(message)
         print('parsed')
