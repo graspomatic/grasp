@@ -409,6 +409,9 @@ async def handle_request(reader, writer):
 
         print('message')
         print(message)
+        message=message.split(' ')[1]
+        print('split')
+        print(message)
         print('parsed')
         print(urlparse(message))
         print('dboule parsed')
