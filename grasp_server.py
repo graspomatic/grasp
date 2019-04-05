@@ -410,6 +410,7 @@ async def handle_request(reader, writer):
         if "function" in req:
             fx = req['function'][0].strip()         # get name of function we're supposed to call
             req.pop('function')                     # remove it from dictionary
+            print(req)
             print(fx)
 
             if fx == 'abort':
