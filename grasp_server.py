@@ -407,6 +407,12 @@ async def handle_request(reader, writer):
     try:
         req = parse_qs(urlparse(message).query)     # grab the key/value pairs sent after ? in the URL
 
+        print('message')
+        print(message)
+        print('parsed')
+        print(urlparse(message))
+        print('dboule parsed')
+        print(parse_qs(urlparse(message).query))
         if "function" in req:
             fx = req['function'][0].strip()         # get name of function we're supposed to call
             req.pop('function')                     # remove it from dictionary
