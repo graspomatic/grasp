@@ -13,7 +13,7 @@
         .switch {
           position: relative;
           display: inline-block;
-          width: 400px;
+          width: 300px;
           height: 45px;
         }
 
@@ -33,6 +33,7 @@
           background-color: #ccc;
           -webkit-transition: .4s;
           transition: .4s;
+          border-radius: 4px;
         }
 
         .slider:before {
@@ -45,6 +46,7 @@
           background-color: white;
           -webkit-transition: .4s;
           transition: .4s;
+          border-radius: 2px;
         }
 
         .magnetleft:after
@@ -84,12 +86,13 @@
         }
 
         input:checked + .slider:before {
-          -webkit-transform: translateX(366px);
-          -ms-transform: translateX(366px);
-          transform: translateX(366px);
+          -webkit-transform: translateX(266px);
+          -ms-transform: translateX(266px);
+          transform: translateX(266px);
         }
 
-        .custom{
+        /* arms */
+        .leftcustom{
            display:none;
         }
 
@@ -152,15 +155,37 @@
         });
 
 
-        // arms
-        $('select[name="topic"]').on('change',function(){
+        // ------------- arms ---------------
+        // Change options shown to user
+        $('select[name="leftarmsettingtype"]').on('change',function(){
            if($(this).val()=="Prescribed") {
-                $('.custom').hide();
-                $('.prescribed').show();
+                $('.leftcustom').hide();
+                $('.leftprescribed').show();
            } else {
-                $('.prescribed').hide();
-                $('.custom').show();
+                $('.leftprescribed').hide();
+                $('.leftcustom').show();
            }
+        });
+
+        // Handle button press
+
+        $('#moveleftarm').click(function() {
+            var ip = document.getElementById("IP").value;
+            var choice = document.getElementById("leftarmsettingtype").value;
+            if (choice == 'Prescribed') {
+                var prescribedchoice = document.getElementById("leftPrescribedSetting").value;
+
+            } else {
+                var m1 = document.getElementById("leftMotor1").value;
+                var m2 = document.getElementById("leftMotor2").value;
+                var m3 = document.getElementById("leftMotor3").value;
+
+                console.log(m1);
+                console.log(m2);
+                console.log(m3);
+
+
+            }
         });
 
 
@@ -178,7 +203,19 @@
 <body>
 
 <div class="container">
-    <input type="text" class="form-control col-4" value="128.148.110.89:8888" id="IP">
+
+
+    <div class="input-group mb-3 col-8">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Server IP</span>
+        </div>
+        <input type="text" class="form-control col-4" value="128.148.110.89:8888" id="IP">
+    </div>
+
+
+
+
+
 
     <!--Magnets-->
     <label class="switch">
@@ -217,44 +254,34 @@
 
 
     <!--Arm control-->
-    <div class="input-group mb-3 col-8">
-        <div class="form-group">
-            <select class="form-control" name="topic" id="exampleFormControlSelect1">
+    <div class="input-group mb-3 col-6">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="">Left Arm</span>
+        </div>
+        <select class="form-control" name="leftarmsettingtype" id="leftarmsettingtype">
               <option>Prescribed</option>
               <option>Custom</option>
-            </select>
-        </div>
-        <div class="input-group-append form-group prescribed">
-            <select class="form-control" name="armSetting" id="exampleFormControlSelect2">
+        </select>
+        <select class="form-control leftprescribed" id="leftPrescribedSetting">
               <option>present</option>
               <option>prep-present</option>
               <option>prep-pick</option>
               <option>pick</option>
-            </select>
-            <div class="input-group-append">
-                <button class="btn btn-primary" id="sdfsdfasdf">Move</button>
-            </div>
+        </select>
+        <input type="text" id="leftMotor1" class="form-control leftcustom" placeholder="motor1 setting">
+        <input type="text" id="leftMotor2" class="form-control leftcustom" placeholder="motor2 setting">
+        <input type="text" id="leftMotor3" class="form-control leftcustom" placeholder="motor3 setting">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="moveleftarm">Move</button>
         </div>
-        <div class="input-group-append form-group custom">
-            <div class="input-group-append">
-                <input type="text" class="form-control col-4" value="2000" id="leftMotor1">
-            </div>
-            <div class="input-group-append">
-                <input type="text" class="form-control col-4" value="2000" id="leftMotor2">
-            </div>
-            <div class="input-group-append">
-                <input type="text" class="form-control col-4" value="2000" id="leftMotor3">
-            </div>
-        </div>
-
     </div>
 
 
 
-
-
-
 </div>
+
+
+
 
 
 
