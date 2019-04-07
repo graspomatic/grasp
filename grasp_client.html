@@ -135,7 +135,6 @@
             var choice = document.getElementById("leftarmsettingtype").value;
             if (choice == 'Prescribed') {
                 var prescribedchoice = document.getElementById("leftPrescribedSetting").value;
-
             } else {
                 var m1 = document.getElementById("leftMotor1").value;
                 var m2 = document.getElementById("leftMotor2").value;
@@ -211,7 +210,7 @@
         });
 
 
-        var socket = new WebSocket("ws://192.168.0.19:7379/.json");
+        var socket = new WebSocket("ws://128.148.110.89:7379/.json");
             socket.onopen = function() {
                 socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
             };
@@ -247,23 +246,66 @@
                 } else if (key == 'ypos') {
                     document.getElementById("ylocation").value = message[key];
                 } else if (key == 'leftmag') {
-                    document.getElementById("magLeft").checked = message[key];
+                    document.getElementById("magLeft").checked = parseInt(message[key]);
                 } else if (key == 'rightmag') {
-                    document.getElementById("magRight").checked = message[key];
+                    document.getElementById("magRight").checked = parseInt(message[key]);
                 } else if (key == 'leftsensor') {
-                    document.getElementById("leftObjectAttached").value = message[key];
+                    if (message[key] == 'dc') {
+                        document.getElementById("leftObjectAttached").value = '';
+                        document.getElementById("leftObjectUpdating").style.color = "red";
+                        document.getElementById("leftObjectUpdating").innerHTML = "Stale";
+                    } else {
+                        document.getElementById("leftObjectAttached").value = message[key];
+                        document.getElementById("leftObjectUpdating").style.color = "green";
+                        document.getElementById("leftObjectUpdating").innerHTML = "Live";
+                    }
                 } else if (key == 'rightsensor') {
-                    document.getElementById("rightObjectAttached").value = message[key];
+                    if (message[key] == 'dc') {
+                        document.getElementById("rightObjectAttached").value = '';
+                        document.getElementById("rightObjectUpdating").style.color = "red";
+                        document.getElementById("rightObjectUpdating").innerHTML = "Stale";
+                    } else {
+                        document.getElementById("rightObjectAttached").value = message[key];
+                        document.getElementById("rightObjectUpdating").style.color = "green";
+                        document.getElementById("rightObjectUpdating").innerHTML = "Live";
+                    }
                 } else if (key == 'leftarm') {
                     //decide if they're sending a prescribed position or triplet
                     if (armPos.includes(message[key])) {
                         document.getElementById("leftarmsettingtype").selectedIndex = 0;
-                        document.getElementById("leftPrescribedSetting").selectedIndex = 2;
+                        $('select[name="leftarmsettingtype"]').change();
+                        document.getElementById("leftPrescribedSetting").value = message[key];
                     } else {
                         document.getElementById("leftarmsettingtype").selectedIndex = 1;
+                        $('select[name="leftarmsettingtype"]').change();
+                        var vals = message[key].split(',');
+                        if (vals.length == 3) {
+                            document.getElementById("leftMotor1").value = vals[0];
+                            document.getElementById("leftMotor2").value = vals[1];
+                            document.getElementById("leftMotor3").value = vals[2];
+                        } else {
+                            console.log('sent wrong number of values. should be leftarm=12,34,56');
+                        }
                     }
 
                 } else if (key == 'rightarm') {
+                    //decide if they're sending a prescribed position or triplet
+                    if (armPos.includes(message[key])) {
+                        document.getElementById("rightarmsettingtype").selectedIndex = 0;
+                        document.getElementById("rightPrescribedSetting").value = message[key];
+                        $('select[name="rightarmsettingtype"]').change();
+                    } else {
+                        document.getElementById("rightarmsettingtype").selectedIndex = 1;
+                        $('select[name="rightarmsettingtype"]').change();
+                        var vals = message[key].split(',');
+                        if (vals.length == 3) {
+                            document.getElementById("rightMotor1").value = vals[0];
+                            document.getElementById("rightMotor2").value = vals[1];
+                            document.getElementById("rightMotor3").value = vals[2];
+                        } else {
+                            console.log('sent wrong number of values. should be rightarm=12,34,56');
+                        }
+                    }
 
                 }
 
@@ -314,7 +356,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">Redis Server IP</span>
             </div>
-            <input type="text" class="form-control col-4" value="192.168.0.19:7379" id="RedisIP">
+            <input type="text" class="form-control col-4" value="128.148.110.89:7379" id="RedisIP">
             <div class="input-group-append">
                 <button class="btn btn-outline-dark disabled" id="redisServerConnected">Connecting...</button>
             </div>
@@ -330,7 +372,7 @@
             </div>
             <input type="text" id="leftObjectAttached" class="form-control" placeholder="ObjectID">
             <div class="input-group-append">
-                <button class="btn btn-success" id="leftObjectUpdating">Live</button>
+                <button class="btn btn-outline-dark disabled" id="leftObjectUpdating">no pub</button>
             </div>
 
         </div>
@@ -340,7 +382,7 @@
             </div>
             <input type="text" id="rightObjectAttached" class="form-control" placeholder="ObjectID">
             <div class="input-group-append">
-                <button class="btn btn-success" id="rightObjectUpdating">Live</button>
+                <button class="btn btn-outline-dark disabled" id="rightObjectUpdating">no pub</button>
             </div>
 
 
