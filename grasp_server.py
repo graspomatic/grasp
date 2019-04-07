@@ -444,6 +444,7 @@ async def handle_request(reader, writer):
 
     print("Close the client socket")
     writer.close()
+    await writer.wait_closed()
 
 
 

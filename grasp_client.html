@@ -183,7 +183,16 @@
             var ip = document.getElementById("GraspIP").value;
             var xloc = document.getElementById("xlocation").value;
             var cmd = { "function":"move_xy_to_location", "axis":"x", "location":xloc };
-            $.get("http://" + ip, cmd);
+            $.get("http://" + ip, cmd, function(data) {
+            })
+              .done(function(data) {
+                console.log(data.GET);
+              })
+              .fail(function() {
+                alert( "error" );
+              })
+              .always(function() {
+              });
         });
 
         $('#moveyaxis').click(function() {
