@@ -131,7 +131,7 @@
         // Handle button press
 
         $('#moveleftarm').click(function() {
-            var ip = document.getElementById("IP").value;
+            var ip = document.getElementById("GraspIP").value;
             var choice = document.getElementById("leftarmsettingtype").value;
             if (choice == 'Prescribed') {
                 var prescribedchoice = document.getElementById("leftPrescribedSetting").value;
@@ -144,7 +144,7 @@
 
         // ------------- magnets ---------------
         $('#magLeft').change(function() {
-            var ip = document.getElementById("IP").value;
+            var ip = document.getElementById("GraspIP").value;
             if(this.checked) {
                 $.get("http://" + ip, { "function":"magnets", "left_status":"1" });
             } else {
@@ -153,7 +153,7 @@
         });
 
         $('#magRight').change(function() {
-            var ip = document.getElementById("IP").value;
+            var ip = document.getElementById("GraspIP").value;
             if(this.checked) {
                 $.get("http://" + ip, { "function":"magnets", "right_status":"1" });
             } else {
@@ -180,22 +180,22 @@
         });
 
         $('#movexaxis').click(function() {
-            var ip = document.getElementById("IP").value;
+            var ip = document.getElementById("GraspIP").value;
             var xloc = document.getElementById("xlocation").value;
             var cmd = { "function":"move_xy_to_location", "axis":"x", "location":xloc };
             $.get("http://" + ip, cmd);
         });
 
         $('#moveyaxis').click(function() {
-            var ip = document.getElementById("IP").value;
+            var ip = document.getElementById("GraspIP").value;
             var yloc = document.getElementById("ylocation").value;
             var cmd = { "function":"move_xy_to_location", "axis":"y", "location":yloc };
             $.get("http://" + ip, cmd);
 
 
-            $.get("http://192.168.0.19:7379/SET/foo/whawha"); // works
+            $.get("http://128.148.110.89:7379/SET/foo/whawha"); // works
 
-            var jqxhr = $.get( "http://192.168.0.19:7379/GET/foo", function(data) {
+            var jqxhr = $.get( "http://128.148.110.89:7379/GET/foo", function(data) {
             })
               .done(function(data) {
                 console.log(data.GET);
