@@ -188,10 +188,13 @@
               .done(function(data) {
                 console.log(data.GET);
               })
-              .fail(function() {
+              .fail(function(data) {
+                console.log(data);
                 alert( "error" );
+                alert( Object.keys(data) );
               })
-              .always(function() {
+              .always(function(data) {
+                alert( data );
               });
         });
 
@@ -216,6 +219,19 @@
               });
 
 
+        });
+
+
+        // ------------------ manual command entry ----------------------------
+
+        var manualcontrol = document.getElementById("manualcontrol");
+        manualcontrol.addEventListener("keyup", function(event) {
+              if (event.keyCode === 13) {
+                    var ip = document.getElementById("GraspIP").value;
+                    var query = document.getElementById("manualcontrol").value;
+                    var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+                    $.get("http://" + ip, js);
+              }
         });
 
 
@@ -489,6 +505,14 @@
         <div class="input-group-append">
             <button class="btn btn-primary" id="moveyaxis">Move</button>
         </div>
+    </div>
+
+
+
+
+    <!--Manual control-->
+    <div class="input-group col-16 mt-5">
+        <input type="text" id="manualcontrol" class="form-control" placeholder="function=a&prop=b">
     </div>
 
 
