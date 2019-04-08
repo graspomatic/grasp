@@ -168,11 +168,21 @@ async def wait_for_xy():
 
     xstatus = x.get_status()
     ystatus = y.get_status()
-
     await asyncio.sleep(0.01)
 
-    print(xstatus)
-    print(ystatus)
+    while xstatus[3] == 'M' or xstatus[3] == 'H' or ystatus[3] == 'M' or ystatus[3] == 'H':
+        xstatus = x.get_status()
+        ystatus = y.get_status()
+        await asyncio.sleep(0.01)
+
+    print('target reached')
+
+    xpos = x.get_position()
+    ypos = y.get_position()
+    await asyncio.sleep(0.01)
+
+
+
 
     # while distance > distance_thresh:
     #     a = dxl.sync_get_position()
@@ -353,14 +363,12 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
         return
 
     if axis == 'x':
-
-
         x.move_location(location=location, accel=accel, vel=vel)
         await wait_for_xy()
-
         await pub.publish_json('WebClient', {"xpos": str(location)})
     else:
         y.move_location(location=location, accel=accel, vel=vel)
+        await wait_for_xy
         await pub.publish_json('WebClient', {"ypos": str(location)})
 
 async def magnets(left_status = [-1], right_status = [-1]):
