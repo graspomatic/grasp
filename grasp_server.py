@@ -338,10 +338,11 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
         return
 
     if axis == 'x':
-        await pub.publish_json('WebClient', {"leftsensor": "3", "rightsensor": "4"})
         x.move_location(location=location, accel=accel, vel=vel)
+        await pub.publish_json('WebClient', {"xpos": str(location-1)})
     else:
-        await y.move_location(location=location, accel=accel, vel=vel)
+        y.move_location(location=location, accel=accel, vel=vel)
+        await pub.publish_json('WebClient', {"ypos": str(location-1)})
 
 async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
