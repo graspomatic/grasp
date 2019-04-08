@@ -67,9 +67,9 @@ class AMC(object):
 
     def move_distance_count(self, distance, accel=25.0, decel=25.0, vel=3.0):
         # move specified distance in counts. positive is clockwise
-        cmds = ['AC' + str(accel), # units rev/s/s
-                'DE' + str(decel), # units rev/s/s
-                'VE' + str(vel), # units rev/s
+        cmds = ['AC' + str(accel),      # units rev/s/s
+                'DE' + str(decel),      # units rev/s/s
+                'VE' + str(vel),        # units rev/s
                 'FL' + str(distance)]
 
         self.send_command(cmds)
