@@ -321,7 +321,7 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
     if axis == 'x':
         await x.move_location(location=location, accel=accel, vel=vel)
-        res = await pub.publish_json('WebClient', ["Hello", "world"])
+
         # res = await pub.publish_json('WebClient', 'leftsensor=5')
         res = await pub.publish_json('WebClient', {"leftsensor": "3", "rightsensor": "4"})
         # assert res == 1
@@ -482,7 +482,8 @@ async def reader(ch):
         print("Got Message:", msg)
 
 async def connect_redis():
-    global redis, pub
+    global redis
+    global pub
     redis = await aioredis.create_redis('redis://localhost', loop=loop)
     pub = await aioredis.create_redis('redis://localhost', loop=loop)
 
