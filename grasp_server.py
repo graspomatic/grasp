@@ -337,13 +337,13 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
         x.move_location(location=location, accel=accel, vel=vel)
 
         pos = x.get_position()
-        asyncio.sleep(0.01)
+        await asyncio.sleep(0.01)
         print(pos)
 
-        await pub.publish_json('WebClient', {"xpos": str(location-1)})
+        await pub.publish_json('WebClient', {"xpos": str(location)})
     else:
         y.move_location(location=location, accel=accel, vel=vel)
-        await pub.publish_json('WebClient', {"ypos": str(location-1)})
+        await pub.publish_json('WebClient', {"ypos": str(location)})
 
 async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
