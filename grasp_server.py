@@ -163,6 +163,25 @@ async def wait_for_dxl():
 
     return 1
 
+async def wait_for_xy():
+    print('waiting for x-y motors to stop moving')
+
+    xstatus = x.get_status()
+    ystatus = y.get_status()
+
+    await asyncio.sleep(0.01)
+
+    print(xstatus)
+    print(ystatus)
+
+    # while distance > distance_thresh:
+    #     a = dxl.sync_get_position()
+    #     b = dxl.sync_get_goal_position()
+    #     distance = max([abs(x) for x in [c - d for c, d in zip(a, b)]])
+    #     await asyncio.sleep(0.01)
+
+    return 1
+
 # async def redis_interact(req, vari, val = 0):
 #     if req == 'get':
 #         a = np.array(json.loads(r.get(vari)))
@@ -337,10 +356,7 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
 
         x.move_location(location=location, accel=accel, vel=vel)
-
-        pos = x.get_position()
-        await asyncio.sleep(0.1)
-        print(pos)
+        await wait_for_xy()
 
         await pub.publish_json('WebClient', {"xpos": str(location)})
     else:

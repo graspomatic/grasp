@@ -41,7 +41,7 @@ class AMC(object):
         # APR: Alarm, probably at one of the bounds
         # in transition from mr to pr, sometimes just R
 
-        time.sleep(0.01)        #without this, sometimes i would miss something in read-udp-all
+        # time.sleep(0.01)        #without this, sometimes i would miss something in read-udp-all
         self.read_udp_all()     # clear out the read buffer first
         self.send_command("RS")
         resp = self.read_udp_once()
