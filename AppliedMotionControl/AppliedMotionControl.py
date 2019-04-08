@@ -117,7 +117,7 @@ class AMC(object):
                 'FP' + str(target)]
 
         self.send_command(cmds)
-        self.wait_for_stop()
+        #self.wait_for_stop()
 
 
     def wait_for_stop(self):
