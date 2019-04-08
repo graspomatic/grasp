@@ -320,12 +320,8 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
         return
 
     if axis == 'x':
-        res = await pub.publish_json('WebClient', {"leftsensor": "3", "rightsensor": "4"})
+        await pub.publish_json('WebClient', {"leftsensor": "3", "rightsensor": "4"})
         await x.move_location(location=location, accel=accel, vel=vel)
-
-
-
-        # assert res == 1
     else:
         await y.move_location(location=location, accel=accel, vel=vel)
 
@@ -337,13 +333,17 @@ async def magnets(left_status = [-1], right_status = [-1]):
 
     if left_status == 0:
         await loop.create_task(mags.deenergize(0))
+        await pub.publish_json('WebClient', {"magleft": "0"})
     elif left_status == 1:
         await loop.create_task(mags.energize(0))
+        await pub.publish_json('WebClient', {"magleft": "1"})
 
     if right_status == 0:
         await loop.create_task(mags.deenergize(1))
+        await pub.publish_json('WebClient', {"magright": "0"})
     elif right_status == 1:
         await loop.create_task(mags.energize(1))
+        await pub.publish_json('WebClient', {"magright": "1"})
 
 
 async def change_address(row, col, shapeid):
