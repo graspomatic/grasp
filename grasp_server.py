@@ -177,10 +177,6 @@ async def wait_for_xy():
 
     print('target reached')
 
-    xpos = x.get_position()
-    ypos = y.get_position()
-    await asyncio.sleep(0.01)
-
 
 
 

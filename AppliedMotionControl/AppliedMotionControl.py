@@ -184,7 +184,6 @@ class AMC(object):
         return ok
 
     def send_command(self, message):
-        print(message)
         # can take either single command in string or multiple commands in list of strings
         if not type(message) is str:
             message = '\r'.join(message)
