@@ -334,13 +334,13 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
         return
 
     if axis == 'x':
-        pos = x.get_position()
-        await asyncio.sleep(0.1)
-        print(pos)
+
 
         x.move_location(location=location, accel=accel, vel=vel)
 
-
+        pos = x.get_position()
+        await asyncio.sleep(0.1)
+        print(pos)
 
         await pub.publish_json('WebClient', {"xpos": str(location)})
     else:
