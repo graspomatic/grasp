@@ -332,11 +332,13 @@ async def magnets(left_status = [-1], right_status = [-1]):
     right_status = int(right_status[0])
 
     if left_status == 0:
-        await loop.create_task(mags.deenergize(0))
         await pub.publish_json('WebClient', {"magleft": "0"})
+        await loop.create_task(mags.deenergize(0))
+
     elif left_status == 1:
-        await loop.create_task(mags.energize(0))
         await pub.publish_json('WebClient', {"magleft": "1"})
+        await loop.create_task(mags.energize(0))
+
 
     if right_status == 0:
         await loop.create_task(mags.deenergize(1))
