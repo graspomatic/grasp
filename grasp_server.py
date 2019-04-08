@@ -297,6 +297,7 @@ async def move_xy_distance_mm(axis = ['a'], distance = [0]):
         await y.move_distance_mm(distance)
 
 async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel = [3]):
+    global pub
     axis = str(axis[0])
     location = float(location[0])
     accel = float(accel[0])
@@ -320,6 +321,8 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
     if axis == 'x':
         await x.move_location(location=location, accel=accel, vel=vel)
+        res = await pub.publish_json('WebClient', 'leftsensor=5')
+        assert res == 1
     else:
         await y.move_location(location=location, accel=accel, vel=vel)
 
@@ -472,14 +475,18 @@ async def handle_request(reader, writer):
 
 
 async def connect_redis():
-    global redis
+    global redis, pub
     redis = await aioredis.create_redis('redis://localhost', loop=loop)
+    pub = await aioredis.create_redis('redis://localhost', loop=loop)
 
 
 async def disconnect_redis():
-    global redis
+    global redis, pub
     redis.close()
     await redis.wait_closed()
+
+    pub.close()
+    await pub.wait_closed()
 
 
 
