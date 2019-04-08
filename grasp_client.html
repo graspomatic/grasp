@@ -235,6 +235,8 @@
         });
 
 
+        // websocket for handling redis pubsub
+
         var socket = new WebSocket("ws://128.148.110.89:7379/.json");
             socket.onopen = function() {
                 socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
@@ -245,14 +247,17 @@
             }
             socket.onmessage = function(evt)
             {
+                console.log(evt);
                 var parsed = JSON.parse(evt.data).SUBSCRIBE[2];
                 console.log(parsed);
+                console.log(JSON.parse(parsed));
+
                 if (parsed == '1') {
                     document.getElementById("redisServerConnected").style.color = "green";
                     document.getElementById("redisServerConnected").innerHTML = "Connected";
                 } else {
-                    var js = JSON.parse('{"' + decodeURI(parsed).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-                    handlePub(js);
+                    //var js = JSON.parse('{"' + decodeURI(parsed).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+                    handlePub(parsed);
                 }
 
 
