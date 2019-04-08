@@ -247,20 +247,15 @@
             }
             socket.onmessage = function(evt)
             {
-                console.log(evt);
-                var parsed = JSON.parse(evt.data).SUBSCRIBE[2];
+                var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
                 console.log(parsed);
 
                 if (parsed == '1') {
                     document.getElementById("redisServerConnected").style.color = "green";
                     document.getElementById("redisServerConnected").innerHTML = "Connected";
                 } else {
-                    //var js = JSON.parse('{"' + decodeURI(parsed).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
                     handlePub(parsed);
                 }
-
-
-
             };
 
         // Handle published messages from redis

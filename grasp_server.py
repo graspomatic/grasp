@@ -323,7 +323,8 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
         await x.move_location(location=location, accel=accel, vel=vel)
         res = await pub.publish_json('WebClient', ["Hello", "world"])
         # res = await pub.publish_json('WebClient', 'leftsensor=5')
-        assert res == 1
+        res = await pub.publish_json('WebClient', {"leftsensor": "3", "rightsensor": "4"})
+        # assert res == 1
     else:
         await y.move_location(location=location, accel=accel, vel=vel)
 
@@ -484,9 +485,9 @@ async def connect_redis():
     global redis, pub
     redis = await aioredis.create_redis('redis://localhost', loop=loop)
     pub = await aioredis.create_redis('redis://localhost', loop=loop)
-    res = await pub.publish_json('WebClient', {"leftsensor": "3", "rightsensor": "4"})
+
     # res = await pub.publish_json('WebClient', ["leftsensor", "3"])
-    assert res == 1
+
 
 
 async def disconnect_redis():
