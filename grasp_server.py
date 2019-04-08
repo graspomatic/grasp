@@ -474,6 +474,7 @@ async def handle_request(reader, writer):
                 result = '200'  # 200 ok
             else:
                 if len(asyncio.all_tasks(loop)) > 3:  # if we're already doing something
+                    print('busy')
                     result = '504'   # 504 timeout
                 elif fx == 'ping':
                     result = '100'  # 100 continue
@@ -529,8 +530,6 @@ async def connect_redis():
     global pub
     redis = await aioredis.create_redis('redis://localhost', loop=loop)
     pub = await aioredis.create_redis('redis://localhost', loop=loop)
-
-    # res = await pub.publish_json('WebClient', ["leftsensor", "3"])
 
 
 
