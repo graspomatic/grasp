@@ -484,7 +484,7 @@ async def connect_redis():
     global redis, pub
     redis = await aioredis.create_redis('redis://localhost', loop=loop)
     pub = await aioredis.create_redis('redis://localhost', loop=loop)
-    res = await pub.publish_json('WebClient', {"leftsensor": "3"})
+    res = await pub.publish_json('WebClient', {"leftsensor": "3", "rightsensor": "4"})
     # res = await pub.publish_json('WebClient', ["leftsensor", "3"])
     assert res == 1
 

@@ -250,7 +250,6 @@
                 console.log(evt);
                 var parsed = JSON.parse(evt.data).SUBSCRIBE[2];
                 console.log(parsed);
-                console.log(JSON.parse(parsed));
 
                 if (parsed == '1') {
                     document.getElementById("redisServerConnected").style.color = "green";
@@ -271,6 +270,7 @@
         function handlePub(message) {
             console.log(message);
             for (key in message) {
+                console.log(key);
                 if (key == 'xpos') {
                     document.getElementById("xlocation").value = message[key];
                 } else if (key == 'ypos') {
