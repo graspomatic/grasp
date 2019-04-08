@@ -315,7 +315,6 @@ async def move_xy_distance_mm(axis = ['a'], distance = [0]):
         await y.move_distance_mm(distance)
 
 async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel = [3]):
-    global pub
     axis = str(axis[0])
     location = float(location[0])
     accel = float(accel[0])
@@ -324,21 +323,22 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
     if axis != 'x' and axis != 'y':
         print('axis must be "x" or "y"')
         return
-
     if location < 0:
         print('distance must be positive int or float')
         return
-
     if accel < 0:
         print('accel must be positive int or float')
         return
-
     if vel < 0:
         print('vel must be positive int or float')
         return
 
     if axis == 'x':
         x.move_location(location=location, accel=accel, vel=vel)
+
+        pos = x.get_position()
+        print(pos)
+
         await pub.publish_json('WebClient', {"xpos": str(location-1)})
     else:
         y.move_location(location=location, accel=accel, vel=vel)
