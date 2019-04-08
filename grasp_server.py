@@ -339,7 +339,7 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
     if axis == 'x':
         await pub.publish_json('WebClient', {"leftsensor": "3", "rightsensor": "4"})
-        await loop.create_task(x.move_location(location=location, accel=accel, vel=vel))
+        x.move_location(location=location, accel=accel, vel=vel)
     else:
         await y.move_location(location=location, accel=accel, vel=vel)
 
