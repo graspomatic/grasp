@@ -321,7 +321,8 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
     if axis == 'x':
         await x.move_location(location=location, accel=accel, vel=vel)
-        res = await pub.publish_json('WebClient', 'leftsensor=5')
+        res = await pub.publish_json('WebClient', ["Hello", "world"])
+        # res = await pub.publish_json('WebClient', 'leftsensor=5')
         assert res == 1
     else:
         await y.move_location(location=location, accel=accel, vel=vel)
@@ -474,10 +475,17 @@ async def handle_request(reader, writer):
     # np.array(json.loads(r.get('panel')))
 
 
+async def reader(ch):
+    while (await ch.wait_message()):
+        msg = await ch.get_json()
+        print("Got Message:", msg)
+
 async def connect_redis():
     global redis, pub
     redis = await aioredis.create_redis('redis://localhost', loop=loop)
     pub = await aioredis.create_redis('redis://localhost', loop=loop)
+    res = await pub.publish_json('WebClient', ["Hello", "world"])
+    assert res == 1
 
 
 async def disconnect_redis():
