@@ -139,6 +139,18 @@
 
 
 
+                $.get("http://" + ip, { "function":"set_dxl_positions", "side":"0", "position": prescribedchoice}, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magLeft failed" );
+                  });
+
+
+
+
             } else {
                 var m1 = document.getElementById("leftMotor1").value;
                 var m2 = document.getElementById("leftMotor2").value;

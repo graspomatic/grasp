@@ -355,7 +355,7 @@ class D2C(object):
             print('please give rotation in degrees in range -180 to 180')
             return 0
 
-
+        print('going to position: ' + str(pos))
 
         armmult = arm * 2 - 1   # produces -1 for left and 1 for right
 
