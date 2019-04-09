@@ -137,19 +137,36 @@
             if (choice == 'Prescribed') {
                 var prescribedchoice = document.getElementById("leftPrescribedSetting").value;
 
-
-
                 $.get("http://" + ip, { "function":"set_dxl_positions", "side":"0", "position": prescribedchoice}, function() {
                 })
                   .done(function(data, textStatus, jqXHR) {
                     console.log(jqXHR.statusText);
                   })
                   .fail(function(data) {
-                    alert( "magLeft failed" );
+                    alert( "moveleftarm failed" );
                   });
 
+            } else {
+                var m1 = document.getElementById("leftMotor1").value;
+                var m2 = document.getElementById("leftMotor2").value;
+                var m3 = document.getElementById("leftMotor3").value;
+            }
+        });
 
+        $('#moverightarm').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var choice = document.getElementById("rightarmsettingtype").value;
+            if (choice == 'Prescribed') {
+                var prescribedchoice = document.getElementById("rightPrescribedSetting").value;
 
+                $.get("http://" + ip, { "function":"set_dxl_positions", "side":"1", "position": prescribedchoice}, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "moverightarm failed" );
+                  });
 
             } else {
                 var m1 = document.getElementById("leftMotor1").value;
