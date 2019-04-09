@@ -6,8 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <hiredis/hiredis.h>
-#include <hiredis/async.h>
-#include <hiredis/adapters/libevent.h>
+
 
 #include "mpr121.h"
 
