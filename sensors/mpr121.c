@@ -18,6 +18,11 @@ int main()
   int channels_to_read = 6;
   int left_baseline[6] = {557, 560, 558, 562, 550, 550};
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
+
+
+  // 45 512 49 512 46 512 50 512 38 812 51 512
+
+
   int val1;
   int val2;
 
@@ -65,7 +70,7 @@ int main()
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
          // val = filtdata[m] | (filtdata[m+1] << 8);
 
-          printf("%i \t", filtdata[m] | (filtdata[m+1] << 8));
+          printf("%i \t", right_baseline[j] - val);
         }
       }
     }
