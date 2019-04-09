@@ -18,12 +18,6 @@ int main()
   int channels_to_read = 6;
   int left_baseline[6] = {557, 560, 558, 562, 550, 550};
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
-
-
-  // 45 512 49 512 46 512 50 512 38 812 51 512
-  // 50 512 44 512 41 512 52 512 53 512 58 512
-
-
   int val;
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
@@ -47,13 +41,8 @@ int main()
         int j, m;
         printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-//            val1 = filtdata[m];
-//            val2 = (filtdata[m+1] << 8);
-//            printf("%i \t", val1);
-//            printf("%i \t", val2);
-
+          usleep(6000);
           val = filtdata[m] | (filtdata[m+1] << 8);
-//          printf("%i \t", filtdata[m] | (filtdata[m+1] << 8));
           printf("%i \t", left_baseline[j] - val);
     	}
       }
@@ -68,8 +57,8 @@ int main()
         int j, m;
         printf("Right: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+          usleep(6000);
           val = filtdata[m] | (filtdata[m+1] << 8);
-
           printf("%i \t", right_baseline[j] - val);
         }
       }
