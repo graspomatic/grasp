@@ -15,7 +15,7 @@ int main()
   int print_output = 1;
   uint32_t states;
   unsigned char filtdata[24];
-  int channels_to_read = 6;
+  int channels_to_read = 12;
   int left_baseline[6] = {557, 560, 558, 562, 550, 550};
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
@@ -40,7 +40,7 @@ int main()
       if (print_output) {
         int j, m;
         printf("Left: ");
-        for (j = 0, m = 6; j < channels_to_read; j++, m+=2) {
+        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           usleep(6000);
           val = filtdata[m] | (filtdata[m+1] << 8);
           printf("%d \t", left_baseline[j] - val);
