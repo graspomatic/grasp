@@ -16,6 +16,9 @@ int main()
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
+  int left_baseline = {557, 560, 558, 562, 550, 550};
+  int right_baseline = {557, 561, 554, 553, 554, 557};
+  int val;
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
@@ -36,7 +39,8 @@ int main()
         int j, m;
         printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-          printf("%i ", filtdata[m] | (filtdata[m+1] << 8));
+          val = filtdata[m] | (filtdata[m+1] << 8);
+          printf("%i ", val - left_baseline[j]);
     	}
       }
     }
@@ -48,6 +52,7 @@ int main()
         int j, m;
         printf("Right: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+
           printf("%i ", filtdata[m] | (filtdata[m+1] << 8));
         }
       }
