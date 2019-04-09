@@ -1,11 +1,14 @@
 //Modified: Abhishek Malik <abhishek.malik@intel.com>
 
+#include <signal.h>
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <hiredis.h>
+#include <hiredis/hiredis.h>
+#include <hiredis/async.h>
+#include <hiredis/adapters/libevent.h>
 
 #include "mpr121.h"
 
