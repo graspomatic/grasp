@@ -11,6 +11,7 @@ Publish and Subscribe
 ------------------------*/
 
 #include <signal.h>
+#include <cstring>'
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
