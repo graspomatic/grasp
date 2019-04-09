@@ -36,7 +36,7 @@ int main()
         int j, m;
         printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-          printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
+          printf("%i ", filtdata[m] | (filtdata[m+1] << 8));
     	}
       }
     }
