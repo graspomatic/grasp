@@ -312,7 +312,7 @@
 
         // Handle published messages from redis
 
-        armPos = ['pick', 'prep-pick', 'prep-present', 'present'];
+        armPos = ['pick', 'prep_pick', 'prep_present', 'present'];
 
         function handlePub(message) {
             console.log(message);
@@ -476,8 +476,8 @@
             </select>
             <select class="form-control leftprescribed" id="leftPrescribedSetting">
                   <option>present</option>
-                  <option>prep-present</option>
-                  <option>prep-pick</option>
+                  <option>prep_present</option>
+                  <option>prep_pick</option>
                   <option>pick</option>
             </select>
             <input type="text" id="leftMotor1" class="form-control leftcustom" placeholder="motor1 setting">
@@ -498,8 +498,8 @@
             </select>
             <select class="form-control rightprescribed" id="rightPrescribedSetting">
                   <option>present</option>
-                  <option>prep-present</option>
-                  <option>prep-pick</option>
+                  <option>prep_present</option>
+                  <option>prep_pick</option>
                   <option>pick</option>
             </select>
             <input type="text" id="rightMotor1" class="form-control rightcustom" placeholder="motor1 setting">

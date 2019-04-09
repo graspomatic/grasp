@@ -173,7 +173,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    distance_thresh = 10
+    distance_thresh = 20
     distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
@@ -312,9 +312,9 @@ async def set_dxl_positions(side=[-1], position=['blah']):
         dxl.move_arm_to_pos(arm=side, pos=position)
         await loop.create_task(wait_for_dxl())
         if side == 0:
-            await pub.publish_json('WebClient', {"rightarm": position})
-        else:
             await pub.publish_json('WebClient', {"leftarm": position})
+        else:
+            await pub.publish_json('WebClient', {"rightarm": position})
 
 
 
