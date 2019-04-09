@@ -232,19 +232,13 @@
                     var ip = document.getElementById("GraspIP").value;
                     var query = document.getElementById("manualcontrol").value;
                     var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-                    $.get("http://" + ip, js, function(data) {
+                    $.get("http://" + ip, js, function() {
                     })
                       .done(function(data, textStatus, jqXHR) {
-                            console.log(jqXHR.status);
-                            console.log(jqXHR.statusText);
+                        console.log(jqXHR.statusText);
                       })
                       .fail(function(data) {
-                        console.log(data);
-                        alert( "error" );
-                        alert( Object.keys(data) );
-                      })
-                      .always(function(data) {
-
+                        alert( "manualcontrol failed" );
                       });
               }
         });
@@ -263,7 +257,6 @@
             socket.onmessage = function(evt)
             {
                 var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
-                console.log(parsed);
 
                 if (parsed == '1') {
                     document.getElementById("redisServerConnected").style.color = "green";
@@ -280,7 +273,6 @@
         function handlePub(message) {
             console.log(message);
             for (key in message) {
-                console.log(key);
                 if (key == 'xpos') {
                     document.getElementById("xlocation").value = message[key];
                 } else if (key == 'ypos') {
@@ -346,14 +338,9 @@
                             console.log('sent wrong number of values. should be rightarm=12,34,56');
                         }
                     }
-
-                }
-
-
-            }
-
-
-        }
+                } //end if
+            } // end for loop
+        } // end handlePub
 
         // Unsubscribe when you close the window. otherwise it will crash the server.
         window.onbeforeunload = function() {
