@@ -482,22 +482,22 @@ async def handle_request(reader, writer):
 
             if fx == 'abort':
                 loop.create_task(abort())
-                result = '200'  # 200 ok
+                result = 'aborted'  # 200 ok
             else:
                 if len(asyncio.all_tasks(loop)) > 3:  # if we're already doing something
                     print('busy')
-                    result = '504'   # 504 timeout
+                    result = 'busy'   # 504 timeout
                 elif fx == 'ping':
-                    result = '100'  # 100 continue
+                    result = 'pong'  # 100 continue
                 else:
                     active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
-                    result = '200'  # 200 ok
+                    result = 'accepted'  # 200 ok
         else:
-            result = '418'    # 418 im a teapot
+            result = 'invalid'    # 418 im a teapot
 
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        result = '500'   # 500 internal server error
+        result = 'error'   # 500 internal server error
 
 
     query = (
