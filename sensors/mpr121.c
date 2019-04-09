@@ -41,8 +41,8 @@ int main()
         printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
-          printf("%i ", val);
-          printf("%i ", left_baseline[j] - val);
+          printf("%i \t", val);
+          printf("%i \t", left_baseline[j] - val);
     	}
       }
     }
