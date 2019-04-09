@@ -54,12 +54,22 @@ async def return_object(side = -1):
     # if x and y are finished moving, move arm to 'pick' position
     await loop.create_task(wait_for_dxl())
     dxl.move_arm_to_pos(arm=side, pos='pick')
-
+    await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
 
 
     # de-energize magnet
     await loop.create_task(wait_for_dxl())
+    if side == 0:
+        await pub.publish_json('WebClient', {"leftarm": "pick"})
+    else:
+        await pub.publish_json('WebClient', {"rightarm": "pick"})
+
     await loop.create_task(mags.deenergize(side))
+    if side == 0:
+        await pub.publish_json('WebClient', {"leftmag": "1"})
+    else:
+        await pub.publish_json('WebClient', {"rightmag": "1"})
+
 
     # move arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
@@ -67,7 +77,15 @@ async def return_object(side = -1):
     # ensure that object was released (i2c not showing anything)
     await loop.create_task(wait_for_dxl())
 
+    if side == 0:
+        await pub.publish_json('WebClient', {"leftarm": "prep_pick"})
+    else:
+        await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
 
+    if side == 0:
+        await pub.publish_json('WebClient', {"leftsensor": "0"})
+    else:
+        await pub.publish_json('WebClient', {"rightsensor": "0"})
 
 async def retrieve(side=-1, objid=0):
     # Get the specified object ID on the specified arm
@@ -176,16 +194,6 @@ async def wait_for_xy():
         await asyncio.sleep(0.01)
 
     print('target reached')
-
-
-
-
-    # while distance > distance_thresh:
-    #     a = dxl.sync_get_position()
-    #     b = dxl.sync_get_goal_position()
-    #     distance = max([abs(x) for x in [c - d for c, d in zip(a, b)]])
-    #     await asyncio.sleep(0.01)
-
     return 1
 
 # async def redis_interact(req, vari, val = 0):
@@ -257,7 +265,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
 async def put_away(side=[-1]):
     # side = 0 for left, 1 for right, 2 for both
-    global pub
     side = int(side[0])
     print(side)
     if side == 0 or side == 2:
@@ -360,11 +367,13 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
     if axis == 'x':
         x.move_location(location=location, accel=accel, vel=vel)
-        await wait_for_xy()
+        await loop.create_task(wait_for_xy())
+        # await wait_for_xy()
         await pub.publish_json('WebClient', {"xpos": str(location)})
     else:
         y.move_location(location=location, accel=accel, vel=vel)
-        await wait_for_xy
+        await loop.create_task(wait_for_xy())
+        # await wait_for_xy
         await pub.publish_json('WebClient', {"ypos": str(location)})
 
 async def magnets(left_status = [-1], right_status = [-1]):
@@ -461,7 +470,7 @@ async def handle_request(reader, writer):
     try:
         print('message: ' + message)
 
-        message = message.split(' ')[1]
+        message = message.split(' ')[1]    # message is usually "GET blagblahblah HTTP/1.1"
         req = parse_qs(urlparse(message).query)     # grab the key/value pairs sent after ? in the URL
 
         if "function" in req:
@@ -488,12 +497,31 @@ async def handle_request(reader, writer):
         print("Unexpected error:", sys.exc_info()[0])
         result = '500'   # 500 internal server error
 
-    writer.write(result.encode())
-    await writer.drain()
+    # writer.write(result.encode())
+    # await writer.drain()
 
-    print("Close the client socket")
+    # print("Close the client socket")
+    # writer.close()
+    # await writer.wait_closed()
+
+
+
+
+
+
+
+
+    query = (
+        f"HEAD {url.path or '/'} HTTP/1.0\r\n"
+        f"Host: {url.hostname}\r\n"
+        f"\r\n"
+    )
+
+
+    writer.write(query.encode('latin-1'))
     writer.close()
-    await writer.wait_closed()
+
+
 
 
 
