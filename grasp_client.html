@@ -231,7 +231,20 @@
                     var ip = document.getElementById("GraspIP").value;
                     var query = document.getElementById("manualcontrol").value;
                     var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-                    $.get("http://" + ip, js);
+                    $.get("http://" + ip, js, function(data) {
+                    })
+                      .done(function(data) {
+                        console.log(data.GET);
+                        alert('whatwhat');
+                      })
+                      .fail(function(data) {
+                        console.log(data);
+                        alert( "error" );
+                        alert( Object.keys(data) );
+                      })
+                      .always(function(data) {
+                        alert( data );
+                      });
               }
         });
 

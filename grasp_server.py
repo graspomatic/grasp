@@ -6,6 +6,8 @@ import json
 import aioredis
 import atexit
 import time
+import urllib.parse
+
 
 active_task = 0
 
@@ -504,15 +506,11 @@ async def handle_request(reader, writer):
     # writer.close()
     # await writer.wait_closed()
 
-
-
-
-
-
-
+    url = urllib.parse.urlsplit(url)
 
     query = (
-        f"HEAD HTTP/1.1 200 OK\r\n"
+        f"HEAD {url.path or '/'} HTTP/1.0\r\n"
+        f"Host: {url.hostname}\r\n"
         f"\r\n"
     )
 
