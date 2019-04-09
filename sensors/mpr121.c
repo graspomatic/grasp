@@ -54,8 +54,9 @@ int main()
         int j, m;
         printf("Right: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-
-          printf("%i ", filtdata[m] | (filtdata[m+1] << 8));
+          val = filtdata[m] | (filtdata[m+1] << 8);
+          printf("%i \t", val);
+          printf("%i \t", left_baseline[j] - val);
         }
       }
     }
