@@ -506,6 +506,8 @@ async def handle_request(reader, writer):
     # writer.close()
     # await writer.wait_closed()
 
+    url = 'http://example.com/path/page.html'
+
     url = urllib.parse.urlsplit(url)
 
     query = (
