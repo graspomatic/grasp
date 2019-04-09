@@ -5,10 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <hiredis/hiredis.h>
-#include <hiredis/async.h>
-
-
 #include "mpr121.h"
 
 #define MPR121_ELE0_FILTDATA_REG 0x04
