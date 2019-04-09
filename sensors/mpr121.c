@@ -40,7 +40,7 @@ int main()
       if (print_output) {
         int j, m;
         printf("Left: ");
-        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+        for (j = 0, m = 6; j < channels_to_read; j++, m+=2) {
           usleep(6000);
           val = filtdata[m] | (filtdata[m+1] << 8);
           printf("%d \t", left_baseline[j] - val);
