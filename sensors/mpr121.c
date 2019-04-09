@@ -19,7 +19,7 @@ int main()
   int left_baseline[6] = {557, 560, 558, 562, 550, 550};
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val1;
-  int val2
+  int val2;
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   usleep(50000);
