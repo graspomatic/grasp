@@ -16,8 +16,8 @@ int main()
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
-  int left_baseline = {557, 560, 558, 562, 550, 550};
-  int right_baseline = {557, 561, 554, 553, 554, 557};
+  int left_baseline[6] = {557, 560, 558, 562, 550, 550};
+  int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
