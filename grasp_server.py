@@ -512,15 +512,12 @@ async def handle_request(reader, writer):
 
     query = (
         "HTTP/1.1 200 OK\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
         "Content-type: text/plain\r\n"
         "Hello, world!\r\n"
         "\r\n"
         "\r\n"
     )
-
-    print(query)
-    print(query.encode('latin-1'))
-
 
     writer.write(query.encode('latin-1'))
     writer.close()
