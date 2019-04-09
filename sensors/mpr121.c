@@ -23,6 +23,7 @@ int main()
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   usleep(50000);
   mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
+  usleep(50000);
   
   if(mpr121_config_an3944(dev) != UPM_SUCCESS){
     printf("unable to configure device\n");
