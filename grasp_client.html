@@ -234,16 +234,9 @@
                     var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
                     $.get("http://" + ip, js, function(data) {
                     })
-                      .done(function(data) {
-                        if(data !== 'undefined' && data !== ''){
-                            console.log('data is not empty');
-                            console.log(typeof data);
-                            console.log(data);
-                            alert(data);
-                            console.log(data.length);
-                            } else {
-                            console.log('data is empty')
-                        }
+                      .done(function(data, textStatus, jqXHR) {
+                            console.log(jqXHR.status);
+                            console.log(jqXHR.statusText);
                       })
                       .fail(function(data) {
                         console.log(data);

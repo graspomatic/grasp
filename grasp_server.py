@@ -511,7 +511,7 @@ async def handle_request(reader, writer):
     url = urllib.parse.urlsplit(url)
 
     query = (
-        "HTTP/1.1 200 OK\r\n"
+        f"HTTP/1.1 {result} OK\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "Content-type: text/plain\r\n"
         "Hello, world!\r\n"
