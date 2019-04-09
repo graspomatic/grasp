@@ -511,10 +511,15 @@ async def handle_request(reader, writer):
     url = urllib.parse.urlsplit(url)
 
     query = (
-        f"HEAD {url.path or '/'} HTTP/1.0\r\n"
-        f"Host: {url.hostname}\r\n"
-        f"\r\n"
+        "HTTP/1.1 200 OK\r\n"
+        "Content-type: text/plain\r\n"
+        "Hello, world!\r\n"
+        "\r\n"
+        "\r\n"
     )
+
+    print(query)
+    print(query.encode('latin-1'))
 
 
     writer.write(query.encode('latin-1'))
