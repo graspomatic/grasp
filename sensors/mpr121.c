@@ -34,7 +34,7 @@ int main()
     } else {
       if (print_output) {
         int j, m;
-        printf("Dev: ");
+        printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
     	}
@@ -46,9 +46,9 @@ int main()
     } else {
       if (print_output) {
         int j, m;
-        printf("Dev2: ");
+        printf("Right: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-          printf("%0x ", filtdata[m] | (filtdata[m+1] << 8));
+          printf("%i ", filtdata[m] | (filtdata[m+1] << 8));
         }
       }
     }
