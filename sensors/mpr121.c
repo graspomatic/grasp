@@ -48,6 +48,8 @@ int main()
       }
     }
 
+    usleep(50000);
+
     if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
     } else {
@@ -63,8 +65,8 @@ int main()
     }
 
    if (print_output) {
-	printf("\n");
-        usleep(500000);
+	 printf("\n");
+     usleep(500000);
    }
   }
 
