@@ -6,7 +6,7 @@ import json
 import aioredis
 import atexit
 import time
-import urllib.parse
+
 
 
 active_task = 0
@@ -499,19 +499,9 @@ async def handle_request(reader, writer):
         print("Unexpected error:", sys.exc_info()[0])
         result = '500'   # 500 internal server error
 
-    # writer.write(result.encode())
-    # await writer.drain()
-
-    # print("Close the client socket")
-    # writer.close()
-    # await writer.wait_closed()
-
-    url = 'http://example.com/path/page.html'
-
-    url = urllib.parse.urlsplit(url)
 
     query = (
-        f"HTTP/1.1 {result} OK\r\n"
+        f"HTTP/1.1 200 {result}\r\n"
         "Access-Control-Allow-Origin: *\r\n"
         "Content-type: text/plain\r\n"
         "Hello, world!\r\n"
@@ -520,6 +510,7 @@ async def handle_request(reader, writer):
 
     writer.write(query.encode('latin-1'))
     writer.close()
+    await writer.wait_closed()
 
 
 
