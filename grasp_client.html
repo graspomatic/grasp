@@ -235,8 +235,15 @@
                     $.get("http://" + ip, js, function(data) {
                     })
                       .done(function(data) {
-                        console.log(data);
-                        alert('whatwhat');
+                        if(data !== 'undefined' && data !== ''){
+                            console.log('data is not empty');
+                            console.log(typeof data);
+                            console.log(data);
+                            alert(data);
+                            console.log(data.length);
+                            } else {
+                            console.log('data is empty')
+                        }
                       })
                       .fail(function(data) {
                         console.log(data);
@@ -244,7 +251,7 @@
                         alert( Object.keys(data) );
                       })
                       .always(function(data) {
-                        alert( data );
+
                       });
               }
         });

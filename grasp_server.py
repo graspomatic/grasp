@@ -516,7 +516,6 @@ async def handle_request(reader, writer):
         "Content-type: text/plain\r\n"
         "Hello, world!\r\n"
         "\r\n"
-        "\r\n"
     )
 
     writer.write(query.encode('latin-1'))
