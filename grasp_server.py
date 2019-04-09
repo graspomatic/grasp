@@ -299,6 +299,26 @@ async def get_dxl_positions():
     pos = dxl.sync_get_position()
     print(pos)
 
+async def set_dxl_positions(side=[-1], position=['blah']):
+    print('setting positions of one arm')
+    side = int(side[0])
+    position = str(position[0])
+
+    if (side != 0 and side != 1):
+        print('side must be 0 (left) or 1 (right)')
+        return
+
+    if len(position.split()) == 1:
+        dxl.move_arm_to_pos(arm=side, pos=position)
+        await loop.create_task(wait_for_dxl())
+        if side == 0:
+            await pub.publish_json('WebClient', {"rightarm": position})
+        else:
+            await pub.publish_json('WebClient', {"leftarm": position})
+
+
+
+
 async def check_dxl_errors():
     print('checking for dxl errors')
     errs = dxl.sync_error_status()
@@ -447,6 +467,7 @@ fx_list = {
     'enable_arms': enable_arms,
     'disable_arms': disable_arms,
     'get_dxl_positions': get_dxl_positions,
+    'set_dxl_positions': set_dxl_positions,
     'check_dxl_errors': check_dxl_errors,
 
     'enable_xy': enable_xy,

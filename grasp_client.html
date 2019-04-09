@@ -136,6 +136,9 @@
             var choice = document.getElementById("leftarmsettingtype").value;
             if (choice == 'Prescribed') {
                 var prescribedchoice = document.getElementById("leftPrescribedSetting").value;
+
+
+
             } else {
                 var m1 = document.getElementById("leftMotor1").value;
                 var m2 = document.getElementById("leftMotor2").value;
@@ -147,18 +150,46 @@
         $('#magLeft').change(function() {
             var ip = document.getElementById("GraspIP").value;
             if(this.checked) {
-                $.get("http://" + ip, { "function":"magnets", "left_status":"1" });
+                $.get("http://" + ip, { "function":"magnets", "left_status":"1" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magLeft failed" );
+                  });
             } else {
-               $.get("http://" + ip, { "function":"magnets", "left_status":"0" });
+               $.get("http://" + ip, { "function":"magnets", "left_status":"0" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magLeft failed" );
+                  });
             }
         });
 
         $('#magRight').change(function() {
             var ip = document.getElementById("GraspIP").value;
             if(this.checked) {
-                $.get("http://" + ip, { "function":"magnets", "right_status":"1" });
+                $.get("http://" + ip, { "function":"magnets", "right_status":"1" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magRight failed" );
+                  });
             } else {
-               $.get("http://" + ip, { "function":"magnets", "right_status":"0" });
+               $.get("http://" + ip, { "function":"magnets", "right_status":"0" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magRight failed" );
+                  });
             }
         });
 
@@ -184,19 +215,13 @@
             var ip = document.getElementById("GraspIP").value;
             var xloc = document.getElementById("xlocation").value;
             var cmd = { "function":"move_xy_to_location", "axis":"x", "location":xloc };
-            $.get("http://" + ip, cmd, function(data) {
+            $.get("http://" + ip, cmd, function() {
             })
-              .done(function(data) {
-                console.log(data.GET);
-                alert('whatwhat');
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
               })
               .fail(function(data) {
-                console.log(data);
-                alert( "error" );
-                alert( Object.keys(data) );
-              })
-              .always(function(data) {
-                alert( data );
+                alert( "movexaxis failed" );
               });
         });
 
@@ -204,7 +229,14 @@
             var ip = document.getElementById("GraspIP").value;
             var yloc = document.getElementById("ylocation").value;
             var cmd = { "function":"move_xy_to_location", "axis":"y", "location":yloc };
-            $.get("http://" + ip, cmd);
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "moveyaxis failed" );
+              });
 
 
             $.get("http://128.148.110.89:7379/SET/foo/whawha"); // works
