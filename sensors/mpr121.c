@@ -1,7 +1,6 @@
 //Modified: Abhishek Malik <abhishek.malik@intel.com>
 
 #include <signal.h>
-#include <iostream.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
