@@ -512,8 +512,7 @@ async def handle_request(reader, writer):
 
 
     query = (
-        f"HEAD {'/'} HTTP/1.1 200 OK\r\n"
-        f"Host: {'whatwhat.org'}\r\n"
+        f"HEAD HTTP/1.1 200 OK\r\n"
         f"\r\n"
     )
 
