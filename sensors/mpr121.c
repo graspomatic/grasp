@@ -6,8 +6,11 @@
 #include <string.h>
 #include <unistd.h>
 #include "mpr121.h"
+#include <hiredis.h>
 
 #define MPR121_ELE0_FILTDATA_REG 0x04
+
+
 
 int main()
 {
@@ -19,6 +22,17 @@ int main()
   int left_baseline[6] = {557, 560, 558, 562, 550, 550};
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
+
+    redisContext *c = redisConnect("127.0.0.1", 6379);
+    if (c == NULL || c->err) {
+        if (c) {
+            printf("Error: %s\n", c->errstr);
+            // handle error
+        } else {
+            printf("Can't allocate redis context\n");
+        }
+    }
+
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   usleep(50000);
