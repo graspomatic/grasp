@@ -43,7 +43,7 @@ int main()
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           usleep(6000);
           val = filtdata[m] | (filtdata[m+1] << 8);
-          printf("%0x \t", val);
+          printf("%d \t", left_baseline[j] - val);
     	}
       }
     }
@@ -59,7 +59,7 @@ int main()
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           usleep(6000);
           val = filtdata[m] | (filtdata[m+1] << 8);
-          printf("%0x \t", val);
+          printf("%d \t", right_baseline[j] - val);
         }
       }
     }
