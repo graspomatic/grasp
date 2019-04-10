@@ -137,7 +137,7 @@ int main()
 
   clock_t end = clock();
   double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  printf("%d", time_spent);
+  printf("%.3f", time_spent);
 
 
   mpr121_close(dev);
