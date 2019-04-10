@@ -13,6 +13,99 @@
 
 
 
+// Local version of the sensor configuration for grasp
+upm_result_t mpr121_configure(mpr121_context dev){
+    // Configure the mpr121 chip (mostly) as recommended in the AN3944 MPR121
+    // Quick Start Guide
+    // First, turn off all electrodes by zeroing out the Electrode Configuration
+    // register.
+    // If this one fails, it's unlikely any of the others will succeed.
+    uint8_t eleConf = 0x00;
+    if (mpr121_write_bytes(dev, 0x5e, &eleConf, 1) != UPM_SUCCESS){
+        printf("write to electrode configuration register failed\n");
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+    // Section A
+    // Filtering when data is greater than baseline
+    // regs 0x2b-0x2e
+
+    uint8_t sectA[] = {0x01, 0x01, 0x00, 0x00};
+    if (mpr121_write_bytes(dev, 0x2b, sectA, 4) != UPM_SUCCESS){
+        printf("write to section a failed\n");
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+    // Section B
+    // Filtering when data is less than baseline
+    // regs 0x2f-0x32
+
+    uint8_t sectB[] = {0x01, 0x01, 0xff, 0x02};
+    if (mpr121_write_bytes(dev, 0x2f, sectB, 4) != UPM_SUCCESS){
+        printf("write to section b failed\n");
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+    // Section C
+    // Touch Threshold/Release registers, ELE0-ELE11
+    // regs 0x41-0x58
+    //                    __T_  __R_
+    uint8_t sectC[] =  {0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a,
+        0x0f, 0x0a};
+
+    if (mpr121_write_bytes(dev, 0x41, sectC, 24) != UPM_SUCCESS){
+        printf("failed to configure touch threshold/release regs\n");
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+    // Section D
+    // Filter configuration
+    // reg 0x5d
+    uint8_t filterConf = 0x04;
+    if (mpr121_write_bytes(dev, 0x5d, &filterConf, 1) != UPM_SUCCESS){
+        printf("unable to configure filters\n");
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+    // Section F
+    // Autoconfiguration registers
+    // regs 0x7b-0x7f
+    uint8_t sectF0 = 0x0b;
+    if (mpr121_write_bytes(dev, 0x7b, &sectF0, 1) != UPM_SUCCESS){
+        printf("unable to configure auto config regs\n");
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+    uint8_t sectF1[] = {0x9c, 0x65, 0x8c};
+    if (mpr121_write_bytes(dev, 0x7d, sectF1, 3) != UPM_SUCCESS){
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+    // Section E - this one must be set last, and switches to run mode
+    // Enable all 6 electrodes, and set a pre-calibration to avoid
+    // excessive calibration delay on startup.
+    // reg 0x5e
+    eleConf = 0x86;
+    if (mpr121_write_bytes(dev, 0x5e, &eleConf, 3) != UPM_SUCCESS){
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+    return UPM_SUCCESS;
+}
+
+
+
+
 int main()
 {
   int i, n = 1000;
@@ -52,10 +145,10 @@ int main()
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
 
-  if(mpr121_config_an3944(dev) != UPM_SUCCESS){
+  if(mpr121_configure(dev) != UPM_SUCCESS){
     printf("unable to configure device\n");
   }
-  if(mpr121_config_an3944(dev2) != UPM_SUCCESS){
+  if(mpr121_configure(dev2) != UPM_SUCCESS){
     printf("unable to configure device2\n");
   }
 
