@@ -9,6 +9,7 @@
 #include <hiredis.h>
 
 #define MPR121_ELE0_FILTDATA_REG 0x1E
+//#define MPR121_ELE0_FILTDATA_REG 0x04
 
 
 
@@ -63,7 +64,8 @@ int main()
         printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           usleep(6000);
-          val = filtdata[m] | (filtdata[m+1] << 8);
+//          val = filtdata[m] | (filtdata[m+1] << 8);
+          val = filtdata[m];
           printf("%d \t", val);
     	}
       }
@@ -79,7 +81,8 @@ int main()
         printf("Right: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           usleep(6000);
-          val = filtdata[m] | (filtdata[m+1] << 8);
+//          val = filtdata[m] | (filtdata[m+1] << 8);
+          val = filtdata[m];
           printf("%d \t", val);
         }
       }
