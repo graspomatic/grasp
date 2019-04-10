@@ -23,6 +23,10 @@ int main()
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
 
+  redisContext *redisConnect(const char *ip, int port);
+  void *redisCommand(redisContext *c, const char *format, ...);
+  void freeReplyObject(void *reply);
+
     redisContext *c = redisConnect("127.0.0.1", 6379);
     if (c == NULL || c->err) {
         if (c) {
