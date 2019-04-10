@@ -1,0 +1,35 @@
+# Recipe created by recipetool
+# This is the basis of a recipe and may need further editing in order to be fully functional.
+# (Feel free to remove these comments when editing.)
+
+SUMMARY = "asyncio (PEP 3156) Redis support"
+HOMEPAGE = "https://github.com/aio-libs/aioredis"
+# WARNING: the following LICENSE and LIC_FILES_CHKSUM values are best guesses - it is
+# your responsibility to verify that the values are complete and correct.
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=6d013dde180de30f9decd38fa3027de1"
+
+SRC_URI = "https://github.com/aio-libs/aioredis.git;protocol=https"
+
+# Modify these as desired
+PV = "1.0+git${SRCPV}"
+SRCREV = "81545d55b386e1edabc5bdae0b83c01a68761fd0"
+
+S = "${WORKDIR}/git"
+
+inherit setuptools3
+
+# WARNING: the following rdepends are determined through basic analysis of the
+# python sources, and might not be 100% accurate.
+RDEPENDS_${PN} += "python-contextlib python-core python-io python-json python-lang python-logging"
+
+# WARNING: We were unable to map the following python package/module
+# dependencies to the bitbake packages which include them:
+#    async_timeout
+#    asyncio
+#    asyncio.locks
+#    concurrent.futures
+#    hiredis
+#    urllib.parse
+
+
