@@ -36,9 +36,9 @@ int main()
   }
 
 
-//  redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
-//  redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");
-  redisCommand(c, "PUBLISH WebClient {'leftsensor':'0', 'rightsensor':'dc'}");
+  redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
+  redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");
+  redisCommand(c, "PUBLISH WebClient {'leftsensor':'2', 'rightsensor':'1'}");
 
 
 
