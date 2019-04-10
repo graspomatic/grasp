@@ -28,6 +28,11 @@ int main()
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
   int connected_thresh = 10;    //threshold for determining if shape is attached
   time_t current_time;
+  time_t last_update_left = time(NULL);
+  time_t last_update_right = time(NULL);
+
+//  last_update_left = time(NULL);
+//  last_update_right = time(NULL);
 
   redisContext *c = redisConnect("127.0.0.1", 6379);
   if (c == NULL || c->err) {
@@ -60,8 +65,12 @@ int main()
       printf("Error while reading filtered data\n");
     } else {
 
+      // tell redis we're getting live readings
       current_time = time(NULL);
-      redisCommand(c, "SET left_sensor_last_update %d", current_time);
+      if (current_time != last_update_left) {
+        redisCommand(c, "SET left_sensor_last_update %d", current_time);
+        last_update_left = current_time;
+      }
 
 
       if (print_output) {
@@ -87,6 +96,14 @@ int main()
     if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
     } else {
+
+      // tell redis we're getting live readings
+      current_time = time(NULL);
+      if (current_time != last_update_right) {
+        redisCommand(c, "SET right_sensor_last_update %d", current_time);
+        last_update_right = current_time;
+      }
+
       if (print_output) {
         int j, m;
         printf("Right: ");
