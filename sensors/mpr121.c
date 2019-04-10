@@ -24,6 +24,7 @@ int main()
   // from arduino         271  282  273  301  294  303  426  424  416  402  390  374
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
+  int left_connected = 0;
 
   redisContext *c = redisConnect("127.0.0.1", 6379);
   if (c == NULL || c->err) {
@@ -36,17 +37,15 @@ int main()
   }
 
 
-  redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
+  redisCommand(c, "PUBLISH WebClient {'leftsensor':'7'}");
   redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");
-  redisCommand(c, "PUBLISH WebClient {'leftsensor':'2', 'rightsensor':'1'}");
+//  redisCommand(c, "PUBLISH WebClient {'leftsensor':'2', 'rightsensor':'1'}");  // doesnt work for some reason
 
 
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
-  usleep(50000);
   mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
-  usleep(50000);
-  
+
   if(mpr121_config_an3944(dev) != UPM_SUCCESS){
     printf("unable to configure device\n");
   }
@@ -63,15 +62,23 @@ int main()
         int j, m;
         printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-          usleep(6000);
           val = filtdata[m] | (filtdata[m+1] << 8);
-//          val = filtdata[m];
+
+
+          if (m == 0 && (left_baseline[0] - val) < 10 && left_connected == 1) {
+            left_connected = 0;
+            redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
+          } else if (m == 0 && (left_baseline[0] - val) >= 10 && left_connected == 0) {
+            left_connected = 1;
+            redisCommand(c, "PUBLISH WebClient {'leftsensor':'12'}");
+          }
+
+
+
           printf("%d \t", val);
     	}
       }
     }
-
-    usleep(50000);
 
     if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
@@ -80,9 +87,7 @@ int main()
         int j, m;
         printf("Right: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-          usleep(6000);
           val = filtdata[m] | (filtdata[m+1] << 8);
-//          val = filtdata[m];
           printf("%d \t", val);
         }
       }
@@ -90,7 +95,7 @@ int main()
 
    if (print_output) {
 	 printf("\n");
-     usleep(500000);
+     usleep(100000);
    }
   }
 
