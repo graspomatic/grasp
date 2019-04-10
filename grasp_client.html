@@ -324,10 +324,8 @@
                 }
                 catch(err) {
                     console.log('message is from mpr121.c');
-                    var parsed = JSON.parse(evt.data).SUBSCRIBE[2];
-                    console.log(parsed);
-                    var doub = JSON.parse(parsed);
-                    console.log(doub);
+                    var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2].replace(/'/g, '"'));
+
                 }
 
                 if (parsed == '1') {
