@@ -37,7 +37,7 @@ int main()
         }
     }
 
-    reply = redisCommand(redisContext, "PUBLISH WebClient bar");
+    char reply = redisCommand(redisContext, "PUBLISH WebClient bar");
 
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
