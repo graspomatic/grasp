@@ -25,6 +25,7 @@ int main()
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
   int left_connected = 0;
+  int right_connected = 0;
 
   redisContext *c = redisConnect("127.0.0.1", 6379);
   if (c == NULL || c->err) {
