@@ -124,9 +124,6 @@ int main()
   time_t last_update_left = time(NULL);
   time_t last_update_right = time(NULL);
 
-//  last_update_left = time(NULL);
-//  last_update_right = time(NULL);
-
   redisContext *c = redisConnect("127.0.0.1", 6379);
   if (c == NULL || c->err) {
       if (c) {
@@ -188,7 +185,7 @@ int main()
             redisCommand(c, "SET left_connected 1");
           }
 
-          printf("%d \t", val);
+//          printf("%d \t", val);
     	}
 
     }
@@ -222,17 +219,17 @@ int main()
             redisCommand(c, "SET right_connected 1");
           }
 
-          printf("%d \t", val);
+//          printf("%d \t", val);
         }
       }
 
 //      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
 
 
-//   if (print_output) {
-//	 printf("\n");
-//     usleep(100000);
-//   }
+   if (print_output) {
+	 printf("\n");
+     usleep(100000);
+   }
   }
 
   clock_t end = clock();
