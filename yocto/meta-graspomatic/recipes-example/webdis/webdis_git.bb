@@ -1,0 +1,61 @@
+# Recipe created by recipetool
+# This is the basis of a recipe and may need further editing in order to be fully functional.
+# (Feel free to remove these comments when editing.)
+
+# WARNING: the following LICENSE and LIC_FILES_CHKSUM values are best guesses - it is
+# your responsibility to verify that the values are complete and correct.
+#
+# The following license files were not able to be identified and are
+# represented as "Unknown" below, you will need to check them yourself:
+#   COPYING
+#   hiredis/COPYING
+#
+# NOTE: multiple licenses have been detected; they have been separated with &
+# in the LICENSE value for now since it is a reasonable assumption that all
+# of the licenses apply. If instead there is a choice between the multiple
+# licenses then you should change the value to separate the licenses with |
+# instead of &. If there is any doubt, check the accompanying documentation
+# to determine which situation is applicable.
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=f231b8617d98bf7f4e52f501fa6c3ee2 \
+                    file://hiredis/COPYING;md5=d84d659a35c666d23233e54503aaea51 \
+                    file://jansson/LICENSE;md5=af8b424c2c2db21c9ee8dc789c188334 \
+                    file://http-parser/LICENSE-MIT;md5=ebe5f9fc00df919172e5a917fbd136a1"
+
+SRC_URI = "git://github.com/nicolasff/webdis.git;protocol=https"
+
+# Modify these as desired
+PV = "1.0+git${SRCPV}"
+SRCREV = "91a8ea3a506d7a70449154863c32228c998d5e87"
+
+S = "${WORKDIR}/git"
+
+# NOTE: the following library dependencies are unknown, ignoring: event hiredis msgpack
+#       (this is based on recipes that have previously been built and packaged)
+# NOTE: some of these dependencies may be optional, check the Makefile and/or upstream documentation
+DEPENDS = "libevent hiredis libev libnsl2"
+
+# NOTE: this is a Makefile-only piece of software, so we cannot generate much of the
+# recipe automatically - you will need to examine the Makefile yourself and ensure
+# that the appropriate arguments are passed in.
+
+do_configure () {
+	# Specify any needed configure commands here
+	:
+}
+
+CFLAGS_prepend = "-I${S} -I${S}/jansson/src  -I${S}/http-parser"
+LDFLAGS_append = " -levent -lpthread"
+EXTRA_OEMAKE += "'INCLUDE_DIR=${D}${includedir}' 'LIB_DIR=${D}${libdir}'"
+EXTRA_OEMAKE += "'DESTDIR=${D}/usr' 'PREFIX=""'"
+
+do_compile () {
+	# You will almost certainly need to add additional arguments here
+	oe_runmake 
+}
+
+do_install () {
+	# This is a guess; additional arguments may be required
+	oe_runmake install 'DESTDIR=${D}'
+}
+
