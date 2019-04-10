@@ -33,9 +33,8 @@ int main()
       }
   }
 
-  redisCommand(c, "PUBLISH WebClient foo:bar"); // received {"SUBSCRIBE":["message","WebClient","foo:bar"]}
+//  redisCommand(c, "PUBLISH WebClient foo:bar"); // received {"SUBSCRIBE":["message","WebClient","foo:bar"]}
   redisCommand(c, "PUBLISH WebClient {'foo':'bar'}"); //received {"SUBSCRIBE":["message","WebClient","{'foo':'bar'}"]}
-  redisCommand(c, 'PUBLISH WebClient {\"foo\":\"bar\"}'); //received {"SUBSCRIBE":["message","WebClient","{'foo':'bar'}"]}
 
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
