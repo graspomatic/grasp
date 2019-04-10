@@ -112,7 +112,7 @@ int main()
   int print_output = 1;
   uint32_t states;
   unsigned char filtdata[24];
-  int channels_to_read = 12;
+  int channels_to_read = 6;
   int left_baseline[6] = {557, 560, 558, 562, 550, 550};
   // from arduino         271  282  273  301  294  303  426  424  416  402  390  374
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
