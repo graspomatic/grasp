@@ -318,7 +318,17 @@
             socket.onmessage = function(evt)
             {
                 console.log(evt.data);
-                var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
+                try {
+                    var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
+                    console.log('message is from grasp_server');
+                }
+                catch(err) {
+                    console.log('message is from mpr121.c');
+                    var parsed = JSON.parse(evt.data).SUBSCRIBE[2];
+                    console.log(parsed);
+                    var doub = JSON.parse(parsed);
+                    console.log(doub);
+                }
 
                 if (parsed == '1') {
                     document.getElementById("redisServerConnected").style.color = "green";
