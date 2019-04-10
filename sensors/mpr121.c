@@ -77,7 +77,7 @@ int main()
         last_update_left = current_time;
       }
 
-      redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
+//      redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
 
 
 
@@ -111,7 +111,8 @@ int main()
         last_update_right = current_time;
       }
 
-      redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
+//      redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
+
 
 
         int j, m;
@@ -131,6 +132,8 @@ int main()
 //          printf("%d \t", val);
         }
       }
+
+      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
 
 
 //   if (print_output) {
