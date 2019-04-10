@@ -38,10 +38,8 @@ int main()
   }
 
 
-//  redisCommand(c, "PUBLISH WebClient {'leftsensor':'7'}");
-//  redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");
-  redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}");  // doesnt work for some reason
-
+//  redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
+//  redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
 
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
@@ -68,9 +66,11 @@ int main()
           if (m == 0 && left_connected == 1 && (left_baseline[0] - val) < 10 ) {
             left_connected = 0;
 //            redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
+              redisCommand(context, "SET left_connected 0");
           } else if (m == 0 && left_connected == 0 && (left_baseline[0] - val) >= 10 ) {
             left_connected = 1;
 //            redisCommand(c, "PUBLISH WebClient {'leftsensor':'12'}");
+              redisCommand(context, "SET left_connected 1");
           }
 
           printf("%d \t", val);
@@ -89,9 +89,11 @@ int main()
 
           if (m == 0 && right_connected == 1 && (right_baseline[0] - val) < 10 ) {
             right_connected = 0;
+            redisCommand(context, "SET right_connected 0");
 //            redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
           } else if (m == 0 && right_connected == 0 && (right_baseline[0] - val) >= 10 ) {
             right_connected = 1;
+            redisCommand(context, "SET right_connected 1");
 //            redisCommand(c, "PUBLISH WebClient {'leftsensor':'12'}");
           }
 
