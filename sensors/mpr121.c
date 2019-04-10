@@ -8,7 +8,7 @@
 #include "mpr121.h"
 #include <hiredis.h>
 
-#define MPR121_ELE0_FILTDATA_REG 0x04
+#define MPR121_ELE0_FILTDATA_REG 0x1E
 
 
 
