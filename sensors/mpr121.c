@@ -1,5 +1,4 @@
-//Modified: Abhishek Malik <abhishek.malik@intel.com>
-
+#include <time.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +6,7 @@
 #include <unistd.h>
 #include "mpr121.h"
 #include <hiredis.h>
+
 
 //#define MPR121_ELE0_FILTDATA_REG 0x1E     // baseline
 #define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
@@ -24,8 +24,10 @@ int main()
   // from arduino         271  282  273  301  294  303  426  424  416  402  390  374
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
-  int left_connected = 0;
-  int right_connected = 0;
+  int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
+  int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
+  int connected_thresh = 10;    //threshold for determining if shape is attached
+  time_t current_time;
 
   redisContext *c = redisConnect("127.0.0.1", 6379);
   if (c == NULL || c->err) {
@@ -57,20 +59,24 @@ int main()
     if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
     } else {
+
+      current_time = time(NULL);
+      redisCommand(c, "SET left_sensor_last_update %d", current_time);
+
+
       if (print_output) {
         int j, m;
         printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
 
-          if (m == 0 && left_connected == 1 && (left_baseline[0] - val) < 10 ) {
+          // keep track of whether there's an object being held or not
+          if (m == 0 && left_connected == 1 && (left_baseline[0] - val) < connected_thresh ) {
             left_connected = 0;
-//            redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
-              redisCommand(c, "SET left_connected 0");
-          } else if (m == 0 && left_connected == 0 && (left_baseline[0] - val) >= 10 ) {
+            redisCommand(c, "SET left_connected 0");
+          } else if (m == 0 && left_connected == 0 && (left_baseline[0] - val) >= connected_thresh ) {
             left_connected = 1;
-//            redisCommand(c, "PUBLISH WebClient {'leftsensor':'12'}");
-              redisCommand(c, "SET left_connected 1");
+            redisCommand(c, "SET left_connected 1");
           }
 
           printf("%d \t", val);
@@ -87,14 +93,13 @@ int main()
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
 
-          if (m == 0 && right_connected == 1 && (right_baseline[0] - val) < 10 ) {
+          // keep track of whether there's an object being held or not
+          if (m == 0 && right_connected == 1 && (right_baseline[0] - val) < connected_thresh ) {
             right_connected = 0;
             redisCommand(c, "SET right_connected 0");
-//            redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
-          } else if (m == 0 && right_connected == 0 && (right_baseline[0] - val) >= 10 ) {
+          } else if (m == 0 && right_connected == 0 && (right_baseline[0] - val) >= connected_thresh ) {
             right_connected = 1;
             redisCommand(c, "SET right_connected 1");
-//            redisCommand(c, "PUBLISH WebClient {'leftsensor':'12'}");
           }
 
           printf("%d \t", val);
