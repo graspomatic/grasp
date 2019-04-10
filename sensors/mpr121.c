@@ -77,6 +77,8 @@ int main()
         last_update_left = current_time;
       }
 
+      redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
+
 
 
         int j, m;
@@ -109,6 +111,8 @@ int main()
         last_update_right = current_time;
       }
 
+      redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
+
 
         int j, m;
 //        printf("Right: ");
@@ -137,7 +141,7 @@ int main()
 
   clock_t end = clock();
 
-  printf("Elapsed: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
+  printf("Elapsed approximately: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
 
 
   mpr121_close(dev);
