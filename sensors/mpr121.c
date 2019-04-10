@@ -9,7 +9,7 @@
 #include <hiredis.h>
 
 //#define MPR121_ELE0_FILTDATA_REG 0x1E     // baseline
-//#define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
+#define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
 
 
 
