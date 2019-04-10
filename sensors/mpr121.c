@@ -8,8 +8,8 @@
 #include "mpr121.h"
 #include <hiredis.h>
 
-#define MPR121_ELE0_FILTDATA_REG 0x1E
-//#define MPR121_ELE0_FILTDATA_REG 0x04
+//#define MPR121_ELE0_FILTDATA_REG 0x1E     // baseline
+//#define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
 
 
 
@@ -21,6 +21,7 @@ int main()
   unsigned char filtdata[24];
   int channels_to_read = 12;
   int left_baseline[6] = {557, 560, 558, 562, 550, 550};
+  // from arduino         271  282  273  301  294  303  426  424  416  402  390  374
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
 
@@ -64,8 +65,8 @@ int main()
         printf("Left: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           usleep(6000);
-//          val = filtdata[m] | (filtdata[m+1] << 8);
-          val = filtdata[m];
+          val = filtdata[m] | (filtdata[m+1] << 8);
+//          val = filtdata[m];
           printf("%d \t", val);
     	}
       }
@@ -81,8 +82,8 @@ int main()
         printf("Right: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           usleep(6000);
-//          val = filtdata[m] | (filtdata[m+1] << 8);
-          val = filtdata[m];
+          val = filtdata[m] | (filtdata[m+1] << 8);
+//          val = filtdata[m];
           printf("%d \t", val);
         }
       }
@@ -95,7 +96,7 @@ int main()
   }
 
   mpr121_close(dev);
-//  mpr121_close(dev2);
+  mpr121_close(dev2);
 
   return 0;
 }
