@@ -23,18 +23,19 @@ int main()
   int right_baseline[6] = {557, 561, 554, 553, 554, 557};
   int val;
 
-      redisContext *c = redisConnect("127.0.0.1", 6379);
-    if (c == NULL || c->err) {
-        if (c) {
-            printf("Error: %s\n", c->errstr);
-            // handle error
-        } else {
-            printf("Can't allocate redis context\n");
-        }
-    }
+  redisContext *c = redisConnect("127.0.0.1", 6379);
+  if (c == NULL || c->err) {
+      if (c) {
+          printf("Error: %s\n", c->errstr);
+          // handle error
+      } else {
+          printf("Can't allocate redis context\n");
+      }
+  }
 
-    redisCommand(c, "PUBLISH WebClient foo:bar"); // received {"SUBSCRIBE":["message","WebClient","foo:bar"]}
-    redisCommand(c, "PUBLISH WebClient {'foo':'bar'}"); //not received
+  redisCommand(c, "PUBLISH WebClient foo:bar"); // received {"SUBSCRIBE":["message","WebClient","foo:bar"]}
+  redisCommand(c, "PUBLISH WebClient {'foo':'bar'}"); //received {"SUBSCRIBE":["message","WebClient","{'foo':'bar'}"]}
+  redisCommand(c, 'PUBLISH WebClient {\"foo\":\"bar\"}'); //received {"SUBSCRIBE":["message","WebClient","{'foo':'bar'}"]}
 
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
