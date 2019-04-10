@@ -27,17 +27,17 @@ int main()
   void *redisCommand(redisContext *c, const char *format, ...);
   void freeReplyObject(void *reply);
 
-    redisContext *c = redisConnect("127.0.0.1", 6379);
-    if (c == NULL || c->err) {
-        if (c) {
-            printf("Error: %s\n", c->errstr);
-            // handle error
-        } else {
-            printf("Can't allocate redis context\n");
-        }
-    }
-
-    char reply = redisCommand(redisContext, "PUBLISH WebClient bar");
+//    redisContext *c = redisConnect("127.0.0.1", 6379);
+//    if (c == NULL || c->err) {
+//        if (c) {
+//            printf("Error: %s\n", c->errstr);
+//            // handle error
+//        } else {
+//            printf("Can't allocate redis context\n");
+//        }
+//    }
+//
+//    char reply = redisCommand(redisContext, "PUBLISH WebClient bar");
 
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
