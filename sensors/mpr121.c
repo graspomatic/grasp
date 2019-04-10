@@ -229,10 +229,10 @@ int main()
 //      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
 
 
-   if (print_output) {
-	 printf("\n");
-     usleep(100000);
-   }
+//   if (print_output) {
+//	 printf("\n");
+//     usleep(100000);
+//   }
   }
 
   clock_t end = clock();
