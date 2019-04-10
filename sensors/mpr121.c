@@ -185,7 +185,7 @@ int main()
             redisCommand(c, "SET left_connected 1");
           }
 
-//          printf("%d \t", val);
+          printf("%d \t", val);
     	}
 
     }
@@ -219,7 +219,7 @@ int main()
             redisCommand(c, "SET right_connected 1");
           }
 
-//          printf("%d \t", val);
+          printf("%d \t", val);
         }
       }
 
