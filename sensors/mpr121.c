@@ -136,9 +136,8 @@ int main()
   }
 
   clock_t end = clock();
-  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  printf("%f", time_spent);
-  printf("Elapsed: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC);
+
+  printf("Elapsed: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
 
 
   mpr121_close(dev);
