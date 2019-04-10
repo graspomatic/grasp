@@ -37,9 +37,9 @@ int main()
   }
 
 
-  redisCommand(c, "PUBLISH WebClient {'leftsensor':'7'}");
-  redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");
-//  redisCommand(c, "PUBLISH WebClient {'leftsensor':'2', 'rightsensor':'1'}");  // doesnt work for some reason
+//  redisCommand(c, "PUBLISH WebClient {'leftsensor':'7'}");
+//  redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");
+  redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}");  // doesnt work for some reason
 
 
 
@@ -64,16 +64,13 @@ int main()
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
 
-
-          if (m == 0 && (left_baseline[0] - val) < 10 && left_connected == 1) {
+          if (m == 0 && left_connected == 1 && (left_baseline[0] - val) < 10 ) {
             left_connected = 0;
-            redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
-          } else if (m == 0 && (left_baseline[0] - val) >= 10 && left_connected == 0) {
+//            redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
+          } else if (m == 0 && left_connected == 0 && (left_baseline[0] - val) >= 10 ) {
             left_connected = 1;
-            redisCommand(c, "PUBLISH WebClient {'leftsensor':'12'}");
+//            redisCommand(c, "PUBLISH WebClient {'leftsensor':'12'}");
           }
-
-
 
           printf("%d \t", val);
     	}
@@ -88,6 +85,15 @@ int main()
         printf("Right: ");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
+
+          if (m == 0 && right_connected == 1 && (right_baseline[0] - val) < 10 ) {
+            right_connected = 0;
+//            redisCommand(c, "PUBLISH WebClient {'leftsensor':'0'}");
+          } else if (m == 0 && right_connected == 0 && (right_baseline[0] - val) >= 10 ) {
+            right_connected = 1;
+//            redisCommand(c, "PUBLISH WebClient {'leftsensor':'12'}");
+          }
+
           printf("%d \t", val);
         }
       }
