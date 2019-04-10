@@ -7,11 +7,7 @@
 #include "mpr121.h"
 #include <hiredis.h>
 
-
-//#define MPR121_ELE0_FILTDATA_REG 0x1E     // baseline
 #define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
-
-
 
 // Local version of the sensor configuration for grasp
 upm_result_t mpr121_configure(mpr121_context dev){
@@ -71,7 +67,7 @@ upm_result_t mpr121_configure(mpr121_context dev){
     // Section D
     // Filter configuration
     // reg 0x5d
-    uint8_t filterConf = 0x04;
+    uint8_t filterConf = 0x24;
     if (mpr121_write_bytes(dev, 0x5d, &filterConf, 1) != UPM_SUCCESS){
         printf("unable to configure filters\n");
         return UPM_ERROR_OPERATION_FAILED;
@@ -113,9 +109,10 @@ int main()
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
-  int left_baseline[6] = {557, 560, 558, 562, 550, 550};
+  int left_baseline[6] = {558, 561, 559, 564, 551, 552};
+//  int left_baseline[6] = {558, 561, 559, 550, 551, 552};
   // from arduino         271  282  273  301  294  303  426  424  416  402  390  374
-  int right_baseline[6] = {557, 561, 554, 553, 554, 557};
+  int right_baseline[6] = {558, 562, 555, 555, 556, 558};
   int val;
   int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
