@@ -170,8 +170,8 @@ int main()
   clock_t begin = clock();
 
 
-//  for (i=0; i<n || print_output; i++){
-  for (i=0; i<1000; i++){
+  for (i=0; i<n || print_output; i++){
+//  for (i=0; i<1000; i++){
     // read nchannels (8 bits in LB and 2 bits in high byte) all at once
     if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
@@ -199,7 +199,7 @@ int main()
             redisCommand(c, "SET left_connected 1");
           }
 
-//          printf("%d \t", val);
+          printf("%d \t", val);
     	}
 
     }
@@ -220,7 +220,7 @@ int main()
 
 
         int j, m;
-//        printf("\t");
+        printf("\t");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
 
@@ -233,17 +233,17 @@ int main()
             redisCommand(c, "SET right_connected 1");
           }
 
-//          printf("%d \t", val);
+          printf("%d \t", val);
         }
       }
 
-      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
+//      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
 
 
-//   if (print_output) {
-//	 printf("\n");
-////     usleep(5000);
-//   }
+   if (print_output) {
+	 printf("\n");
+     usleep(50000);
+   }
   }
 
   clock_t end = clock();
