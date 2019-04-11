@@ -22,17 +22,20 @@ upm_result_t mpr121_configure(mpr121_context dev){
         return UPM_ERROR_OPERATION_FAILED;
     }
 
-    // Section A
+
+
+    // Section A // AN3891
     // Filtering when data is greater than baseline
     // regs 0x2b-0x2e
 
-    uint8_t sectA[] = {0x01, 0x01, 0x00, 0x00};
+//    uint8_t sectA[] = {0x01, 0x01, 0x00, 0x00}; // original
+    uint8_t sectA[] = {0x01, 0x01, 0x01, 0x01}; // AN3891
     if (mpr121_write_bytes(dev, 0x2b, sectA, 4) != UPM_SUCCESS){
         printf("write to section a failed\n");
         return UPM_ERROR_OPERATION_FAILED;
     }
 
-    // Section B
+    // Section B // AN3891
     // Filtering when data is less than baseline
     // regs 0x2f-0x32
 
@@ -41,6 +44,8 @@ upm_result_t mpr121_configure(mpr121_context dev){
         printf("write to section b failed\n");
         return UPM_ERROR_OPERATION_FAILED;
     }
+
+
 
     // Section C
     // Touch Threshold/Release registers, ELE0-ELE11
@@ -67,7 +72,9 @@ upm_result_t mpr121_configure(mpr121_context dev){
     // Section D
     // Filter configuration
     // reg 0x5d
-    uint8_t filterConf = 0x24;
+//    uint8_t filterConf = 0x04; //original
+//    uint8_t filterConf = 0x24; // default on data sheet
+      uint8_t filterConf = 0x00; // no electrode charging, 4 samples for 2nd filter, 1 ms period
     if (mpr121_write_bytes(dev, 0x5d, &filterConf, 1) != UPM_SUCCESS){
         printf("unable to configure filters\n");
         return UPM_ERROR_OPERATION_FAILED;
