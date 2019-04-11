@@ -131,9 +131,7 @@ int main()
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
-  int left_baseline[6] = {558, 561, 559, 564, 551, 552};
-//  int left_baseline[6] = {558, 561, 559, 550, 551, 552};
-  // from arduino         271  282  273  301  294  303  426  424  416  402  390  374
+  int left_baseline[6] = {558, 561, 559, 563, 551, 551};
   int right_baseline[6] = {558, 562, 555, 555, 556, 558};
   int val;
   int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
@@ -169,10 +167,11 @@ int main()
   }
 
 
-//  clock_t begin = clock();
+  clock_t begin = clock();
 
 
-  for (i=0; i<n || print_output; i++){
+//  for (i=0; i<n || print_output; i++){
+  for (i=0; i<1000; i++){
     // read nchannels (8 bits in LB and 2 bits in high byte) all at once
     if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
@@ -200,7 +199,7 @@ int main()
             redisCommand(c, "SET left_connected 1");
           }
 
-          printf("%d \t", val);
+//          printf("%d \t", val);
     	}
 
     }
@@ -221,7 +220,7 @@ int main()
 
 
         int j, m;
-        printf("\t");
+//        printf("\t");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
 
@@ -234,21 +233,21 @@ int main()
             redisCommand(c, "SET right_connected 1");
           }
 
-          printf("%d \t", val);
+//          printf("%d \t", val);
         }
       }
 
 //      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
 
 
-   if (print_output) {
-	 printf("\n");
-//     usleep(5000);
-   }
+//   if (print_output) {
+//	 printf("\n");
+////     usleep(5000);
+//   }
   }
 
-//  clock_t end = clock();
-//  printf("Elapsed approximately: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
+  clock_t end = clock();
+  printf("Elapsed approximately: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
 
 
   mpr121_close(dev);
