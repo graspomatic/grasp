@@ -229,13 +229,13 @@ int main()
             memcpy(cal_left, left_current, sizeof(left_current));
         }
 
-//        // determine which pads are touched
-//        for (j = 0; j < 6; j++) {
-//            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
-//        }
-//
-//
-//
+        // determine which pads are touched
+        for (j = 0; j < 6; j++) {
+            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
+        }
+
+
+
 //        if (print_output) {}
 //            for (j = 0; j < 6; j++) {
 //                printf("%d \t", left_current[j]);
