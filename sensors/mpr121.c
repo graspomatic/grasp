@@ -169,11 +169,10 @@ int main()
   }
 
 
-  clock_t begin = clock();
+//  clock_t begin = clock();
 
 
-  //for (i=0; i<n || print_output; i++){
-  for (i=0; i<1000; i++){
+  for (i=0; i<n || print_output; i++){
     // read nchannels (8 bits in LB and 2 bits in high byte) all at once
     if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
@@ -185,9 +184,6 @@ int main()
         redisCommand(c, "SET left_sensor_last_update %d", current_time);
         last_update_left = current_time;
       }
-
-//      redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
-
 
 
         int j, m;
@@ -225,7 +221,7 @@ int main()
 
 
         int j, m;
-//        printf("Right: ");
+        printf("\t");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
 
@@ -247,13 +243,12 @@ int main()
 
    if (print_output) {
 	 printf("\n");
-     usleep(100000);
+//     usleep(5000);
    }
   }
 
-  clock_t end = clock();
-
-  printf("Elapsed approximately: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
+//  clock_t end = clock();
+//  printf("Elapsed approximately: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
 
 
   mpr121_close(dev);
