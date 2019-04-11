@@ -69,6 +69,22 @@ upm_result_t mpr121_configure(mpr121_context dev){
         return UPM_ERROR_OPERATION_FAILED;
     }
 
+
+
+    // Filter configuration
+    // reg 0x5c
+      uint8_t filterConfc = 0x00; // 6 samples, disable electrode charing
+    if (mpr121_write_bytes(dev, 0x5c, &filterConfc, 1) != UPM_SUCCESS){
+        printf("unable to configure filters\n");
+        return UPM_ERROR_OPERATION_FAILED;
+    }
+
+
+
+
+
+
+
     // Section D
     // Filter configuration
     // reg 0x5d
