@@ -230,7 +230,7 @@ int main()
 
         // determine which pads are touched
         for (j = 0; j < 6; j++) {
-            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh)
+            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
         }
 
 
