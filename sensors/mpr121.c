@@ -74,6 +74,7 @@ upm_result_t mpr121_configure(mpr121_context dev){
     // Filter configuration (added)
     // reg 0x5c
       uint8_t filterConfc = 0x00; // 6 samples, disable electrode charing
+      uint8_t filterConfc = 0x50; // 10 samples, 16ua electrode charging
     if (mpr121_write_bytes(dev, 0x5c, &filterConfc, 1) != UPM_SUCCESS){
         printf("unable to configure filters\n");
         return UPM_ERROR_OPERATION_FAILED;
@@ -95,7 +96,7 @@ upm_result_t mpr121_configure(mpr121_context dev){
     // Autoconfiguration control registers
     // regs 0x7b-0x7f
 //    uint8_t sectF0 = 0x0b; // does autoconfig
-    uint8_t sectF0 = 0x08; //doesnt do autoconfig
+    uint8_t sectF0 = 0x08; //doesnt do autoconfig  (I think this is the option that fixed the flaky starts)
     if (mpr121_write_bytes(dev, 0x7b, &sectF0, 1) != UPM_SUCCESS){
         printf("unable to configure auto config regs\n");
         return UPM_ERROR_OPERATION_FAILED;
