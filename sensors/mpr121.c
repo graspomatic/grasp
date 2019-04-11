@@ -149,8 +149,8 @@ int main()
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
 //  int cal_left = 0;             // if 1, we should grab next left reading and store as baseline calibration
 //  int cal_right = 0;            // if 1, we should grab next right reading and store as baseline calibration
-  int cal_left[6];       // holds baseline calibration for currently held shape
-  int cal_right[6];      // holds baseline calibration for currently held shape
+  int cal_left[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
+  int cal_right[6] = {0, 0, 0, 0, 0, 0};      // holds baseline calibration for currently held shape
   time_t current_time;
   time_t last_update_left = time(NULL);
   time_t last_update_right = time(NULL);
