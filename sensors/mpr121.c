@@ -85,8 +85,8 @@ upm_result_t mpr121_configure(mpr121_context dev){
     // Filter configuration
     // reg 0x5d
 //    uint8_t filterConf = 0x04; //original
-//    uint8_t filterConf = 0x24; // default on data sheet
-      uint8_t filterConf = 0x00; // no electrode charging, 4 samples for 2nd filter, 1 ms period
+    uint8_t filterConf = 0x24; // default on data sheet
+//      uint8_t filterConf = 0x00; // no electrode charging, 4 samples for 2nd filter, 1 ms period
     if (mpr121_write_bytes(dev, 0x5d, &filterConf, 1) != UPM_SUCCESS){
         printf("unable to configure filters\n");
         return UPM_ERROR_OPERATION_FAILED;
