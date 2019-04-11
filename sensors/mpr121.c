@@ -136,6 +136,8 @@ int main()
   int right_baseline[6] = {558, 562, 555, 555, 556, 558};
   int left_current[6] = {0, 0, 0, 0, 0, 0};
   int right_current[6] = {0, 0, 0, 0, 0, 0};
+  int left_touched[6] = {0, 0, 0, 0, 0, 0};
+  int right_touched[6] = {0, 0, 0, 0, 0, 0};
   int j, m;
   int val;
   int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
