@@ -190,7 +190,7 @@ int main()
 
     calib = strtoimax(reply->str,&endptr,10));
 
-
+    printf("%d \t", calib);
 
 
     if (calib > 0) {
