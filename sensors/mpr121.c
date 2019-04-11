@@ -71,18 +71,13 @@ upm_result_t mpr121_configure(mpr121_context dev){
 
 
 
-    // Filter configuration
+    // Filter configuration (added)
     // reg 0x5c
       uint8_t filterConfc = 0x00; // 6 samples, disable electrode charing
     if (mpr121_write_bytes(dev, 0x5c, &filterConfc, 1) != UPM_SUCCESS){
         printf("unable to configure filters\n");
         return UPM_ERROR_OPERATION_FAILED;
     }
-
-
-
-
-
 
 
     // Section D
@@ -97,14 +92,16 @@ upm_result_t mpr121_configure(mpr121_context dev){
     }
 
     // Section F
-    // Autoconfiguration registers
+    // Autoconfiguration control registers
     // regs 0x7b-0x7f
-    uint8_t sectF0 = 0x0b;
+//    uint8_t sectF0 = 0x0b; // does autoconfig
+    uint8_t sectF0 = 0x08; //doesnt do autoconfig
     if (mpr121_write_bytes(dev, 0x7b, &sectF0, 1) != UPM_SUCCESS){
         printf("unable to configure auto config regs\n");
         return UPM_ERROR_OPERATION_FAILED;
     }
 
+    // Autoconfiguration target settings
     uint8_t sectF1[] = {0x9c, 0x65, 0x8c};
     if (mpr121_write_bytes(dev, 0x7d, sectF1, 3) != UPM_SUCCESS){
         return UPM_ERROR_OPERATION_FAILED;
