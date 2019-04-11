@@ -137,6 +137,11 @@ int main()
   int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
   int connected_thresh = 10;    //threshold for determining if shape is attached
+  int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
+  int cal_left = 0;             // if 1, we should grab next left reading and store as baseline calibration
+  int cal_right = 0;            // if 1, we should grab next right reading and store as baseline calibration
+  int cal_left_values[6];       // holds baseline calibration for currently held shape
+  int cal_right_values[6];      // holds baseline calibration for currently held shape
   time_t current_time;
   time_t last_update_left = time(NULL);
   time_t last_update_right = time(NULL);
@@ -172,6 +177,23 @@ int main()
 
   for (i=0; i<n || print_output; i++){
 //  for (i=0; i<1000; i++){
+
+    // see if we're supposed to grab new calibration values on this turn
+
+
+    calib = redisCommand(c, "GET get_calib");
+
+    if (calib > 0) {
+        if (calib == 1 || calib == 3) {
+            cal_left = 1;
+        } else if (calib == 2 || calib == 3) {
+            cal_right = 1;
+        }
+        redisCommand(c, "SET get_calib 0");
+    }
+
+
+
     // read nchannels (8 bits in LB and 2 bits in high byte) all at once
     if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
       printf("Error while reading filtered data\n");
