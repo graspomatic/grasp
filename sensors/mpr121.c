@@ -137,7 +137,8 @@ int main()
   int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
   int connected_thresh = 10;    //threshold for determining if shape is attached
-  void calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
+  redisReply *reply;
+  int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
   int cal_left = 0;             // if 1, we should grab next left reading and store as baseline calibration
   int cal_right = 0;            // if 1, we should grab next right reading and store as baseline calibration
   int cal_left_values[6];       // holds baseline calibration for currently held shape
@@ -181,16 +182,17 @@ int main()
     // see if we're supposed to grab new calibration values on this turn
 
 
-    calib = redisCommand(c, "GET get_calib");
+    reply = redisCommand(c, "GET get_calib");
+    printf("PING: %s\n", reply->str);
 
-    if (calib > 0) {
-        if (calib == 1 || calib == 3) {
-            cal_left = 1;
-        } else if (calib == 2 || calib == 3) {
-            cal_right = 1;
-        }
-        redisCommand(c, "SET get_calib 0");
-    }
+//    if (calib > 0) {
+//        if (calib == 1 || calib == 3) {
+//            cal_left = 1;
+//        } else if (calib == 2 || calib == 3) {
+//            cal_right = 1;
+//        }
+//        redisCommand(c, "SET get_calib 0");
+//    }
 
 
 
