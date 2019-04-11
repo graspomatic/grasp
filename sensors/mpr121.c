@@ -281,6 +281,7 @@ int main()
 //                printf("\r");
                 printf("%d \t", right_touched[j]);
             }
+            printf("\n");
         }
     }
   }
