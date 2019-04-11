@@ -134,12 +134,15 @@ int main()
   int channels_to_read = 6;
   int left_baseline[6] = {558, 561, 559, 563, 551, 551};
   int right_baseline[6] = {558, 562, 555, 555, 556, 558};
+  int left_current[6] = {0, 0, 0, 0, 0, 0};
+  int right_current[6] = {0, 0, 0, 0, 0, 0};
+  int j, m;
   int val;
   int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
   int connected_thresh = 10;    //threshold for determining if shape is attached
-  redisReply *reply;
-  char* endptr;
+  redisReply *reply;            // holds reply from redis
+  char* endptr;                 // used for string to int conversion
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
   int cal_left = 0;             // if 1, we should grab next left reading and store as baseline calibration
   int cal_right = 0;            // if 1, we should grab next right reading and store as baseline calibration
@@ -182,17 +185,8 @@ int main()
 //  for (i=0; i<1000; i++){
 
     // see if we're supposed to grab new calibration values on this turn
-
-//    printf("%ld\n", strtoimax(" -123junk",&endptr,10));
-
     reply = redisCommand(c, "GET get_calib");
-
-    printf("PING: %s\n", reply->str);
-
     calib = strtoimax(reply->str,&endptr,10);
-
-    printf("%d \t", calib);
-
 
     if (calib > 0) {
         if (calib == 1 || calib == 3) {
@@ -207,33 +201,35 @@ int main()
 
     // read nchannels (8 bits in LB and 2 bits in high byte) all at once
     if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
-      printf("Error while reading filtered data\n");
+        printf("Error while reading filtered data\n");
     } else {
 
-      // tell redis we're getting live readings
-      current_time = time(NULL);
-      if (current_time != last_update_left) {
-        redisCommand(c, "SET left_sensor_last_update %d", current_time);
-        last_update_left = current_time;
-      }
+        // tell redis we're getting live readings for the left
+        current_time = time(NULL);
+        if (current_time != last_update_left) {
+            redisCommand(c, "SET left_sensor_last_update %d", current_time);
+            last_update_left = current_time;
+        }
 
-
-        int j, m;
-//        printf("Left: ");
+        // get new readings for left
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-          val = filtdata[m] | (filtdata[m+1] << 8);
+            left_current[j] = filtdata[m] | (filtdata[m+1] << 8);
+        }
 
-          // keep track of whether there's an object being held or not
-          if (m == 0 && left_connected == 1 && (left_baseline[0] - val) < connected_thresh ) {
+        // keep track of whether there's an object being held or not
+        if (left_connected == 1 && (left_baseline[0] - left_current[0]) < connected_thresh ) {
             left_connected = 0;
             redisCommand(c, "SET left_connected 0");
-          } else if (m == 0 && left_connected == 0 && (left_baseline[0] - val) >= connected_thresh ) {
+        } else if (left_connected == 0 && (left_baseline[0] - left_current[0]) >= connected_thresh ) {
             left_connected = 1;
             redisCommand(c, "SET left_connected 1");
-          }
+        }
 
-          printf("%d \t", val);
-    	}
+        for (j = 0; j < 6; j++) {
+            printf("%d \t", left_current[j]);
+        }
+
+
 
     }
 
@@ -252,7 +248,6 @@ int main()
 
 
 
-        int j, m;
         printf("\t");
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
           val = filtdata[m] | (filtdata[m+1] << 8);
