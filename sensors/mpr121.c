@@ -73,7 +73,7 @@ upm_result_t mpr121_configure(mpr121_context dev){
 
     // Filter configuration (added)
     // reg 0x5c
-      uint8_t filterConfc = 0x00; // 6 samples, disable electrode charing
+//      uint8_t filterConfc = 0x00; // 6 samples, disable electrode charing
       uint8_t filterConfc = 0x50; // 10 samples, 16ua electrode charging
     if (mpr121_write_bytes(dev, 0x5c, &filterConfc, 1) != UPM_SUCCESS){
         printf("unable to configure filters\n");
