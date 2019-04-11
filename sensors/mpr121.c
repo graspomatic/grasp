@@ -183,13 +183,13 @@ int main()
 
     // see if we're supposed to grab new calibration values on this turn
 
-    printf("%ld\n", strtoimax(" -123junk",&endptr,10));
+//    printf("%ld\n", strtoimax(" -123junk",&endptr,10));
 
     reply = redisCommand(c, "GET get_calib");
 
     printf("PING: %s\n", reply->str);
 
-    calib = strtoimax(reply->str,&endptr,10));
+    calib = strtoimax(reply->str,&endptr,10);
 
     printf("%d \t", calib);
 
