@@ -1,4 +1,5 @@
 #include <time.h>
+#include <inttypes.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -138,6 +139,7 @@ int main()
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
   int connected_thresh = 10;    //threshold for determining if shape is attached
   redisReply *reply;
+  char* endptr;
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
   int cal_left = 0;             // if 1, we should grab next left reading and store as baseline calibration
   int cal_right = 0;            // if 1, we should grab next right reading and store as baseline calibration
@@ -183,16 +185,22 @@ int main()
 
 
     reply = redisCommand(c, "GET get_calib");
+
     printf("PING: %s\n", reply->str);
 
-//    if (calib > 0) {
-//        if (calib == 1 || calib == 3) {
-//            cal_left = 1;
-//        } else if (calib == 2 || calib == 3) {
-//            cal_right = 1;
-//        }
-//        redisCommand(c, "SET get_calib 0");
-//    }
+    calib = strtoimax(reply->str,&endptr,10));
+
+
+
+
+    if (calib > 0) {
+        if (calib == 1 || calib == 3) {
+            cal_left = 1;
+        } else if (calib == 2 || calib == 3) {
+            cal_right = 1;
+        }
+        redisCommand(c, "SET get_calib 0");
+    }
 
 
 
