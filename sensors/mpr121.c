@@ -223,26 +223,26 @@ int main()
             redisCommand(c, "SET left_connected 1");
         }
 
-        // handle calibration
-        if (calib == 1 || calib == 3) {
-//            cal_left = left_current;
-            memcpy(cal_left, left_current, sizeof(left_current));
-        }
-
-        // determine which pads are touched
-        for (j = 0; j < 6; j++) {
-            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
-        }
-
-
-
-        if (print_output) {}
-            for (j = 0; j < 6; j++) {
-                printf("%d \t", left_current[j]);
-                printf("\r");
-                printf("%d \t", left_touched[j]);
-            }
-        }
+//        // handle calibration
+//        if (calib == 1 || calib == 3) {
+////            cal_left = left_current;
+//            memcpy(cal_left, left_current, sizeof(left_current));
+//        }
+//
+//        // determine which pads are touched
+//        for (j = 0; j < 6; j++) {
+//            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
+//        }
+//
+//
+//
+//        if (print_output) {}
+//            for (j = 0; j < 6; j++) {
+//                printf("%d \t", left_current[j]);
+//                printf("\r");
+//                printf("%d \t", left_touched[j]);
+//            }
+//        }
 
 
 
