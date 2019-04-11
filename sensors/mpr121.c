@@ -225,7 +225,6 @@ int main()
 
         // handle calibration
         if (calib == 1 || calib == 3) {
-//            cal_left = left_current;
             memcpy(cal_left, left_current, sizeof(left_current));
         }
 
@@ -234,8 +233,6 @@ int main()
             left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
         }
 
-
-
         if (print_output) {
             for (j = 0; j < 6; j++) {
 //                printf("%d \t", left_current[j]);
@@ -243,50 +240,50 @@ int main()
                 printf("%d \t", left_touched[j]);
             }
         }
-
-
-
     }
 
     if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
-      printf("Error while reading filtered data\n");
+        printf("Error while reading filtered data\n");
     } else {
 
-      // tell redis we're getting live readings
-      current_time = time(NULL);
-      if (current_time != last_update_right) {
-        redisCommand(c, "SET right_sensor_last_update %d", current_time);
-        last_update_right = current_time;
-      }
+      // tell redis we're getting live readings for the right
+        current_time = time(NULL);
+        if (current_time != last_update_right) {
+            redisCommand(c, "SET right_sensor_last_update %d", current_time);
+            last_update_right = current_time;
+        }
 
-//      redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
-
-
-
-        printf("\t");
+        // get new readings for left
         for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-          val = filtdata[m] | (filtdata[m+1] << 8);
+            right_current[j] = filtdata[m] | (filtdata[m+1] << 8);
+        }
 
-          // keep track of whether there's an object being held or not
-          if (m == 0 && right_connected == 1 && (right_baseline[0] - val) < connected_thresh ) {
+        // keep track (internally and in redis) of whether there's an object being held or not
+        if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
             right_connected = 0;
             redisCommand(c, "SET right_connected 0");
-          } else if (m == 0 && right_connected == 0 && (right_baseline[0] - val) >= connected_thresh ) {
+        } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
             right_connected = 1;
             redisCommand(c, "SET right_connected 1");
-          }
-
-          printf("%d \t", val);
         }
-      }
 
-//      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
+        // handle calibration
+        if (calib == 1 || calib == 3) {
+            memcpy(cal_right, right_current, sizeof(right_current));
+        }
 
+        // determine which pads are touched
+        for (j = 0; j < 6; j++) {
+            right_touched[j] = ((cal_right[j] - right_current[j]) > touched_thresh);
+        }
 
-   if (print_output) {
-	 printf("\n");
-     usleep(50000);
-   }
+        if (print_output) {
+            for (j = 0; j < 6; j++) {
+//                printf("%d \t", left_current[j]);
+//                printf("\r");
+                printf("%d \t", right_touched[j]);
+            }
+        }
   }
 
   clock_t end = clock();
