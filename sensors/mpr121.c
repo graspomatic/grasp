@@ -225,7 +225,8 @@ int main()
 
         // handle calibration
         if (calib == 1 || calib == 3) {
-            cal_left = left_current;
+//            cal_left = left_current;
+            memcpy(cal_left, left_current, sizeof(left_current));
         }
 
         // determine which pads are touched
