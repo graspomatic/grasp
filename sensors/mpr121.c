@@ -237,7 +237,7 @@ int main()
         }
       }
 
-//      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
+      redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
 
 
 //   if (print_output) {
