@@ -141,13 +141,14 @@ int main()
   int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
   int connected_thresh = 10;    //threshold for determining if shape is attached
+  int touched_thresh = 10;
   redisReply *reply;            // holds reply from redis
   char* endptr;                 // used for string to int conversion
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
-  int cal_left = 0;             // if 1, we should grab next left reading and store as baseline calibration
-  int cal_right = 0;            // if 1, we should grab next right reading and store as baseline calibration
-  int cal_left_values[6];       // holds baseline calibration for currently held shape
-  int cal_right_values[6];      // holds baseline calibration for currently held shape
+//  int cal_left = 0;             // if 1, we should grab next left reading and store as baseline calibration
+//  int cal_right = 0;            // if 1, we should grab next right reading and store as baseline calibration
+  int cal_left[6];       // holds baseline calibration for currently held shape
+  int cal_right[6];      // holds baseline calibration for currently held shape
   time_t current_time;
   time_t last_update_left = time(NULL);
   time_t last_update_right = time(NULL);
@@ -189,11 +190,6 @@ int main()
     calib = strtoimax(reply->str,&endptr,10);
 
     if (calib > 0) {
-        if (calib == 1 || calib == 3) {
-            cal_left = 1;
-        } else if (calib == 2 || calib == 3) {
-            cal_right = 1;
-        }
         redisCommand(c, "SET get_calib 0");
     }
 
@@ -225,8 +221,24 @@ int main()
             redisCommand(c, "SET left_connected 1");
         }
 
+        // handle calibration
+        if (calib == 1 || calib == 3) {
+            cal_left = left_current;
+        }
+
+        // determine which pads are touched
         for (j = 0; j < 6; j++) {
-            printf("%d \t", left_current[j]);
+            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh)
+        }
+
+
+
+        if (print_output) {}
+            for (j = 0; j < 6; j++) {
+                printf("%d \t", left_current[j]);
+                printf("\r");
+                printf("%d \t", left_touched[j]);
+            }
         }
 
 
