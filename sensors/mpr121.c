@@ -240,7 +240,7 @@ int main()
                 if (left_touched[j]) {
                     printf("t \t");
                 } else {
-                    printf("\t"]);
+                    printf("\t");
                 }
             }
         }
@@ -290,7 +290,7 @@ int main()
                 if (right_touched[j]) {
                     printf("t \t");
                 } else {
-                    printf("\t"]);
+                    printf("\t");
                 }
             }
             printf("\n");
