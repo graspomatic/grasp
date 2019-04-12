@@ -265,33 +265,33 @@ int main()
             right_current[j] = filtdata[m] | (filtdata[m+1] << 8);
         }
 
-//        // keep track (internally and in redis) of whether there's an object being held or not
-//        if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
-//            right_connected = 0;
-//            redisCommand(c, "SET right_connected 0");
-//        } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
-//            right_connected = 1;
-//            redisCommand(c, "SET right_connected 1");
-//        }
-//
-//        // handle calibration
-//        if (calib == 1 || calib == 3) {
-//            memcpy(cal_right, right_current, sizeof(right_current));
-//        }
-//
-//        // determine which pads are touched
-//        for (j = 0; j < 6; j++) {
-//            right_touched[j] = ((cal_right[j] - right_current[j]) > touched_thresh);
-//        }
+        // keep track (internally and in redis) of whether there's an object being held or not
+        if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
+            right_connected = 0;
+            redisCommand(c, "SET right_connected 0");
+        } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
+            right_connected = 1;
+            redisCommand(c, "SET right_connected 1");
+        }
+
+        // handle calibration
+        if (calib == 1 || calib == 3) {
+            memcpy(cal_right, right_current, sizeof(right_current));
+        }
+
+        // determine which pads are touched
+        for (j = 0; j < 6; j++) {
+            right_touched[j] = ((cal_right[j] - right_current[j]) > touched_thresh);
+        }
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
                 printf("%d ", right_current[j]);
-//                if (right_touched[j]) {
-//                    printf("t \t");
-//                } else {
-//                    printf("\t");
-//                }
+                if (right_touched[j]) {
+                    printf("t \t");
+                } else {
+                    printf("\t");
+                }
             }
             printf("\n");
         }
