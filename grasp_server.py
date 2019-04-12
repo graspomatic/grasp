@@ -421,7 +421,7 @@ async def magnets(left_status = [-1], right_status = [-1]):
 
 async def change_address(row, col, shapeid):
     # changes the address of a specified shape on the panel
-    # global redisslow
+    global redisslow
     row = int(row[0])               # row where shape is going
     col = int(col[0])               # col where shape is going
     shapeid = int(shapeid[0])       # shape id being placed
@@ -542,7 +542,7 @@ async def handle_request(reader, writer):
 
 # check redis for panel variable and initialize it if it doesn't exist
 def init_panel():
-    # global redisslow
+    global redisslow
     w = 2   # columns in panel
     h = 1   # rows
     d = 3   # depth (should be 3 for x, y, and ID
@@ -568,9 +568,7 @@ async def reader(ch):
         print("Got Message:", msg)
 
 async def connect_redis():
-    # global redisfast
-    # global redisslow
-    # global pub
+    global redisfast, redisslow, pub
     redisfast = await aioredis.create_redis(('localhost', 6379), loop=loop)
     redisslow = await aioredis.create_redis(('localhost', 6380), loop=loop)
     pub = await aioredis.create_redis(('localhost', 6379), loop=loop)
@@ -578,7 +576,7 @@ async def connect_redis():
 
 
 async def disconnect_redis():
-    # global redisfast, redisslow, pub
+    global redisfast, redisslow, pub
     redisfast.close()
     await redisfast.wait_closed()
 
