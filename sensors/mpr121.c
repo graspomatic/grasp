@@ -144,7 +144,7 @@ int main()
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
   int connected_thresh = 10;    //threshold for determining if shape is attached
   int touched_thresh = 10;
-  redisReply *reply;            // holds reply from redis
+//  redisReply *reply;            // holds reply from redis
   char* endptr;                 // used for string to int conversion
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
   int cal_left[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
