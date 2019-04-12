@@ -135,13 +135,15 @@ async def retrieve(side=-1, objid=0):
 
 
     if side == 0:
-        last_update = json.loads(redisfast.get('left_sensor_last_update'))
-        connected = json.loads(redisfast.get('left_connected'))
+        fut1 = json.loads(redisfast.get('left_sensor_last_update'))
+        fut2 = json.loads(redisfast.get('left_connected'))
         await pub.publish_json('WebClient', {"leftarm": "prep_pick"})
     else:
-        last_update = json.loads(redisfast.get('right_sensor_last_update'))
-        connected = json.loads(redisfast.get('right_connected'))
+        fut1 = json.loads(redisfast.get('right_sensor_last_update'))
+        fut2 = json.loads(redisfast.get('right_connected'))
         await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
+
+    last_update, connected = yield from asyncio.gather(fut1, fut2)
 
     print(last_update)
     print(connected)
