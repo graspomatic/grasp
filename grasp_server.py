@@ -422,9 +422,11 @@ async def magnets(left_status = [-1], right_status = [-1]):
 async def change_address(row, col, shapeid):
     # changes the address of a specified shape on the panel
     global redisslow
-    row = int(row[0])
-    col = int(col[0])
-    shapeid = int(shapeid[0])
+    row = int(row[0])               # row where shape is going
+    col = int(col[0])               # col where shape is going
+    shapeid = int(shapeid[0])       # shape id being placed
+
+    init_panel()
 
     # get the panel values from redis
     panel = await redisslow.get('panel')
@@ -539,22 +541,22 @@ async def handle_request(reader, writer):
 
 
 # check redis for panel variable and initialize it if it doesn't exist
-# def init_panel():
-#     global redis
-#     w = 2   # columns in panel
-#     h = 1   # rows
-#     d = 3   # depth (should be 3 for x, y, and ID
-#
-#     panel = np.zeros((h, w, d))
-#     panel[0, 0, 0] = 11.1
-#     panel[0, 0, 1] = 11.2
-#     panel[0, 0, 2] = 73
-#     panel[0, 1, 0] = 21.1
-#     panel[0, 1, 1] = 21.2
-#     panel[0, 1, 2] = 74
-#
-#     panelJSON = json.dumps(panel.tolist())
-#     r.set('panel', panelJSON)
+def init_panel():
+    global redisslow
+    w = 2   # columns in panel
+    h = 1   # rows
+    d = 3   # depth (should be 3 for x, y, and ID
+
+    panel = np.zeros((h, w, d))
+    panel[0, 0, 0] = 11.1
+    panel[0, 0, 1] = 11.2
+    panel[0, 0, 2] = 73
+    panel[0, 1, 0] = 21.1
+    panel[0, 1, 1] = 21.2
+    panel[0, 1, 2] = 74
+
+    panelJSON = json.dumps(panel.tolist())
+    redisslow.set('panel', panelJSON)
 
     # to retrieve:
     # np.array(json.loads(r.get('panel')))
