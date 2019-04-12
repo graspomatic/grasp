@@ -9,8 +9,8 @@ cp startup.sh /etc/init.d/startup.sh
 chmod +x /etc/init.d/startup.sh
 update-rc.d startup.sh defaults
 
-cp ./redis6379.conf /etc/redis/
-cp ./redis6380.conf /etc/redis/
+cp ./redis_6379.conf /etc/redis/
+cp ./redis_6380.conf /etc/redis/
 mkdir /var/lib/redis/6379
 mkdir /var/lib/redis/6380
 cp ./redis-server-6379 /etc/init.d
