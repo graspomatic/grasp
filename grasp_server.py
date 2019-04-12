@@ -143,7 +143,7 @@ async def retrieve(side=-1, objid=0):
         fut2 = json.loads(redisfast.get('right_connected'))
         await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
 
-    last_update, connected = yield from asyncio.gather(fut1, fut2)
+    last_update, connected = await asyncio.gather(fut1, fut2)
 
     print(last_update)
     print(connected)
