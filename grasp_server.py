@@ -569,9 +569,9 @@ async def connect_redis():
     global redisfast
     global redisslow
     global pub
-    redisfast = await aioredis.create_redis(('redis://localhost', 6379), loop=loop)
-    redisslow = await aioredis.create_redis(('redis://localhost', 6380), loop=loop)
-    pub = await aioredis.create_redis(('redis://localhost', 6379), loop=loop)
+    redisfast = await aioredis.create_redis(('localhost', 6379), loop=loop)
+    redisslow = await aioredis.create_redis(('localhost', 6380), loop=loop)
+    pub = await aioredis.create_redis(('localhost', 6379), loop=loop)
 
 
 
