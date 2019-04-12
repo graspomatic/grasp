@@ -149,6 +149,12 @@ async def retrieve(side=-1, objid=0):
     print(int(connected))
     print(int(time.time()))
 
+    if (int(time.time()) - int(last_update)) > 3:
+        print('not updating')
+
+    if not int(connected):
+        print('not picked up')
+
 
     await pub.publish_json('WebClient', {"leftsensor": "12"})
 
