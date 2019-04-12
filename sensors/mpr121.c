@@ -234,9 +234,9 @@ int main()
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-//                printf("%d \t", left_current[j]);
+                printf("%d \t", left_current[j]);
 //                printf("\r");
-                printf("%d \t", left_touched[j]);
+//                printf("%d \t", left_touched[j]);
             }
         }
     }
@@ -281,9 +281,9 @@ int main()
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-//                printf("%d \t", left_current[j]);
+                printf("%d \t", left_current[j]);
 //                printf("\r");
-                printf("%d \t", right_touched[j]);
+//                printf("%d \t", right_touched[j]);
             }
             printf("\n");
         }
