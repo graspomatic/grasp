@@ -104,7 +104,7 @@ async def retrieve(side=-1, objid=0):
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
     # find x-y position of requested object
-    x, y = find_address(objid)
+    x, y = await find_address(objid)
     print(x)
     print(y)
 
