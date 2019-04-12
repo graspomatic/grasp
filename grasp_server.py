@@ -421,13 +421,13 @@ async def magnets(left_status = [-1], right_status = [-1]):
 
 async def change_address(row, col, shapeid):
     # changes the address of a specified shape on the panel
-    global redis
+    global redisslow
     row = int(row[0])
     col = int(col[0])
     shapeid = int(shapeid[0])
 
     # get the panel values from redis
-    panel = await redis.get('panel')
+    panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
 
     # find if object is already on panel and remove it if so
@@ -439,7 +439,7 @@ async def change_address(row, col, shapeid):
     panel[row, col, 2] = shapeid
 
     # update redis
-    await redis.set('panel', json.dumps(panel.tolist()))
+    await redisslow.set('panel', json.dumps(panel.tolist()))
 
 
 async def ping():
@@ -566,17 +566,22 @@ async def reader(ch):
         print("Got Message:", msg)
 
 async def connect_redis():
-    global redis
+    global redisfast
+    global redisslow
     global pub
-    redis = await aioredis.create_redis('redis://localhost', loop=loop)
-    pub = await aioredis.create_redis('redis://localhost', loop=loop)
+    redisfast = await aioredis.create_redis(('redis://localhost', 6379), loop=loop)
+    redisslow = await aioredis.create_redis(('redis://localhost', 6380), loop=loop)
+    pub = await aioredis.create_redis(('redis://localhost', 6379), loop=loop)
 
 
 
 async def disconnect_redis():
-    global redis, pub
-    redis.close()
-    await redis.wait_closed()
+    global redisfast, redisslow, pub
+    redisfast.close()
+    await redisfast.wait_closed()
+
+    redisslow.close()
+    await redisslow.wait_closed()
 
     pub.close()
     await pub.wait_closed()
