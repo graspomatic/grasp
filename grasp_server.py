@@ -90,6 +90,7 @@ async def return_object(side = -1):
         await pub.publish_json('WebClient', {"rightsensor": "0"})
 
 async def retrieve(side=-1, objid=0):
+    global redisslow
     # Get the specified object ID on the specified arm
     print('retrieving side ' + str(side) + ' object ID ' + str(objid))
 
@@ -99,11 +100,16 @@ async def retrieve(side=-1, objid=0):
         return 0
 
     # move both arms to 'prep_pick' position
-
     dxl.move_arm_to_pos(arm=0, pos='prep_pick')
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
     # find x-y position of requested object
+    x, y = find_address(objid)
+    print(x)
+    print(y)
+
+    return
+
 
     # move x-y motors to that spot for the specified arm
 
@@ -418,6 +424,30 @@ async def magnets(left_status = [-1], right_status = [-1]):
     elif right_status == 1:
         await loop.create_task(mags.energize(1))
         await pub.publish_json('WebClient', {"rightmag": "1"})
+
+async def find_address(shapeid=0):
+    global redisslow
+
+    if shapeid <= 1:
+        print('need a number >1')
+        return -1
+
+    panel = await redisslow.get('panel')
+    panel = np.array(json.loads(panel))
+    add = np.where(panel[:, :, 2] == shapeid)
+
+    if len(add[0]) == 0:
+        print('object not found on panel')
+        return -1
+    elif len(add[0]) > 1:
+        print('object on panel multiple times')
+        return -1
+
+    x = panel[add[0][0], add[1][0], 0]
+    y = panel[add[0][0], add[1][0], 1]
+
+    return x, y
+
 
 
 async def change_address(row, col, shapeid):
