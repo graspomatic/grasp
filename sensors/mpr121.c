@@ -186,12 +186,12 @@ int main()
 //  for (i=0; i<1000; i++){
 
     // see if we're supposed to grab new calibration values on this turn
-    reply = redisCommand(c, "GET get_calib");
-    calib = strtoimax(reply->str,&endptr,10);
+//    reply = redisCommand(c, "GET get_calib");
+//    calib = strtoimax(reply->str,&endptr,10);
 
-    if (calib > 0) {
-        redisCommand(c, "SET get_calib 0");
-    }
+//    if (calib > 0) {
+//        redisCommand(c, "SET get_calib 0");
+//    }
 
     /////////////////////
     // Read left channels
