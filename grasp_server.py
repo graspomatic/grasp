@@ -426,8 +426,6 @@ async def change_address(row, col, shapeid):
     col = int(col[0])               # col where shape is going
     shapeid = int(shapeid[0])       # shape id being placed
 
-    init_panel()
-
     # get the panel values from redis
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
