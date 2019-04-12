@@ -128,7 +128,7 @@ upm_result_t mpr121_configure(mpr121_context dev){
 int main()
 {
   int i, n = 1000;
-  int print_output = 0;
+  int print_output = 1;
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
@@ -236,9 +236,12 @@ int main()
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-//                printf("%d \t", left_current[j]);
-//                printf("\r");
-                printf("%d \t", left_touched[j]);
+                printf("%d", left_current[j]);
+                if (left_touched[j]) {
+                    printf("t \t");
+                } else {
+                    printf("\t"]);
+                }
             }
         }
     }
@@ -283,9 +286,12 @@ int main()
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-//                printf("%d \t", right_current[j]);
-//                printf("\r");
-                printf("%d \t", right_touched[j]);
+                printf("%d ", right_current[j]);
+                if (right_touched[j]) {
+                    printf("t \t");
+                } else {
+                    printf("\t"]);
+                }
             }
             printf("\n");
         }
