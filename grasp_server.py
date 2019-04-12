@@ -145,8 +145,10 @@ async def retrieve(side=-1, objid=0):
 
     last_update, connected = await asyncio.gather(fut1, fut2)
 
-    print(last_update)
-    print(connected)
+    print(int.from_bytes(last_update))
+    print(int.from_bytes(connected))
+    print(int(time.time()))
+
 
     await pub.publish_json('WebClient', {"leftsensor": "12"})
 
