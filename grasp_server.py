@@ -145,8 +145,8 @@ async def retrieve(side=-1, objid=0):
 
     last_update, connected = await asyncio.gather(fut1, fut2)
 
-    print(int.from_bytes(last_update, byteorder='big'))
-    print(int.from_bytes(connected, byteorder='big'))
+    print(int.from_bytes(last_update, byteorder='little'))
+    print(int.from_bytes(connected, byteorder='little'))
     print(int(time.time()))
 
 
