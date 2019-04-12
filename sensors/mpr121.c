@@ -128,7 +128,7 @@ upm_result_t mpr121_configure(mpr121_context dev){
 int main()
 {
   int i, n = 1000;
-  int print_output = 1;
+  int print_output = 0;
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
