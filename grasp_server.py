@@ -97,7 +97,7 @@ async def retrieve(side=-1, objid=0):
     # error checking
     if side != 0 and side != 1:
         print('specify side=0 (left) or side=1 (right)')
-        return 0
+        return
 
     # move both arms to 'prep_pick' position
     dxl.move_arm_to_pos(arm=0, pos='prep_pick')
