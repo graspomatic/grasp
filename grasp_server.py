@@ -90,7 +90,7 @@ async def return_object(side = -1):
         await pub.publish_json('WebClient', {"rightsensor": "0"})
 
 async def retrieve(side=-1, objid=0):
-    global redisslow
+    global redisslow, redisfast
     # Get the specified object ID on the specified arm
     print('retrieving side ' + str(side) + ' object ID ' + str(objid))
 
@@ -105,16 +105,12 @@ async def retrieve(side=-1, objid=0):
 
     # find x-y position of requested object
     x, y = await find_address(objid)
-    print(x)
-    print(y)
-
-    return
-
+    if x == -1: return
 
     # move x-y motors to that spot for the specified arm
 
     # move specified arm to 'pick' position
-    await loop.create_task(wait_for_dxl())
+    await loop.create_task(wait_for_xy())
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
 
@@ -136,10 +132,19 @@ async def retrieve(side=-1, objid=0):
 
     # ensure that object was picked up
     await loop.create_task(wait_for_dxl())
+
+
     if side == 0:
+        last_update = redisfast.get('left_sensor_last_update')
+        connected = redisfast.get('left_connected')
         await pub.publish_json('WebClient', {"leftarm": "prep_pick"})
     else:
+        last_update = redisfast.get('right_sensor_last_update')
+        connected = redisfast.get('right_connected')
         await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
+
+    print(last_update)
+    print(connected)
 
     await pub.publish_json('WebClient', {"leftsensor": "12"})
 
