@@ -193,8 +193,9 @@ int main()
         redisCommand(c, "SET get_calib 0");
     }
 
-
-
+    /////////////////////
+    // Read left channels
+    /////////////////////
     // read nchannels (8 bits in LB and 2 bits in high byte) all at once
     if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
         printf("Error while reading filtered data\n");
@@ -240,6 +241,9 @@ int main()
         }
     }
 
+    //////////////////////
+    // Read right channels
+    /////////////////////
     if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
         printf("Error while reading filtered data\n");
     } else {
