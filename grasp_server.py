@@ -599,7 +599,6 @@ loop.create_task(connect_redis())
 coro = asyncio.start_server(handle_request, '128.148.110.89', 8888, loop=loop)  # start a socket server
 # coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
 server = loop.run_until_complete(coro)
-initialize_dxl(level=1)
 
 # Serve requests until Ctrl+C is pressed
 print('Serving on {}'.format(server.sockets[0].getsockname()))

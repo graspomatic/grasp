@@ -285,6 +285,35 @@
         });
 
 
+        // ----------------- init options -------------------------------------
+        var init_arms_box = document.getElementById("init_arms");
+        init_arms_box.addEventListener("keyup", function(event) {
+              if (event.keyCode === 13) {
+                   event.preventDefault();
+                   document.getElementById("send_init_arms").click();
+              }
+        });
+
+        $('#send_init_arms').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var init_val = document.getElementById("init_arms").value;
+            var cmd = { "function":"initialize_dxl","level":init_val };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "send_init_arms failed" );
+              });
+        });
+
+
+
+
+
+
+
         // ------------------ manual command entry ----------------------------
 
         var manualcontrol = document.getElementById("manualcontrol");
@@ -576,6 +605,18 @@
         <input type="text" id="ylocation" class="form-control" placeholder="0">
         <div class="input-group-append">
             <button class="btn btn-primary" id="moveyaxis">Move</button>
+        </div>
+    </div>
+
+
+    <!--Initialization options-->
+    <div class="input-group col-4 mt-5">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Initialize Arms</span>
+        </div>
+        <input type="text" id="init_arms" class="form-control" placeholder="0.5">
+        <div class="input-group-append">
+            <button class="btn btn-primary" id="send_init_arms">Initialize</button>
         </div>
     </div>
 
