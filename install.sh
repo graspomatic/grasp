@@ -5,7 +5,7 @@ echo "$HOME/grasp/AppliedMotionControl" >> "$SITEDIR/grasp.pth"
 echo "$HOME/grasp/GPIOD" >> "$SITEDIR/grasp.pth"
 echo "$HOME/grasp/controller" >> "$SITEDIR/grasp.pth"
 
-cp startup.sh /etc/init.d/startup.sh
+cp startup.sh /etc/init.d/
 chmod +x /etc/init.d/startup.sh
 update-rc.d startup.sh defaults
 
