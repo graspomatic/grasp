@@ -144,7 +144,7 @@ int main()
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
   int connected_thresh = 10;    //threshold for determining if shape is attached
   int touched_thresh = 10;
-//  redisReply *reply;            // holds reply from redis
+  redisReply *reply;            // holds reply from redis
   char* endptr;                 // used for string to int conversion
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
   int cal_left[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
@@ -153,15 +153,15 @@ int main()
   time_t last_update_left = time(NULL);
   time_t last_update_right = time(NULL);
 
-//  redisContext *c = redisConnect("127.0.0.1", 6379);
-//  if (c == NULL || c->err) {
-//      if (c) {
-//          printf("Error: %s\n", c->errstr);
-//          // handle error
-//      } else {
-//          printf("Can't allocate redis context\n");
-//      }
-//  }
+  redisContext *c = redisConnect("127.0.0.1", 6379);
+  if (c == NULL || c->err) {
+      if (c) {
+          printf("Error: %s\n", c->errstr);
+          // handle error
+      } else {
+          printf("Can't allocate redis context\n");
+      }
+  }
 
 
 //  redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
@@ -186,12 +186,12 @@ int main()
 //  for (i=0; i<1000; i++){
 
     // see if we're supposed to grab new calibration values on this turn
-//    reply = redisCommand(c, "GET get_calib");
-//    calib = strtoimax(reply->str,&endptr,10);
+    reply = redisCommand(c, "GET get_calib");
+    calib = strtoimax(reply->str,&endptr,10);
 
-//    if (calib > 0) {
-//        redisCommand(c, "SET get_calib 0");
-//    }
+    if (calib > 0) {
+        redisCommand(c, "SET get_calib 0");
+    }
 
     /////////////////////
     // Read left channels
@@ -204,7 +204,7 @@ int main()
         // tell redis we're getting live readings for the left
         current_time = time(NULL);
         if (current_time != last_update_left) {
-//            redisCommand(c, "SET left_sensor_last_update %d", current_time);
+            redisCommand(c, "SET left_sensor_last_update %d", current_time);
             last_update_left = current_time;
         }
 
@@ -216,10 +216,10 @@ int main()
         // keep track of whether there's an object being held or not
         if (left_connected == 1 && (left_baseline[0] - left_current[0]) < connected_thresh ) {
             left_connected = 0;
-//            redisCommand(c, "SET left_connected 0");
+            redisCommand(c, "SET left_connected 0");
         } else if (left_connected == 0 && (left_baseline[0] - left_current[0]) >= connected_thresh ) {
             left_connected = 1;
-//            redisCommand(c, "SET left_connected 1");
+            redisCommand(c, "SET left_connected 1");
         }
 
         // handle calibration
@@ -234,9 +234,9 @@ int main()
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-                printf("%d \t", left_current[j]);
+//                printf("%d \t", left_current[j]);
 //                printf("\r");
-//                printf("%d \t", left_touched[j]);
+                printf("%d \t", left_touched[j]);
             }
         }
     }
@@ -251,7 +251,7 @@ int main()
       // tell redis we're getting live readings for the right
         current_time = time(NULL);
         if (current_time != last_update_right) {
-//            redisCommand(c, "SET right_sensor_last_update %d", current_time);
+            redisCommand(c, "SET right_sensor_last_update %d", current_time);
             last_update_right = current_time;
         }
 
@@ -263,10 +263,10 @@ int main()
         // keep track (internally and in redis) of whether there's an object being held or not
         if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
             right_connected = 0;
-//            redisCommand(c, "SET right_connected 0");
+            redisCommand(c, "SET right_connected 0");
         } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
             right_connected = 1;
-//            redisCommand(c, "SET right_connected 1");
+            redisCommand(c, "SET right_connected 1");
         }
 
         // handle calibration
@@ -281,9 +281,9 @@ int main()
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-                printf("%d \t", right_current[j]);
+//                printf("%d \t", right_current[j]);
 //                printf("\r");
-//                printf("%d \t", right_touched[j]);
+                printf("%d \t", right_touched[j]);
             }
             printf("\n");
         }
