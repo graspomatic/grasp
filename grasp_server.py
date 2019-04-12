@@ -165,6 +165,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
     # move xy to present to specified hand
 
     # once xy is in position, move specified arms to present
+    await wait_for_xy()
     if arms == 'both' or arms == 'left':
         dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle)
     if arms == 'both' or arms == 'right':
@@ -445,8 +446,6 @@ async def change_address(row, col, shapeid):
 async def ping():
     return 'pong'
 
-
-
 async def abort():
     global active_task
     print('canceling')
@@ -600,6 +599,7 @@ loop.create_task(connect_redis())
 coro = asyncio.start_server(handle_request, '128.148.110.89', 8888, loop=loop)  # start a socket server
 # coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
 server = loop.run_until_complete(coro)
+initialize_dxl(level=1)
 
 # Serve requests until Ctrl+C is pressed
 print('Serving on {}'.format(server.sockets[0].getsockname()))
