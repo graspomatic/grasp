@@ -135,12 +135,12 @@ async def retrieve(side=-1, objid=0):
 
 
     if side == 0:
-        last_update = redisfast.get('left_sensor_last_update')
-        connected = redisfast.get('left_connected')
+        last_update = json.loads(redisfast.get('left_sensor_last_update'))
+        connected = json.loads(redisfast.get('left_connected'))
         await pub.publish_json('WebClient', {"leftarm": "prep_pick"})
     else:
-        last_update = redisfast.get('right_sensor_last_update')
-        connected = redisfast.get('right_connected')
+        last_update = json.loads(redisfast.get('right_sensor_last_update'))
+        connected = json.loads(redisfast.get('right_connected'))
         await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
 
     print(last_update)
