@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "mpr121.h"
-#include <hiredis.h>
+//#include <hiredis.h>
 
 #define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
 
@@ -153,15 +153,15 @@ int main()
   time_t last_update_left = time(NULL);
   time_t last_update_right = time(NULL);
 
-  redisContext *c = redisConnect("127.0.0.1", 6379);
-  if (c == NULL || c->err) {
-      if (c) {
-          printf("Error: %s\n", c->errstr);
-          // handle error
-      } else {
-          printf("Can't allocate redis context\n");
-      }
-  }
+//  redisContext *c = redisConnect("127.0.0.1", 6379);
+//  if (c == NULL || c->err) {
+//      if (c) {
+//          printf("Error: %s\n", c->errstr);
+//          // handle error
+//      } else {
+//          printf("Can't allocate redis context\n");
+//      }
+//  }
 
 
 //  redisCommand(c, "PUBLISH WebClient {'rightsensor':'dc'}");  //works
@@ -204,7 +204,7 @@ int main()
         // tell redis we're getting live readings for the left
         current_time = time(NULL);
         if (current_time != last_update_left) {
-            redisCommand(c, "SET left_sensor_last_update %d", current_time);
+//            redisCommand(c, "SET left_sensor_last_update %d", current_time);
             last_update_left = current_time;
         }
 
@@ -216,10 +216,10 @@ int main()
         // keep track of whether there's an object being held or not
         if (left_connected == 1 && (left_baseline[0] - left_current[0]) < connected_thresh ) {
             left_connected = 0;
-            redisCommand(c, "SET left_connected 0");
+//            redisCommand(c, "SET left_connected 0");
         } else if (left_connected == 0 && (left_baseline[0] - left_current[0]) >= connected_thresh ) {
             left_connected = 1;
-            redisCommand(c, "SET left_connected 1");
+//            redisCommand(c, "SET left_connected 1");
         }
 
         // handle calibration
@@ -251,7 +251,7 @@ int main()
       // tell redis we're getting live readings for the right
         current_time = time(NULL);
         if (current_time != last_update_right) {
-            redisCommand(c, "SET right_sensor_last_update %d", current_time);
+//            redisCommand(c, "SET right_sensor_last_update %d", current_time);
             last_update_right = current_time;
         }
 
@@ -263,10 +263,10 @@ int main()
         // keep track (internally and in redis) of whether there's an object being held or not
         if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
             right_connected = 0;
-            redisCommand(c, "SET right_connected 0");
+//            redisCommand(c, "SET right_connected 0");
         } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
             right_connected = 1;
-            redisCommand(c, "SET right_connected 1");
+//            redisCommand(c, "SET right_connected 1");
         }
 
         // handle calibration
