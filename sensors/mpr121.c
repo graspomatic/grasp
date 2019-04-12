@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "mpr121.h"
-//#include <hiredis.h>
+#include <hiredis.h>
 
 #define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
 
