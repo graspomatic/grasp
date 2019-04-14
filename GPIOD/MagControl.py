@@ -25,6 +25,17 @@ class MAGS(object):
                 return
 
             lines.set_values([1, 0])
+            lines.set_values([0, 0])
+            lines.set_values([0, 0])
+            lines.set_values([0, 0])
+            lines.set_values([0, 0])
+            lines.set_values([0, 0])
+            lines.set_values([0, 0])
+            lines.set_values([0, 0])
+            lines.set_values([0, 0])
+
+
+
 
             # vals = lines.get_values()
             #
