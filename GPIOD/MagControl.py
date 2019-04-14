@@ -42,9 +42,9 @@ class MAGS(object):
                 print("Enter 0 (left) or 1 (right)")
                 return
 
-            lines.set_values([0, 1])
+            # lines.set_values([0, 1])
 
-            await asyncio.sleep(magcx.RELEASE_DUR - 0.001)  # subtract one ms for processing time
+            #await asyncio.sleep(magcx.RELEASE_DUR - 0.001)  # subtract one ms for processing time
             lines.set_values([0, 0])
             # vals = lines.get_values()
             #
