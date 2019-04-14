@@ -178,6 +178,7 @@ int main()
     printf("unable to configure device2\n");
   }
 
+  sleep(0.05);
 
   clock_t begin = clock();
 
