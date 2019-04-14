@@ -10,6 +10,22 @@
 
 #define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
 
+
+
+
+
+
+
+//////////////////////////////////////
+// I THINK THIS IS ONLY SETTING UP THE LEFT MPR121 !!!!!!!!!!!!!!
+/////////////////////////////////////
+
+
+
+
+
+
+
 // Local version of the sensor configuration for grasp
 upm_result_t mpr121_configure(mpr121_context dev){
     // Configure the mpr121 chip (mostly) as recommended in the AN3944 MPR121
@@ -178,6 +194,8 @@ int main()
     printf("unable to configure device2\n");
   }
 
+  // once, i ran this program just after plugging in sensors and left sensor was giving values in 200s
+  // as if it wasn't initialized properly. restarting this script fixed it. maybe this delay will fix that?
   sleep(0.05);
 
   clock_t begin = clock();
