@@ -314,8 +314,9 @@ int main()
             }
             printf("\n");
         }
-        delay(0.1);
+
     }
+    usleep(100000);
   }
 
   clock_t end = clock();
