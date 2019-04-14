@@ -194,8 +194,8 @@ int main()
     printf("unable to configure device2\n");
   }
 
-  // once, i ran this program just after plugging in sensors and left sensor was giving values in 200s
-  // as if it wasn't initialized properly. restarting this script fixed it. maybe this delay will fix that?
+  // twice, i ran this program just after plugging in sensors and left sensor was giving values in 200s
+  // as if it wasn't initialized properly. restarting this mpr121.c fixed it.
   sleep(0.05);
 
   clock_t begin = clock();
