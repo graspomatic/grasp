@@ -26,11 +26,11 @@ class MAGS(object):
 
             lines.set_values([1, 0])
 
-            vals = lines.get_values()
-
-            for val in vals:
-                print(val, end=' ')
-            print()
+            # vals = lines.get_values()
+            #
+            # for val in vals:
+            #     print(val, end=' ')
+            # print()
 
     async def deenergize(self, side=-1):
         with gpiod.Chip(magcx.CHIP) as chip:
@@ -46,8 +46,8 @@ class MAGS(object):
 
             await asyncio.sleep(magcx.RELEASE_DUR - 0.001)  # subtract one ms for processing time
             lines.set_values([0, 0])
-            vals = lines.get_values()
-
-            for val in vals:
-                print(val, end=' ')
-            print()
+            # vals = lines.get_values()
+            #
+            # for val in vals:
+            #     print(val, end=' ')
+            # print()
