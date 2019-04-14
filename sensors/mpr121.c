@@ -314,6 +314,7 @@ int main()
             }
             printf("\n");
         }
+        sleep(0.01);
     }
   }
 
