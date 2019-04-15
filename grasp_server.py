@@ -348,6 +348,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         print(i)
         print(orders[i])
         print(orders[i][0])
+        print(orders[i][1])
+        print(orders[i][2])
+        print(orders[i][2][0])
+        print(orders[i][2][1])
 
 
 
