@@ -178,6 +178,10 @@ class path_find():
                 add = self.get_address(panel, pick[1], right_offset)
                 orders.append(np.array([['p'], [1], add]))  # add this location to list
 
+
+                print(add)
+                print(type(add))
+
                 print(add[0])
                 print(right_offset[0])
                 print(add[1])
