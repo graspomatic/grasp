@@ -311,23 +311,23 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     #arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
         arms = 'left'
-        picking = [left_id]
+        # picking = [left_id]
     elif left_id == -1 and right_id > -1:
         arms = 'right'
-        picking = [right_id]
+        # picking = [right_id]
     elif left_id > -1 and right_id > -1:
         arms = 'both'
-        picking = [left_id, right_id]
+        # picking = [left_id, right_id]
 
     else:
         arms = 'neither'
 
     print(holding)
-    print(picking)
+    # print(picking)
     print(panel)
 
 
-    panel, orders = pf.plan_path(holding.tolist(), picking, panel)
+    panel, orders = pf.plan_path(holding.tolist(), [left_id, right_id], panel)
 
 
     print(panel)
