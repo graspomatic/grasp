@@ -1,13 +1,12 @@
 import numpy as np
 
-
 class path_find():
     def __init__(self):
-        self.panel = np.array([[[1, 10., 10.], [2, 20., 10.], [3, 30., 10.]],
-                          [[0, 10., 20.], [5, 20., 20.], [6, 30., 20.]],
-                          [[0, 10., 30.], [8, 20., 30.], [9, 30., 30.]]])
+        # self.panel = np.array([[[1, 10., 10.], [2, 20., 10.], [3, 30., 10.]],
+        #                   [[0, 10., 20.], [5, 20., 20.], [6, 30., 20.]],
+        #                   [[0, 10., 30.], [8, 20., 30.], [9, 30., 30.]]])
 
-        self.right_offset = np.array([12, 1])  # x-y offset for right arm re: left arm
+        # self.right_offset = np.array([12, 1])  # x-y offset for right arm re: left arm
 
 
 
@@ -17,7 +16,7 @@ class path_find():
 
         self.mid_point = np.array([20, 18])  # when only putting away something, aim for this spot
 
-        self.empties = self.find_empty_spots(self.panel)
+        # self.empties = self.find_empty_spots(self.panel)
 
     def distance(self, a, b):
         dif = np.subtract(a, b)

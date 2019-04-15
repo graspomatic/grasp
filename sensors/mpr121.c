@@ -11,21 +11,6 @@
 #define MPR121_ELE0_FILTDATA_REG 0x04     // filtered
 
 
-
-
-
-
-
-//////////////////////////////////////
-// I THINK THIS IS ONLY SETTING UP THE LEFT MPR121 !!!!!!!!!!!!!!
-/////////////////////////////////////
-
-
-
-
-
-
-
 // Local version of the sensor configuration for grasp
 upm_result_t mpr121_configure(mpr121_context dev){
     // Configure the mpr121 chip (mostly) as recommended in the AN3944 MPR121

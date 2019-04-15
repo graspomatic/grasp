@@ -7,8 +7,6 @@ import aioredis
 import atexit
 import time
 
-
-
 active_task = 0
 
 import AppliedMotionControl
@@ -23,12 +21,6 @@ mags = MagControl.MAGS()
 
 import path_find
 pf = path_find.path_find()
-
-# import redis
-# r = redis.Redis(host='localhost', port=6379, db=0)
-import aioredis
-# r = aioredis.create_redis('redis://localhost')
-
 
 
 async def return_object(side = -1):
@@ -297,7 +289,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         print('nothing on right')
 
     # get information from panels database
-    holding = await redisslow.get('holding')
+    fut1 = redisslow.get('panel')
+    fut2 = redisslow.get('holding')
+    fut3 = redisslow.get('arm_offset')
+    panel, holding, arm_offset = await asyncio.gather(fut1, fut2, fut3)
     holding = np.array(json.loads(holding))
 
     # make list of object to return, assuming that database and sensor readings agree on what we're holding
@@ -315,15 +310,31 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
 
 
+
+
+
     #arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
         arms = 'left'
+        panel, orders = pf.plan_path(holding, [left_id], panel)
     elif left_id == -1 and right_id > -1:
         arms = 'right'
+        panel, orders = pf.plan_path(holding, [right_id], panel)
     elif left_id > -1 and right_id > -1:
         arms = 'both'
+        panel, orders = pf.plan_path(holding, [left_id, right_id], panel)
     else:
         arms = 'neither'
+
+
+
+
+    print(panel)
+    print(orders)
+    return
+
+
+
 
     # if holding anything in left arm
     # await return_object(0)
