@@ -187,10 +187,20 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
     # once xy is in position, move specified arms to present
     await wait_for_xy()
+    if side == 0:
+        await pub.publish_json('WebClient', {"leftarm": "prep_present"})
+    else:
+        await pub.publish_json('WebClient', {"rightarm": "prep_present"})
     if arms == 'both' or arms == 'left':
         dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle)
     if arms == 'both' or arms == 'right':
         dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle)
+
+    await wait_for_dxl()
+    if side == 0:
+        await pub.publish_json('WebClient', {"leftarm": "present"})
+    else:
+        await pub.publish_json('WebClient', {"rightarm": "present"})
 
 
 async def wait_for_dxl():
