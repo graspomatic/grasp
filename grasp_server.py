@@ -327,7 +327,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     print(panel)
 
 
-    panel, orders = pf.plan_path(holding, picking, panel)
+    panel, orders = pf.plan_path(holding.tolist(), picking, panel)
 
 
     print(panel)
