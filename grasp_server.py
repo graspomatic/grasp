@@ -23,9 +23,9 @@ import path_find
 pf = path_find.path_find()
 
 
-async def return_object(side = -1):
-    # Put away the object currently held on specified side in the nearest empty spot
-    print("put away " + str(side))
+async def return_object(side=-1, add=[0,0]):
+    # Put away the object currently held on specified side in
+    print("put away " + str(side) + " at " + str(add))
 
     # error checking
     if side != 0 and side != 1:
@@ -44,9 +44,12 @@ async def return_object(side = -1):
     # find nearest empty spot on grid
 
     # move x-y motors to that empty spot
+    x.move_location(location=add[0], vel=0.1)
+    y.move_location(location=add[1], vel=0.1)
 
     # if x and y are finished moving, move arm to 'pick' position
     await loop.create_task(wait_for_dxl())
+    await loop.create_task(wait_for_xy())
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
 
@@ -81,7 +84,7 @@ async def return_object(side = -1):
     else:
         await pub.publish_json('WebClient', {"rightsensor": "0"})
 
-async def retrieve(side=-1, objid=0):
+async def retrieve(side=-1, objid=0, add=[0,0]):
     global redisslow, redisfast
     # Get the specified object ID on the specified arm
     print('retrieving side ' + str(side) + ' object ID ' + str(objid))
@@ -95,11 +98,9 @@ async def retrieve(side=-1, objid=0):
     dxl.move_arm_to_pos(arm=0, pos='prep_pick')
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
-    # find x-y position of requested object
-    x, y = await find_address(objid)
-    if x == -1: return
-
-    # move x-y motors to that spot for the specified arm
+    # move x-y motors to location of object
+    x.move_location(location=add[0], vel=0.1)
+    y.move_location(location=add[1], vel=0.1)
 
     # move specified arm to 'pick' position
     await loop.create_task(wait_for_xy())
@@ -339,7 +340,16 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     print(panel)
     print(orders)
+
+
+    prin(len(orders))
+
+
+
     return
+
+
+
 
 
 
@@ -347,7 +357,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     # if holding anything in left arm
     # await return_object(0)
     # if holding anything in right arm
-    await return_object(1)
+    # await return_object(1)
 
     if arms == 'left':
         await retrieve(side=0, objid=left_id)
