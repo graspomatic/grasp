@@ -287,8 +287,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     if not left_updated:
         print('not updating left')
+        return
     if not right_updated:
         print('not updating right')
+        return
     if not left_connected:
         print('nothing on left')
     if not right_connected:
@@ -297,11 +299,20 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     # get information from panels database
     holding = await redisslow.get('holding')
     holding = np.array(json.loads(holding))
-    print(holding)
-    print(holding[0])
-    print(holding[1])
 
-    return
+    # make list of object to return, assuming that database and sensor readings agree on what we're holding
+    if (left_connected and holding[0]) or (not left_connected and not holding[0]):
+        returning = [holding[0]]
+    else:
+        print('incompatibility between what the database says and what sensors say for left')
+        return
+
+    if (right_connected and holding[1]) or (not right_connected and not holding[1]):
+        returning.append(holding[1])
+    else:
+        print('incompatibility between what the database says and what sensors say for left')
+        return
+
 
 
     #arms that will be used for retrieving objects
