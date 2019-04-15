@@ -69,10 +69,7 @@ class path_find():
 
     def plan_path(self, drop, pick, panel, right_offset):
 
-        print(add[0])
-        print(right_offset[0])
-        print(add[1])
-        print(right_offset[1])
+
 
 
         # error checking
@@ -180,6 +177,15 @@ class path_find():
             if pick[1]:
                 add = self.get_address(panel, pick[1], right_offset)
                 orders.append(np.array([['p'], [1], add]))  # add this location to list
+
+                print(add[0])
+                print(right_offset[0])
+                print(add[1])
+                print(right_offset[1])
+
+
+
+
                 panel, empties = self.change_panel_entry(panel, add[0] + right_offset[0], add[1] + right_offset[1], 0, empties)  # update panel
 
 
