@@ -69,6 +69,12 @@ class path_find():
 
     def plan_path(self, drop, pick, panel, right_offset):
 
+        print(add[0])
+        print(right_offset[0])
+        print(add[1])
+        print(right_offset[1])
+
+
         # error checking
         if not isinstance(drop, list):
             print(type(drop))
