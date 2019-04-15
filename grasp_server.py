@@ -333,7 +333,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
     fut2 = redisslow.set('holding', json.dumps(picking))
-    # await redisslow.set('panel', json.dumps(panel.tolist()))
     await asyncio.gather(fut1, fut2)
 
 
@@ -352,6 +351,13 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         print(orders[i][2])
         print(orders[i][2][0])
         print(orders[i][2][1])
+
+        order = orders[i][0][0]
+        side = orders[i][1][0]
+        location = orders[i][2]
+
+        if order == 'p':
+            print('picking up with arm ' + str(side) + ' at location ' + str(location))
 
 
 
