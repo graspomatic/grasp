@@ -71,6 +71,7 @@ class path_find():
 
         # error checking
         if not isinstance(drop, list):
+            print(type(drop))
             print('drop needs to be a list')
             return 0
         if drop[0] < 0 or drop[1] < 0:
