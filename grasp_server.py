@@ -294,6 +294,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     fut3 = redisslow.get('arm_offset')
     panel, holding, arm_offset = await asyncio.gather(fut1, fut2, fut3)
     panel = np.array(json.loads(panel))
+    holding = np.array(json.loads(holding))
 
     # make list of object to return, assuming that database and sensor readings agree on what we're holding
     if (left_connected and holding[0]) or (not left_connected and not holding[0]):
@@ -329,7 +330,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     print(np.any(panel[:, :, 0] == picking[1]))
 
 
-    panel, orders = pf.plan_path(holding, picking, panel)
+    panel, orders = pf.plan_path(holding.tolist(), picking, panel)
 
 
     print(panel)
