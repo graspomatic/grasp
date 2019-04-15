@@ -260,6 +260,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     # left_id (integer) object id to present using left arm
     # right_id (integer) object id to present using right arm
 
+    global redisslow, redisfast
+
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
@@ -269,6 +271,38 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     if hand == -1:
         print('specify which hand to present to, 0 or 1 for left or right')
         return
+
+    ## determine arms that will be used for returning objects
+    # get information from sensors
+    fut1 = redisfast.get('left_sensor_last_update')
+    fut2 = redisfast.get('left_connected')
+    fut3 = redisfast.get('right_sensor_last_update')
+    fut4 = redisfast.get('right_connected')
+    left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
+
+    left_updated = (int(time.time()) - int(left_last_update)) < 3
+    right_updated = (int(time.time()) - int(right_last_update)) < 3
+    left_connected = int(left_connected)
+    right_connected = int(right_connected)
+
+    if not left_updated:
+        print('not updating left')
+    if not right_updated:
+        print('not updating right')
+    if not left_connected:
+        print('nothing on left')
+    if not right_connected:
+        print('nothing on right')
+
+    # get information from panels database
+    holding = await redisslow.get('holding')
+    holding = np.array(json.loads(holding))
+    print(holding)
+    print(holding[0])
+    print(holding[1])
+
+    return
+
 
     #arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
