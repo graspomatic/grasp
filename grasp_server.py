@@ -556,7 +556,7 @@ async def abort():
         print('we dont have anything to cancel!')
 
 
-
+# function=pick_and_place&hand=0&right_id=4
 
 fx_list = {
     'pick_and_place': pick_and_place,
