@@ -308,25 +308,26 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         print('incompatibility between what the database says and what sensors say for left')
         return
 
-
-
-
-
-
     #arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
         arms = 'left'
-        panel, orders = pf.plan_path(holding, [left_id], panel)
+        picking = [left_id]
     elif left_id == -1 and right_id > -1:
         arms = 'right'
-        panel, orders = pf.plan_path(holding, [right_id], panel)
+        picking = [right_id]
     elif left_id > -1 and right_id > -1:
         arms = 'both'
-        panel, orders = pf.plan_path(holding, [left_id, right_id], panel)
+        picking = [left_id, right_id]
+
     else:
         arms = 'neither'
 
+    print(holding)
+    print(picking)
+    print(panel)
 
+
+    panel, orders = pf.plan_path(holding, picking, panel)
 
 
     print(panel)
