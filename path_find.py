@@ -86,10 +86,10 @@ class path_find():
         if pick[0] > 0 and pick[0] == pick[1]:
             print('youre asking for the same object on two arms!')
             return 0
-        if pick[0] and not np.any(panel[:, :, 0] == pick[0]) and pick[0] not in drop:
+        if pick[0] and not np.any(panel[:, :, 2] == pick[0]) and pick[0] not in drop:
             print('we dont have access to the object requested on left')
             return 0
-        if pick[1] and not np.any(panel[:, :, 0] == pick[1]) and pick[1] not in drop:
+        if pick[1] and not np.any(panel[:, :, 2] == pick[1]) and pick[1] not in drop:
             print('we dont have access to the object requested on right')
             return 0
         if drop[0] == drop[1]:
