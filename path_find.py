@@ -174,8 +174,7 @@ class path_find():
             if pick[1]:
                 add = self.get_address(panel, pick[1], right_offset)
                 orders.append(np.array([['p'], [1], add]))  # add this location to list
-                panel, empties = self.change_panel_entry(panel, add[0] + right_offset[0],
-                add[1] + right_offset[1], 0, empties)  # update panel
+                panel, empties = self.change_panel_entry(panel, add[0] + right_offset[0], add[1] + right_offset[1], 0, empties)  # update panel
 
 
         return panel, orders
