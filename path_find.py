@@ -166,15 +166,17 @@ class path_find():
                     panel, empties = self.change_panel_entry(panel, xy[0] + self.right_offset[0], xy[1] + self.right_offset[1], drop[1], empties)  # update panel
                     empties = self.find_empty_spots(panel)  # update empties
 
-                    orders.append(np.array([['p'], [1], add]))  # add this location to list
-                    print(add[0])
-                    print(add[1])
-                    panel, empties = self.change_panel_entry(panel, add[0] + self.right_offset[0], add[1] + self.right_offset[1], 0, empties)  # update panel
-
                 else:   # we need to drop off right, but not pick up anything else
                     xy = self.find_nearest(self.mid_point, empties - self.right_offset)  # find empty spot
                     orders.append(np.array([['d'], [1], xy]))  # add this location to list
                     panel, empties = self.change_panel_entry(panel, xy[0] + self.right_offset[0], xy[1] + self.right_offset[1], drop[1], empties)  # update panel
+
+            if pick[1]:
+                add = self.get_address(panel, pick[1], self.right_offset)
+                orders.append(np.array([['p'], [1], add]))  # add this location to list
+                panel, empties = self.change_panel_entry(panel, add[0] + self.right_offset[0],
+                add[1] + self.right_offset[1], 0, empties)  # update panel
+
 
         return panel, orders
 
