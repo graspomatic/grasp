@@ -67,7 +67,7 @@ class path_find():
             address = row[0][1:] - offset
             return address
 
-    def plan_path(self, drop, pick, panel):
+    def plan_path(self, drop, pick, panel, right_offset):
 
         # error checking
         if not isinstance(drop, list):
@@ -117,7 +117,7 @@ class path_find():
 
         # handle special case of wanting an object we're already holding
         if pick[0] > 0 and pick[0] in drop or pick[1] > 0 and pick[1] in drop:
-            pair = self.find_nearest_pair(empties, self.right_offset)
+            pair = self.find_nearest_pair(empties, right_offset)
 
             if drop[0]:
                 orders.append(np.array([['d'], [0], pair[0]]))  # add this location to list
@@ -125,7 +125,7 @@ class path_find():
 
             if drop[1]:
                 orders.append(np.array([['d'], [1], pair[1]]))  # add this location to list
-                panel, empties = self.change_panel_entry(panel, pair[1][0] + self.right_offset[0], pair[1][1] + self.right_offset[1], drop[1], empties)  # update panel
+                panel, empties = self.change_panel_entry(panel, pair[1][0] + right_offset[0], pair[1][1] + right_offset[1], drop[1], empties)  # update panel
 
             if pick[0]:
                 add = self.get_address(panel, pick[0], np.array([0, 0]))
@@ -133,16 +133,16 @@ class path_find():
                 panel, empties = self.change_panel_entry(panel, add[0], add[1], 0, empties)  # update panel
 
             if pick[1]:
-                add = self.get_address(panel, pick[1], self.right_offset)
+                add = self.get_address(panel, pick[1], right_offset)
                 orders.append(np.array([['p'], [1], add]))  # add this location to list
-                panel, empties = self.change_panel_entry(panel, add[0] + self.right_offset[0], add[1] + self.right_offset[1], 0, empties)  # update panel
+                panel, empties = self.change_panel_entry(panel, add[0] + right_offset[0], add[1] + right_offset[1], 0, empties)  # update panel
 
         else:                   # we know that the required objects are on the board
             if drop[0]:         # if we need to drop an object from the left arm
                 if pick[0]:
                     add = self.get_address(panel, pick[0], np.array([0, 0]))
                 elif pick[1]:
-                    add = self.get_address(panel, pick[1], self.right_offset)
+                    add = self.get_address(panel, pick[1], right_offset)
                 else:
                     add = self.mid_point
 
@@ -159,23 +159,23 @@ class path_find():
 
             if drop[1]:         # if we need to drop off an object with the right arm
                 if pick[1]:     # and if we need to pick up and object with the right arm
-                    add = self.get_address(panel, pick[1], self.right_offset)
-                    xy = self.find_nearest(add, empties - self.right_offset)  # find empty spot
+                    add = self.get_address(panel, pick[1], right_offset)
+                    xy = self.find_nearest(add, empties - right_offset)  # find empty spot
 
                     orders.append(np.array([['d'], [1], xy]))  # add this location to list
-                    panel, empties = self.change_panel_entry(panel, xy[0] + self.right_offset[0], xy[1] + self.right_offset[1], drop[1], empties)  # update panel
+                    panel, empties = self.change_panel_entry(panel, xy[0] + right_offset[0], xy[1] + right_offset[1], drop[1], empties)  # update panel
                     empties = self.find_empty_spots(panel)  # update empties
 
                 else:   # we need to drop off right, but not pick up anything else
-                    xy = self.find_nearest(self.mid_point, empties - self.right_offset)  # find empty spot
+                    xy = self.find_nearest(self.mid_point, empties - right_offset)  # find empty spot
                     orders.append(np.array([['d'], [1], xy]))  # add this location to list
-                    panel, empties = self.change_panel_entry(panel, xy[0] + self.right_offset[0], xy[1] + self.right_offset[1], drop[1], empties)  # update panel
+                    panel, empties = self.change_panel_entry(panel, xy[0] + right_offset[0], xy[1] + right_offset[1], drop[1], empties)  # update panel
 
             if pick[1]:
-                add = self.get_address(panel, pick[1], self.right_offset)
+                add = self.get_address(panel, pick[1], right_offset)
                 orders.append(np.array([['p'], [1], add]))  # add this location to list
-                panel, empties = self.change_panel_entry(panel, add[0] + self.right_offset[0],
-                add[1] + self.right_offset[1], 0, empties)  # update panel
+                panel, empties = self.change_panel_entry(panel, add[0] + right_offset[0],
+                add[1] + right_offset[1], 0, empties)  # update panel
 
 
         return panel, orders
