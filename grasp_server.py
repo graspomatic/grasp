@@ -330,8 +330,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     panel, orders = pf.plan_path(holding.tolist(), picking, panel, arm_offset)
 
-    fut1 = redisslow.set('panel', panel)
-    fut2 = redisslow.set('holding', picking)
+    fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
+    fut2 = redisslow.set('holding', json.dumps(picking.tolist()))
+    # await redisslow.set('panel', json.dumps(panel.tolist()))
     await asyncio.gather(fut1, fut2)
 
 
