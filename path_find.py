@@ -56,11 +56,13 @@ class path_find():
 
     def get_address(self, panel, id, offset):
         if id < 1:
+            print('id must be positive integer')
             return 0
 
         ids = panel[:, :, 0]                # get all the ids on the panel
         ind = np.where(ids == id)           # index of requested object
         if np.size(ind) == 0:
+            print('object not found')
             return 0
         else:
             row = panel[ind[0][0], [ind[1][0]]] # row for this object
