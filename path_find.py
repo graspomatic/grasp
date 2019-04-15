@@ -9,6 +9,12 @@ class path_find():
 
         self.right_offset = np.array([12, 1])  # x-y offset for right arm re: left arm
 
+
+
+        # get arm_offset
+
+
+
         self.mid_point = np.array([20, 18])  # when only putting away something, aim for this spot
 
         self.empties = self.find_empty_spots(self.panel)
