@@ -128,6 +128,8 @@ class path_find():
             else:                                   # if we need one spot
                 pair = self.find_nearest(self.mid_point, empties)
 
+            print(pair)
+
             if drop[0]:
                 orders.append(np.array([['d'], [0], pair[0]]))  # add this location to list
                 panel, empties = self.change_panel_entry(panel, pair[0][0], pair[0][1], drop[0], empties)  # update panel
