@@ -101,9 +101,9 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     # move x-y motors to location of object
 
     print('moving x to ' + str(add[0]))
-    x.move_location(location=add[0], vel=0.1)
+    x.move_location(location=float(add[0]), vel=0.3)
     print('moving x to ' + str(add[1]))
-    y.move_location(location=add[1], vel=0.1)
+    y.move_location(location=float(add[1]), vel=0.3)
 
     # move specified arm to 'pick' position
     await loop.create_task(wait_for_xy())
