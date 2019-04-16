@@ -123,10 +123,11 @@ class path_find():
 
         # handle special case of wanting an object we're already holding
         if pick[0] > 0 and pick[0] in drop or pick[1] > 0 and pick[1] in drop:
-            if pick[0] > 0 and pick[1] > 0:         # if we need two spots
+            if drop[0] > 0 and drop[1] > 0:         # if we need two spots
                 pair = self.find_nearest_pair(empties, right_offset)
             else:                                   # if we need one spot
                 pair = self.find_nearest(self.mid_point, empties)
+                pair.append([0, 0])
 
             print(pair)
 
