@@ -87,7 +87,7 @@ async def return_object(side=-1, add=[0,0]):
 async def retrieve(side=-1, objid=0, add=[0,0]):
     global redisslow, redisfast
     # Get the specified object ID on the specified arm
-    print('retrieving side ' + str(side) + ' object ID ' + str(objid))
+    print('retrieving side ' + str(side) + ' object ID ' + str(objid) + ' at ' + str(add))
 
     # error checking
     if side != 0 and side != 1:
@@ -99,7 +99,10 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
     # move x-y motors to location of object
+
+    print('moving x to ' + str(add[0]))
     x.move_location(location=add[0], vel=0.1)
+    print('moving x to ' + str(add[1]))
     y.move_location(location=add[1], vel=0.1)
 
     # move specified arm to 'pick' position
