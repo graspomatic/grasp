@@ -140,7 +140,7 @@ class path_find():
                 if drop[0] > 1:
                     pair = np.append([pair], [[0, 0]], 0)
                 else:
-                    pair = np.append([[0, 0]], [pair], 0)
+                    pair = np.append([[0, 0]], [pair - right_offset], 0)
             print(pair)
 
             if drop[0]:
