@@ -44,8 +44,8 @@ async def return_object(side=-1, add=[0,0]):
     # find nearest empty spot on grid
 
     # move x-y motors to that empty spot
-    x.move_location(location=add[0], vel=0.1)
-    y.move_location(location=add[1], vel=0.1)
+    x.move_location(location=float(add[0]), vel=0.3)
+    y.move_location(location=float(add[1]), vel=0.3)
 
     # if x and y are finished moving, move arm to 'pick' position
     await loop.create_task(wait_for_dxl())
@@ -75,14 +75,14 @@ async def return_object(side=-1, add=[0,0]):
     await loop.create_task(wait_for_dxl())
 
     if side == 0:
-        await pub.publish_json('WebClient', {"leftarm": "prep_pick"})
+        await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": "0"})
     else:
-        await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
+        await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": "0"})
 
-    if side == 0:
-        await pub.publish_json('WebClient', {"leftsensor": "0"})
-    else:
-        await pub.publish_json('WebClient', {"rightsensor": "0"})
+    # if side == 0:
+    #     await pub.publish_json('WebClient', {"leftsensor": "0"})
+    # else:
+    #     await pub.publish_json('WebClient', {"rightsensor": "0"})
 
 async def retrieve(side=-1, objid=0, add=[0,0]):
     global redisslow, redisfast
@@ -360,9 +360,13 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         side = orders[i][1][0]
         location = orders[i][2]
 
-        # if order == 'p':
-        #     print('picking up with arm ' + str(side) + ' at location ' + str(location))
-        #     await retrieve(side=0, objid=left_id, add=location)
+        if order == 'd':
+            print('dropping off with arm ' + str(side) + ' at location ' + str(location))
+            await return_object(side=0, add=location)
+
+        if order == 'p':
+            print('picking up with arm ' + str(side) + ' at location ' + str(location))
+            await retrieve(side=0, objid=left_id, add=location)
 
 
 
