@@ -130,7 +130,7 @@ class path_find():
                 print('pair')
                 print(pair)
                 print(type(pair))
-                pair = np.append(pair, [[0, 0]], 0)
+                pair = np.append([pair], [[0, 0]], 0)
 
             print(pair)
 
