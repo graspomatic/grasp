@@ -430,6 +430,10 @@ async def get_dxl_positions():
 async def set_dxl_positions(side=[-1], position=['blah']):
     print('setting positions of one arm')
     side = int(side[0])
+    position = str(position[0])
+
+    print(position)
+    print(int(position))
 
 
     if (side != 0 and side != 1):
@@ -437,7 +441,7 @@ async def set_dxl_positions(side=[-1], position=['blah']):
         return
 
     if len(position.split()) == 1:
-        position = str(position[0])
+
         dxl.move_arm_to_pos(arm=side, pos=position)
         await loop.create_task(wait_for_dxl())
         if side == 0:
@@ -450,7 +454,7 @@ async def set_dxl_positions(side=[-1], position=['blah']):
         elif side == 1:
             motors = [21, 22, 23]
 
-        dxl.sync_set_position(motors, position)
+        dxl.sync_set_position(motors, int(position))
 
 
 
