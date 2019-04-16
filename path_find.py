@@ -100,7 +100,7 @@ class path_find():
         if drop[0] > 0 and drop[0] == drop[1]:
             print('youre trying to drop off two of the same objects')
             return 0
-        if np.any(panel[:, :, 0] == drop[0]) or np.any(panel[:, :, 0] == drop[1]):
+        if (drop[0] > 0 and np.any(panel[:, :, 0] == drop[0])) or (drop[1] > 0 and np.any(panel[:, :, 0] == drop[1])):
             print('youre trying to drop off an object thats already on the panel')
             return 0
 
