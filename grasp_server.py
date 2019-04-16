@@ -434,6 +434,7 @@ async def set_dxl_positions(side=[-1], position=['blah']):
 
     print(position)
     print(position.split(','))
+    print(json.loads(position))
 
 
 
