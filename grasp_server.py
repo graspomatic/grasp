@@ -370,8 +370,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
 
 
-    return
-
 
 
 
@@ -383,14 +381,14 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     # if holding anything in right arm
     # await return_object(1)
 
-    if arms == 'left':
-        await retrieve(side=0, objid=left_id)
-    elif arms == 'right':
-        await retrieve(side=1, objid=right_id)
-    else:
-        # determine if its faster to get left or right first
-        await retrieve(side=0, objid=left_id)
-        await retrieve(side=1, objid=right_id)
+    # if arms == 'left':
+    #     await retrieve(side=0, objid=left_id)
+    # elif arms == 'right':
+    #     await retrieve(side=1, objid=right_id)
+    # else:
+    #     # determine if its faster to get left or right first
+    #     await retrieve(side=0, objid=left_id)
+    #     await retrieve(side=1, objid=right_id)
 
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
 
