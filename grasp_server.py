@@ -107,8 +107,9 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move specified arm to 'pick' position
     await loop.create_task(wait_for_xy())
+    await loop.create_task(wait_for_dxl())
     dxl.move_arm_to_pos(arm=side, pos='pick')
-    await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
+    await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
 
     # when arm has reached target location, energize magnet
     await loop.create_task(wait_for_dxl())
@@ -152,7 +153,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
         print('not picked up')
 
 
-    await pub.publish_json('WebClient', {"leftsensor": "12"})
+    await pub.publish_json('WebClient', {"leftsensor": str(objid)})
 
 
 async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
