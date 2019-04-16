@@ -127,7 +127,7 @@ class path_find():
                 pair = self.find_nearest_pair(empties, right_offset)
             else:                                   # if we need one spot
                 pair = self.find_nearest(self.mid_point, empties)
-                pair.append([0, 0])
+                np.append(pair, [0, 0])
 
             print(pair)
 
