@@ -29,6 +29,7 @@ class path_find():
 
     def change_panel_entry(self, panel, x, y, new_val, empties):
         loc = np.where(np.logical_and(panel[:, :, 1] == x, panel[:, :, 2] == y))
+        print(loc)
         panel[loc[0][0], loc[1][0], 0] = new_val
         empties = self.find_empty_spots(panel)
         print(panel)
