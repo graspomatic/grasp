@@ -433,7 +433,7 @@ async def set_dxl_positions(side=[-1], position=['blah']):
     position = str(position[0])
 
     print(position)
-    print(position.split())
+    print(position.split(','))
 
 
 
@@ -441,7 +441,8 @@ async def set_dxl_positions(side=[-1], position=['blah']):
         print('side must be 0 (left) or 1 (right)')
         return
 
-    if len(position.split()) == 1:
+    if len(position.split(',')) == 1:
+        print('heading to move arm to pos')
 
         dxl.move_arm_to_pos(arm=side, pos=position)
         await loop.create_task(wait_for_dxl())
@@ -449,7 +450,8 @@ async def set_dxl_positions(side=[-1], position=['blah']):
             await pub.publish_json('WebClient', {"leftarm": position})
         else:
             await pub.publish_json('WebClient', {"rightarm": position})
-    elif len(position.split()) == 3:
+    elif len(position.split(',')) == 3:
+        print('heading to sync set position')
         if side == 0:
             motors = [11, 12, 13]
         elif side == 1:
