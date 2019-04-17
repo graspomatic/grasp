@@ -311,7 +311,7 @@ int main()
 
 
   mpr121_close(dev);
-  mpr121_close(dev2);
+//  mpr121_close(dev2);
 
   return 0;
 }
