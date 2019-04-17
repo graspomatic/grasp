@@ -313,8 +313,8 @@ int main()
   printf("Elapsed approximately: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
 
 
-  mpr121_close(dev);
-//  mpr121_close(dev2);
+//  mpr121_close(dev);
+  mpr121_close(dev2);
 
   return 0;
 }
