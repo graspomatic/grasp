@@ -299,11 +299,14 @@ int main()
 //                    printf("\t");
 //                }
 //            }
-//            printf("\n");
 //        }
 //
 //    }
     usleep(100000);
+
+    if (print_output) {
+        printf("\n");
+    }
   }
 
   clock_t end = clock();
