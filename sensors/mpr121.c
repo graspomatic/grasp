@@ -133,8 +133,10 @@ int main()
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
-  int left_baseline[6] = {504, 512, 510, 556, 544, 553};
-  int right_baseline[6] = {507, 499, 517, 515, 516, 547};
+//  int left_baseline[6] = {504, 512, 510, 556, 544, 553};
+//  int right_baseline[6] = {507, 499, 517, 515, 516, 547};
+  int left_baseline[6] = {519, 536, 522, 568, 555, 572};
+  int right_baseline[6] = {519, 510, 530, 525, 534, 559};
   int left_current[6] = {0, 0, 0, 0, 0, 0};
   int right_current[6] = {0, 0, 0, 0, 0, 0};
   int left_touched[6] = {0, 0, 0, 0, 0, 0};
@@ -170,14 +172,14 @@ int main()
 
 
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
-  mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
+//  mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
 
   if(mpr121_configure(dev) != UPM_SUCCESS){
     printf("unable to configure device\n");
   }
-  if(mpr121_configure(dev2) != UPM_SUCCESS){
-    printf("unable to configure device2\n");
-  }
+//  if(mpr121_configure(dev2) != UPM_SUCCESS){
+//    printf("unable to configure device2\n");
+//  }
 
   // twice, i ran this program just after plugging in sensors and left sensor was giving values in 200s
   // as if it wasn't initialized properly. restarting this mpr121.c fixed it.
@@ -253,54 +255,54 @@ int main()
     //////////////////////
     // Read right channels
     /////////////////////
-    if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
-        printf("Error while reading filtered data\n");
-    } else {
-
-      // tell redis we're getting live readings for the right
-        current_time = time(NULL);
-        if (current_time != last_update_right) {
-            redisCommand(c, "SET right_sensor_last_update %d", current_time);
-            last_update_right = current_time;
-        }
-
-        // get new readings for right
-        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-            right_current[j] = filtdata[m] | (filtdata[m+1] << 8);
-        }
-
-        // keep track (internally and in redis) of whether there's an object being held or not
-        if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
-            right_connected = 0;
-            redisCommand(c, "SET right_connected 0");
-        } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
-            right_connected = 1;
-            redisCommand(c, "SET right_connected 1");
-        }
-
-        // handle calibration
-        if (calib == 1 || calib == 3) {
-            memcpy(cal_right, right_current, sizeof(right_current));
-        }
-
-        // determine which pads are touched
-        for (j = 0; j < 6; j++) {
-            right_touched[j] = ((cal_right[j] - right_current[j]) > touched_thresh);
-        }
-
-        if (print_output) {
-            for (j = 0; j < 6; j++) {
-                printf("%d ", right_current[j]);
-                if (right_touched[j]) {
-                    printf("t \t");
-                } else {
-                    printf("\t");
-                }
-            }
-            printf("\n");
-        }
-
-    }
+//    if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
+//        printf("Error while reading filtered data\n");
+//    } else {
+//
+//      // tell redis we're getting live readings for the right
+//        current_time = time(NULL);
+//        if (current_time != last_update_right) {
+//            redisCommand(c, "SET right_sensor_last_update %d", current_time);
+//            last_update_right = current_time;
+//        }
+//
+//        // get new readings for right
+//        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+//            right_current[j] = filtdata[m] | (filtdata[m+1] << 8);
+//        }
+//
+//        // keep track (internally and in redis) of whether there's an object being held or not
+//        if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
+//            right_connected = 0;
+//            redisCommand(c, "SET right_connected 0");
+//        } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
+//            right_connected = 1;
+//            redisCommand(c, "SET right_connected 1");
+//        }
+//
+//        // handle calibration
+//        if (calib == 1 || calib == 3) {
+//            memcpy(cal_right, right_current, sizeof(right_current));
+//        }
+//
+//        // determine which pads are touched
+//        for (j = 0; j < 6; j++) {
+//            right_touched[j] = ((cal_right[j] - right_current[j]) > touched_thresh);
+//        }
+//
+//        if (print_output) {
+//            for (j = 0; j < 6; j++) {
+//                printf("%d ", right_current[j]);
+//                if (right_touched[j]) {
+//                    printf("t \t");
+//                } else {
+//                    printf("\t");
+//                }
+//            }
+//            printf("\n");
+//        }
+//
+//    }
     usleep(100000);
   }
 
