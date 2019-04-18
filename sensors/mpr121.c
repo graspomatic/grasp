@@ -241,13 +241,13 @@ while (1==1) {
             left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
         }
 
-        for (j = 0; j < 6; j++) {
-            if ((left_current[j] - left_baseline[j]) > 100) {
-                print_output = 1;
-            } else {
-                print_output = 0;
-            }
-        }
+//        for (j = 0; j < 6; j++) {
+//            if ((left_current[j] - left_baseline[j]) > 100) {
+//                print_output = 1;
+//            } else {
+//                print_output = 0;
+//            }
+//        }
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
