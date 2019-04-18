@@ -302,7 +302,7 @@ int main()
 //        }
 //
 //    }
-    usleep(100000);
+    usleep(1000);
 
     if (print_output) {
         printf("\n");
