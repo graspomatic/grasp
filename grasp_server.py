@@ -13,8 +13,8 @@ import AppliedMotionControl
 x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649)
 y = AppliedMotionControl.AMC(motor_ip="10.10.10.11", local_port=60648)
 
-import Dynamixel2Control
-dxl = Dynamixel2Control.D2C()
+# import Dynamixel2Control
+# dxl = Dynamixel2Control.D2C()
 
 import MagControl
 mags = MagControl.MAGS()
