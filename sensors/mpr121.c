@@ -190,7 +190,7 @@ int main()
 
 //  for (i=0; i<n || print_output; i++){
 //  for (i=0; i<1000; i++){
-while 1 {
+while (1==1) {
 
     // see if we're supposed to grab new calibration values on this turn
     reply = redisCommand(c, "GET get_calib");
