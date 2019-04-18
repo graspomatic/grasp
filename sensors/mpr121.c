@@ -311,7 +311,7 @@ while (1==1) {
 //        }
 //
 //    }
-    usleep(1000);
+    usleep(50000);
 
     if (print_output) {
         printf("\n");
