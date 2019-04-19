@@ -251,7 +251,8 @@ while (1==1) {
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-                printf("%d", left_current[j] - left_baseline[j]);
+//                printf("%d", left_current[j] - left_baseline[j]);
+                printf("%d", left_current[j]);
                 if (left_touched[j]) {
                     printf("t \t");
                 } else {
@@ -301,7 +302,8 @@ while (1==1) {
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-                printf("%d ", right_current[j] - right_baseline[j]);
+//                printf("%d ", right_current[j] - right_baseline[j]);
+                printf("%d ", right_current[j]);
                 if (right_touched[j]) {
                     printf("t \t");
                 } else {
