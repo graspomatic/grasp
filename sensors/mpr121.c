@@ -135,8 +135,8 @@ int main()
   int channels_to_read = 6;
 //  int left_baseline[6] = {504, 512, 510, 556, 544, 553};
 //  int right_baseline[6] = {507, 499, 517, 515, 516, 547};
-  int left_baseline[6] = {519, 536, 522, 568, 555, 572};
-  int right_baseline[6] = {519, 510, 530, 525, 534, 559};
+  int left_baseline[6] = {519, 537, 523, 568, 556, 573};
+  int right_baseline[6] = {521, 511, 530, 524, 533, 557};
   int left_current[6] = {0, 0, 0, 0, 0, 0};
   int right_current[6] = {0, 0, 0, 0, 0, 0};
   int left_touched[6] = {0, 0, 0, 0, 0, 0};
@@ -251,7 +251,7 @@ while (1==1) {
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-                printf("%d", left_current[j]);
+                printf("%d", left_current[j] - left_baseline[j]);
                 if (left_touched[j]) {
                     printf("t \t");
                 } else {
@@ -301,7 +301,7 @@ while (1==1) {
 
         if (print_output) {
             for (j = 0; j < 6; j++) {
-                printf("%d ", right_current[j]);
+                printf("%d ", right_current[j] - right_baseline[j]);
                 if (right_touched[j]) {
                     printf("t \t");
                 } else {
