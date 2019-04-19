@@ -135,8 +135,8 @@ int main()
   int channels_to_read = 6;
 //  int left_baseline[6] = {504, 512, 510, 556, 544, 553};
 //  int right_baseline[6] = {507, 499, 517, 515, 516, 547};
-  int left_baseline[6] = {519, 537, 523, 568, 556, 573};
-  int right_baseline[6] = {521, 511, 530, 524, 533, 557};
+  int left_baseline[6] = {518, 535, 521, 567, 555, 572};
+  int right_baseline[6] = {517, 513, 526, 510, 525, 550};
   int left_current[6] = {0, 0, 0, 0, 0, 0};
   int right_current[6] = {0, 0, 0, 0, 0, 0};
   int left_touched[6] = {0, 0, 0, 0, 0, 0};
