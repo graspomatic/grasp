@@ -171,12 +171,12 @@ int main()
 //  redisCommand(c, "PUBLISH WebClient {'leftsensor':'2','rightsensor':'1'}"); //works
 
 
-//  mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
+  mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
 
-//  if(mpr121_configure(dev) != UPM_SUCCESS){
-//    printf("unable to configure device\n");
-//  }
+  if(mpr121_configure(dev) != UPM_SUCCESS){
+    printf("unable to configure device\n");
+  }
   if(mpr121_configure(dev2) != UPM_SUCCESS){
     printf("unable to configure device2\n");
   }
@@ -206,61 +206,61 @@ while (1==1) {
     // Read left channels
     /////////////////////
     // read nchannels (8 bits in LB and 2 bits in high byte) all at once
-//    if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
-//        printf("Error while reading filtered data\n");
-//    } else {
-//
-//        // tell redis we're getting live readings for the left
-//        current_time = time(NULL);
-//        if (current_time != last_update_left) {
-//            redisCommand(c, "SET left_sensor_last_update %d", current_time);
-//            last_update_left = current_time;
-//        }
-//
-//        // get new readings for left
-//        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-//            left_current[j] = filtdata[m] | (filtdata[m+1] << 8);
-//        }
-//
-//        // keep track of whether there's an object being held or not
-//        if (left_connected == 1 && (left_baseline[0] - left_current[0]) < connected_thresh ) {
-//            left_connected = 0;
-//            redisCommand(c, "SET left_connected 0");
-//        } else if (left_connected == 0 && (left_baseline[0] - left_current[0]) >= connected_thresh ) {
-//            left_connected = 1;
-//            redisCommand(c, "SET left_connected 1");
-//        }
-//
-//        // handle calibration
-//        if (calib == 1 || calib == 3) {
-//            memcpy(cal_left, left_current, sizeof(left_current));
-//        }
-//
-//        // determine which pads are touched
+    if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
+        printf("Error while reading filtered data\n");
+    } else {
+
+        // tell redis we're getting live readings for the left
+        current_time = time(NULL);
+        if (current_time != last_update_left) {
+            redisCommand(c, "SET left_sensor_last_update %d", current_time);
+            last_update_left = current_time;
+        }
+
+        // get new readings for left
+        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+            left_current[j] = filtdata[m] | (filtdata[m+1] << 8);
+        }
+
+        // keep track of whether there's an object being held or not
+        if (left_connected == 1 && (left_baseline[0] - left_current[0]) < connected_thresh ) {
+            left_connected = 0;
+            redisCommand(c, "SET left_connected 0");
+        } else if (left_connected == 0 && (left_baseline[0] - left_current[0]) >= connected_thresh ) {
+            left_connected = 1;
+            redisCommand(c, "SET left_connected 1");
+        }
+
+        // handle calibration
+        if (calib == 1 || calib == 3) {
+            memcpy(cal_left, left_current, sizeof(left_current));
+        }
+
+        // determine which pads are touched
+        for (j = 0; j < 6; j++) {
+            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
+        }
+
 //        for (j = 0; j < 6; j++) {
-//            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
-//        }
-//
-////        for (j = 0; j < 6; j++) {
-////            if ((left_current[j] - left_baseline[j]) > 100) {
-////                print_output = 1;
-////            } else {
-////                print_output = 0;
-////            }
-////        }
-//
-//        if (print_output) {
-//            for (j = 0; j < 6; j++) {
-//                printf("%d", left_current[j] - left_baseline[j]);
-////                printf("%d", left_current[j]);
-//                if (left_touched[j]) {
-//                    printf("t \t");
-//                } else {
-//                    printf("\t");
-//                }
+//            if ((left_current[j] - left_baseline[j]) > 100) {
+//                print_output = 1;
+//            } else {
+//                print_output = 0;
 //            }
 //        }
-//    }
+
+        if (print_output) {
+            for (j = 0; j < 6; j++) {
+                printf("%d", left_current[j] - left_baseline[j]);
+//                printf("%d", left_current[j]);
+                if (left_touched[j]) {
+                    printf("t \t");
+                } else {
+                    printf("\t");
+                }
+            }
+        }
+    }
 
     //////////////////////
     // Read right channels
@@ -324,7 +324,7 @@ while (1==1) {
   printf("Elapsed approximately: %f seconds\n", (double)(end - begin) / CLOCKS_PER_SEC * 5);
 
 
-//  mpr121_close(dev);
+  mpr121_close(dev);
   mpr121_close(dev2);
 
   return 0;
