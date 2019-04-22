@@ -150,7 +150,8 @@ int main()
   redisReply *reply;            // holds reply from redis
   char* endptr;                 // used for string to int conversion
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
-  int get_vals = 0;
+  int get_left = 0;
+  int get_right = 0;
   int reading = 0;
   int cal_left[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
   int cal_right[6] = {0, 0, 0, 0, 0, 0};      // holds baseline calibration for currently held shape
@@ -205,9 +206,14 @@ while (1==1) {
     }
 
     // see if we're supposed to grab values on this turn
-    reply = redisCommand(c, "GET get_values");
+    reply = redisCommand(c, "GET get_left");
     if (reply->type == REDIS_REPLY_STRING) {
-        get_vals = strtoimax(reply->str,&endptr,10);
+        get_left = strtoimax(reply->str,&endptr,10);
+    }
+    // see if we're supposed to grab values on this turn
+    reply = redisCommand(c, "GET get_right");
+    if (reply->type == REDIS_REPLY_STRING) {
+        get_right = strtoimax(reply->str,&endptr,10);
     }
 
 
@@ -237,7 +243,7 @@ while (1==1) {
     // Read left channels
     /////////////////////
 
-    if (get_vals == 1 || get_vals == 3) {
+    if (get_left) {
         // read nchannels (8 bits in LB and 2 bits in high byte) all at once
         if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
             printf("Error while reading filtered data\n");
@@ -292,7 +298,7 @@ while (1==1) {
                         printf("\t");
                     }
                 }
-                if (get_vals == 1) {
+                if (get_right == 0) {
                     printf("\n");
                 }
             }
@@ -305,7 +311,7 @@ while (1==1) {
     // Read right channels
     /////////////////////
 
-    if (get_vals == 2 || get_vals == 3) {
+    if (get_right) {
         if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
             printf("Error while reading filtered data\n");
         } else {

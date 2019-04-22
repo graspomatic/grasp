@@ -63,9 +63,9 @@ async def return_object(side=-1, add=[0,0]):
 
     await loop.create_task(mags.deenergize(side))
     if side == 0:
-        await pub.publish_json('WebClient', {"leftmag": "1"})
+        await pub.publish_json('WebClient', {"leftmag": "0"})
     else:
-        await pub.publish_json('WebClient', {"rightmag": "1"})
+        await pub.publish_json('WebClient', {"rightmag": "0"})
 
 
     # move arm to 'prep-pick' position
@@ -121,8 +121,10 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     await loop.create_task(mags.energize(side))
     if side == 0:
         await pub.publish_json('WebClient', {"leftmag": "1"})
+        await redisfast.set('get_left', '1')
     else:
         await pub.publish_json('WebClient', {"rightmag": "1"})
+        await redisfast.set('get_right', '1')
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
@@ -294,7 +296,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         print('nothing on right')
 
     # tell sensors to stop reading
-    await redisfast.set('get_values', '0')
+    await redisfast.set('get_left', '0')
+    await redisfast.set('get_right', '0')
 
     # get information from panels database
     fut1 = redisslow.get('panel')
