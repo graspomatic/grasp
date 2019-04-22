@@ -284,16 +284,16 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     left_connected = int(left_connected)
     right_connected = int(right_connected)
 
-    if not left_updated:
-        print('not updating left')
-        return
-    if not right_updated:
-        print('not updating right')
-        return
-    if not left_connected:
-        print('nothing on left')
-    if not right_connected:
-        print('nothing on right')
+    # if not left_updated:
+    #     print('not updating left')
+    #     return
+    # if not right_updated:
+    #     print('not updating right')
+    #     return
+    # if not left_connected:
+    #     print('nothing on left')
+    # if not right_connected:
+    #     print('nothing on right')
 
     # tell sensors to stop reading
     await redisfast.set('get_left', '0')
