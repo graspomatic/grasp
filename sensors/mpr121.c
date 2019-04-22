@@ -190,8 +190,8 @@ sleep(0.05);
 
 clock_t begin = clock();
 
-redisCommand(c, "SET left_connected 1");
-redisCommand(c, "SET right_connected 1");
+redisCommand(c, "SET left_connected 0");
+redisCommand(c, "SET right_connected 0");
 
 
 //  for (i=0; i<n || print_output; i++){
