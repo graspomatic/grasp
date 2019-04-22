@@ -150,6 +150,8 @@ int main()
   redisReply *reply;            // holds reply from redis
   char* endptr;                 // used for string to int conversion
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
+  int get_vals = 0;
+  int reading = 0;
   int cal_left[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
   int cal_right[6] = {0, 0, 0, 0, 0, 0};      // holds baseline calibration for currently held shape
   time_t current_time;
@@ -174,9 +176,9 @@ int main()
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
 
-  if(mpr121_configure(dev) != UPM_SUCCESS){
-    printf("unable to configure device\n");
-  }
+//  if(mpr121_configure(dev) != UPM_SUCCESS){
+//    printf("unable to configure device\n");
+//  }
   if(mpr121_configure(dev2) != UPM_SUCCESS){
     printf("unable to configure device2\n");
   }
@@ -202,61 +204,93 @@ while (1==1) {
         }
     }
 
+    // see if we're supposed to grab values on this turn
+    reply = redisCommand(c, "GET get_values");
+    if (reply->type == REDIS_REPLY_STRING) {
+        get_vals = strtoimax(reply->str,&endptr,10);
+    }
+
+
+
+//    // turn on or off
+//    if (reading == 0 && get_vals > 0) {
+//        reading = 1;
+//        if (get_vals == 1 || get_vals == 3) {
+//            if(mpr121_configure(dev) != UPM_SUCCESS){
+//                printf("unable to configure device\n");
+//            }
+//
+//        }
+//        if (get_vals == 2 || get_vals == 3) {
+//
+//        }
+//
+//
+//    } else if (reading == 1 && get_vals == 0) {
+//        reading = 0;
+//
+//    }
+
+
+
     /////////////////////
     // Read left channels
     /////////////////////
-    // read nchannels (8 bits in LB and 2 bits in high byte) all at once
-    if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
-        printf("Error while reading filtered data\n");
-    } else {
 
-        // tell redis we're getting live readings for the left
-        current_time = time(NULL);
-        if (current_time != last_update_left) {
-            redisCommand(c, "SET left_sensor_last_update %d", current_time);
-            last_update_left = current_time;
-        }
+    if (get_vals == 1 || get_vals == 3) {
+        // read nchannels (8 bits in LB and 2 bits in high byte) all at once
+        if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
+            printf("Error while reading filtered data\n");
+        } else {
 
-        // get new readings for left
-        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-            left_current[j] = filtdata[m] | (filtdata[m+1] << 8);
-        }
+            // tell redis we're getting live readings for the left
+            current_time = time(NULL);
+            if (current_time != last_update_left) {
+                redisCommand(c, "SET left_sensor_last_update %d", current_time);
+                last_update_left = current_time;
+            }
 
-        // keep track of whether there's an object being held or not
-        if (left_connected == 1 && (left_baseline[0] - left_current[0]) < connected_thresh ) {
-            left_connected = 0;
-            redisCommand(c, "SET left_connected 0");
-        } else if (left_connected == 0 && (left_baseline[0] - left_current[0]) >= connected_thresh ) {
-            left_connected = 1;
-            redisCommand(c, "SET left_connected 1");
-        }
+            // get new readings for left
+            for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+                left_current[j] = filtdata[m] | (filtdata[m+1] << 8);
+            }
 
-        // handle calibration
-        if (calib == 1 || calib == 3) {
-            memcpy(cal_left, left_current, sizeof(left_current));
-        }
+            // keep track of whether there's an object being held or not
+            if (left_connected == 1 && (left_baseline[0] - left_current[0]) < connected_thresh ) {
+                left_connected = 0;
+                redisCommand(c, "SET left_connected 0");
+            } else if (left_connected == 0 && (left_baseline[0] - left_current[0]) >= connected_thresh ) {
+                left_connected = 1;
+                redisCommand(c, "SET left_connected 1");
+            }
 
-        // determine which pads are touched
-        for (j = 0; j < 6; j++) {
-            left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
-        }
+            // handle calibration
+            if (calib == 1 || calib == 3) {
+                memcpy(cal_left, left_current, sizeof(left_current));
+            }
 
-//        for (j = 0; j < 6; j++) {
-//            if ((left_current[j] - left_baseline[j]) > 100) {
-//                print_output = 1;
-//            } else {
-//                print_output = 0;
-//            }
-//        }
-
-        if (print_output) {
+            // determine which pads are touched
             for (j = 0; j < 6; j++) {
-                printf("%d", left_current[j] - left_baseline[j]);
-//                printf("%d", left_current[j]);
-                if (left_touched[j]) {
-                    printf("t \t");
-                } else {
-                    printf("\t");
+                left_touched[j] = ((cal_left[j] - left_current[j]) > touched_thresh);
+            }
+
+    //        for (j = 0; j < 6; j++) {
+    //            if ((left_current[j] - left_baseline[j]) > 100) {
+    //                print_output = 1;
+    //            } else {
+    //                print_output = 0;
+    //            }
+    //        }
+
+            if (print_output) {
+                for (j = 0; j < 6; j++) {
+                    printf("%d", left_current[j] - left_baseline[j]);
+    //                printf("%d", left_current[j]);
+                    if (left_touched[j]) {
+                        printf("t \t");
+                    } else {
+                        printf("\t");
+                    }
                 }
             }
         }
@@ -265,59 +299,62 @@ while (1==1) {
     //////////////////////
     // Read right channels
     /////////////////////
-    if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
-        printf("Error while reading filtered data\n");
-    } else {
 
-      // tell redis we're getting live readings for the right
-        current_time = time(NULL);
-        if (current_time != last_update_right) {
-            redisCommand(c, "SET right_sensor_last_update %d", current_time);
-            last_update_right = current_time;
-        }
+    if (get_vals == 2 || get_vals == 3) {
+        if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
+            printf("Error while reading filtered data\n");
+        } else {
 
-        // get new readings for right
-        for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
-            right_current[j] = filtdata[m] | (filtdata[m+1] << 8);
-        }
+          // tell redis we're getting live readings for the right
+            current_time = time(NULL);
+            if (current_time != last_update_right) {
+                redisCommand(c, "SET right_sensor_last_update %d", current_time);
+                last_update_right = current_time;
+            }
 
-        // keep track (internally and in redis) of whether there's an object being held or not
-        if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
-            right_connected = 0;
-            redisCommand(c, "SET right_connected 0");
-        } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
-            right_connected = 1;
-            redisCommand(c, "SET right_connected 1");
-        }
+            // get new readings for right
+            for (j = 0, m = 0; j < channels_to_read; j++, m+=2) {
+                right_current[j] = filtdata[m] | (filtdata[m+1] << 8);
+            }
 
-        // handle calibration
-        if (calib == 1 || calib == 3) {
-            memcpy(cal_right, right_current, sizeof(right_current));
-        }
+            // keep track (internally and in redis) of whether there's an object being held or not
+            if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
+                right_connected = 0;
+                redisCommand(c, "SET right_connected 0");
+            } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
+                right_connected = 1;
+                redisCommand(c, "SET right_connected 1");
+            }
 
-        // determine which pads are touched
-        for (j = 0; j < 6; j++) {
-            right_touched[j] = ((cal_right[j] - right_current[j]) > touched_thresh);
-        }
+            // handle calibration
+            if (calib == 1 || calib == 3) {
+                memcpy(cal_right, right_current, sizeof(right_current));
+            }
 
-        if (print_output) {
+            // determine which pads are touched
             for (j = 0; j < 6; j++) {
-                printf("%d ", right_current[j] - right_baseline[j]);
-//                printf("%d ", right_current[j]);
-                if (right_touched[j]) {
-                    printf("t \t");
-                } else {
-                    printf("\t");
+                right_touched[j] = ((cal_right[j] - right_current[j]) > touched_thresh);
+            }
+
+            if (print_output) {
+                for (j = 0; j < 6; j++) {
+                    printf("%d ", right_current[j] - right_baseline[j]);
+    //                printf("%d ", right_current[j]);
+                    if (right_touched[j]) {
+                        printf("t \t");
+                    } else {
+                        printf("\t");
+                    }
                 }
             }
+
         }
+        usleep(50000);
 
-    }
-    usleep(50000);
-
-    if (print_output) {
-        printf("\n");
-    }
+        if (print_output) {
+            printf("\n");
+        }
+      }
   }
 
   clock_t end = clock();
