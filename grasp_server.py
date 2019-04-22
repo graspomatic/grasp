@@ -293,6 +293,11 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     if not right_connected:
         print('nothing on right')
 
+    # tell sensors to stop reading
+    await redisfast.set('get_values', '0')
+
+    return
+
     # get information from panels database
     fut1 = redisslow.get('panel')
     fut2 = redisslow.get('holding')
