@@ -292,7 +292,12 @@ while (1==1) {
                         printf("\t");
                     }
                 }
+                if (print_output) {
+                    printf("\n");
+                }
             }
+            usleep(20000);
+
         }
     }
 
@@ -349,7 +354,7 @@ while (1==1) {
             }
 
         }
-        usleep(50000);
+        usleep(20000);
 
         if (print_output) {
             printf("\n");
