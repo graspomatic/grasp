@@ -177,18 +177,21 @@ int main()
   mpr121_context dev = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR);
   mpr121_context dev2 = mpr121_init(MPR121_I2C_BUS, MPR121_DEFAULT_I2C_ADDR + 1);
 
-//  if(mpr121_configure(dev) != UPM_SUCCESS){
-//    printf("unable to configure device\n");
-//  }
-  if(mpr121_configure(dev2) != UPM_SUCCESS){
-    printf("unable to configure device2\n");
-  }
+if(mpr121_configure(dev) != UPM_SUCCESS){
+printf("unable to configure device\n");
+}
+if(mpr121_configure(dev2) != UPM_SUCCESS){
+printf("unable to configure device2\n");
+}
 
   // twice, i ran this program just after plugging in sensors and left sensor was giving values in 200s
   // as if it wasn't initialized properly. restarting this mpr121.c fixed it.
-  sleep(0.05);
+sleep(0.05);
 
-  clock_t begin = clock();
+clock_t begin = clock();
+
+redisCommand(c, "SET left_connected 1");
+redisCommand(c, "SET right_connected 1");
 
 
 //  for (i=0; i<n || print_output; i++){
