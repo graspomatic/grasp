@@ -292,7 +292,7 @@ while (1==1) {
                         printf("\t");
                     }
                 }
-                if (print_output) {
+                if (get_vals == 1) {
                     printf("\n");
                 }
             }
