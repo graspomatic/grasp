@@ -13,8 +13,8 @@ import AppliedMotionControl
 x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649)
 y = AppliedMotionControl.AMC(motor_ip="10.10.10.11", local_port=60648)
 
-# import Dynamixel2Control
-# dxl = Dynamixel2Control.D2C()
+import Dynamixel2Control
+dxl = Dynamixel2Control.D2C()
 
 import MagControl
 mags = MagControl.MAGS()
@@ -296,8 +296,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     # tell sensors to stop reading
     await redisfast.set('get_values', '0')
 
-    return
-
     # get information from panels database
     fut1 = redisslow.get('panel')
     fut2 = redisslow.get('holding')
@@ -307,7 +305,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     holding = np.array(json.loads(holding))
     arm_offset = np.array(json.loads(arm_offset))
 
-    # make list of object to return, assuming that database and sensor readings agree on what we're holding
+    # make list of objects to return, assuming that database and sensor readings agree on what we're holding
     if (left_connected and holding[0]) or (not left_connected and not holding[0]):
         returning = [holding[0]]
     else:
