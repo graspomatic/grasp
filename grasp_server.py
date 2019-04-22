@@ -742,6 +742,8 @@ async def connect_redis():
     redisfast = await aioredis.create_redis(('localhost', 6379), loop=loop)
     redisslow = await aioredis.create_redis(('localhost', 6380), loop=loop)
     pub = await aioredis.create_redis(('localhost', 6379), loop=loop)
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
 
 
 
