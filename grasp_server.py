@@ -261,6 +261,11 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     global redisslow, redisfast
 
+    # tell sensors to start reading so we know what we have
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
+    await asyncio.sleep(0.010)
+
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
@@ -294,10 +299,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     #     print('nothing on left')
     # if not right_connected:
     #     print('nothing on right')
-
-    # tell sensors to stop reading
-    await redisfast.set('get_left', '0')
-    await redisfast.set('get_right', '0')
 
     # get information from panels database
     fut1 = redisslow.get('panel')
@@ -344,6 +345,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
     fut2 = redisslow.set('holding', json.dumps(picking))
     await asyncio.gather(fut1, fut2)
+
+    # tell sensors to stop reading
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
 
 
 
