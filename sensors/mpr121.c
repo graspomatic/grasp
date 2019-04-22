@@ -335,9 +335,11 @@ while (1==1) {
             if (right_connected == 1 && (right_baseline[0] - right_current[0]) < connected_thresh ) {
                 right_connected = 0;
                 redisCommand(c, "SET right_connected 0");
+                printf("setting right to zero");
             } else if (right_connected == 0 && (right_baseline[0] - right_current[0]) >= connected_thresh ) {
                 right_connected = 1;
                 redisCommand(c, "SET right_connected 1");
+                printf("setting right to one");
             }
 
             // handle calibration
