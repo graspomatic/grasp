@@ -562,12 +562,14 @@ async def magnets(left_status = [-1], right_status = [-1]):
 
     if left_status == 0:
         await redisfast.set('get_left', '0')
+        await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(0))
         await redisfast.set('get_left', '1')
         await pub.publish_json('WebClient', {"leftmag": "0"})
 
     elif left_status == 1:
         await redisfast.set('get_left', '0')
+        await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(0))
         await redisfast.set('get_left', '1')
         await pub.publish_json('WebClient', {"leftmag": "1"})
