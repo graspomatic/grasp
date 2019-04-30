@@ -555,15 +555,21 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
 async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
+    global redisfast
 
     left_status = int(left_status[0])
     right_status = int(right_status[0])
 
     if left_status == 0:
+        await redisfast.set('get_left', '0')
         await loop.create_task(mags.deenergize(0))
+        await redisfast.set('get_left', '1')
         await pub.publish_json('WebClient', {"leftmag": "0"})
+
     elif left_status == 1:
+        await redisfast.set('get_left', '0')
         await loop.create_task(mags.energize(0))
+        await redisfast.set('get_left', '1')
         await pub.publish_json('WebClient', {"leftmag": "1"})
 
     if right_status == 0:
