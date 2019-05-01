@@ -206,43 +206,18 @@ while (1==1) {
         }
     }
 
-    // see if we're supposed to grab values on this turn
-    reply = redisCommand(c, "GET get_left");
-    if (reply->type == REDIS_REPLY_STRING) {
-        get_left = strtoimax(reply->str,&endptr,10);
-    }
-    // see if we're supposed to grab values on this turn
-    reply = redisCommand(c, "GET get_right");
-    if (reply->type == REDIS_REPLY_STRING) {
-        get_right = strtoimax(reply->str,&endptr,10);
-    }
-
-
-
-//    // turn on or off
-//    if (reading == 0 && get_vals > 0) {
-//        reading = 1;
-//        if (get_vals == 1 || get_vals == 3) {
-//            if(mpr121_configure(dev) != UPM_SUCCESS){
-//                printf("unable to configure device\n");
-//            }
-//
-//        }
-//        if (get_vals == 2 || get_vals == 3) {
-//
-//        }
-//
-//
-//    } else if (reading == 1 && get_vals == 0) {
-//        reading = 0;
-//
-//    }
 
 
 
     /////////////////////
     // Read left channels
     /////////////////////
+
+        // see if we're supposed to grab values on this turn
+    reply = redisCommand(c, "GET get_left");
+    if (reply->type == REDIS_REPLY_STRING) {
+        get_left = strtoimax(reply->str,&endptr,10);
+    }
 
     if (get_left) {
         // read nchannels (8 bits in LB and 2 bits in high byte) all at once
@@ -311,6 +286,13 @@ while (1==1) {
     //////////////////////
     // Read right channels
     /////////////////////
+
+
+    // see if we're supposed to grab values on this turn
+    reply = redisCommand(c, "GET get_right");
+    if (reply->type == REDIS_REPLY_STRING) {
+        get_right = strtoimax(reply->str,&endptr,10);
+    }
 
     if (get_right) {
         if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
