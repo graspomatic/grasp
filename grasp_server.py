@@ -216,7 +216,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    distance_thresh = 20
+    distance_thresh = 10
     distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
