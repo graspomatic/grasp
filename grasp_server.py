@@ -563,7 +563,7 @@ async def magnets(left_status = [-1], right_status = [-1]):
     if left_status == 0:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(0))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
@@ -572,17 +572,27 @@ async def magnets(left_status = [-1], right_status = [-1]):
     elif left_status == 1:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(0))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
         await pub.publish_json('WebClient', {"leftmag": "1"})
 
     if right_status == 0:
+        await redisfast.set('get_left', '0')
+        await redisfast.set('get_right', '0')
+        await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(1))
+        await redisfast.set('get_left', '1')
+        await redisfast.set('get_right', '1')
         await pub.publish_json('WebClient', {"rightmag": "0"})
     elif right_status == 1:
+        await redisfast.set('get_left', '0')
+        await redisfast.set('get_right', '0')
+        await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(1))
+        await redisfast.set('get_left', '1')
+        await redisfast.set('get_right', '1')
         await pub.publish_json('WebClient', {"rightmag": "1"})
 
 async def find_address(shapeid=0):
