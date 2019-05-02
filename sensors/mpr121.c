@@ -143,7 +143,7 @@ int main()
   int val;
   int left_connected = 0;       //keeps track of whether theres a shape attached to left magnet
   int right_connected = 0;      //keeps track of whether theres a shape attached to left magnet
-  int connected_thresh = 10;    //threshold for determining if shape is attached
+  int connected_thresh = 20;    //threshold for determining if shape is attached
   int touched_thresh = 10;
   redisReply *reply;            // holds reply from redis
   char* endptr;                 // used for string to int conversion
