@@ -26,6 +26,7 @@ pf = path_find.path_find()
 async def return_object(side=-1, add=[0,0]):
     # Put away the object currently held on specified side in
     print("put away " + str(side) + " at " + str(add))
+    global redisfast
 
     # error checking
     if side != 0 and side != 1:
@@ -55,6 +56,9 @@ async def return_object(side=-1, add=[0,0]):
 
 
     # de-energize magnet
+    await redisfast.set('get_left', '0')
+    await redisfast.set('get_right', '0')
+    await asyncio.sleep(0.01)
     await loop.create_task(wait_for_dxl())
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick"})
@@ -70,6 +74,8 @@ async def return_object(side=-1, add=[0,0]):
 
     # move arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
 
     # ensure that object was released (i2c not showing anything)
     await loop.create_task(wait_for_dxl())
@@ -99,11 +105,15 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
     # move x-y motors to location of object
-
     print('moving x to ' + str(add[0]))
     x.move_location(location=float(add[0]), vel=1)
-    print('moving x to ' + str(add[1]))
+    print('moving y to ' + str(add[1]))
     y.move_location(location=float(add[1]), vel=1)
+
+    #stop reading from sensors
+    await redisfast.set('get_left', '0')
+    await redisfast.set('get_right', '0')
+    await asyncio.sleep(0.01)
 
     # move specified arm to 'pick' position
     await loop.create_task(wait_for_xy())
@@ -121,13 +131,15 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     await loop.create_task(mags.energize(side))
     if side == 0:
         await pub.publish_json('WebClient', {"leftmag": "1"})
-        await redisfast.set('get_left', '1')
     else:
         await pub.publish_json('WebClient', {"rightmag": "1"})
-        await redisfast.set('get_right', '1')
+
+
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
 
     # ensure that object was picked up
     await loop.create_task(wait_for_dxl())
@@ -347,8 +359,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     await asyncio.gather(fut1, fut2)
 
     # tell sensors to stop reading
-    await redisfast.set('get_left', '0')
-    await redisfast.set('get_right', '0')
+    # await redisfast.set('get_left', '0')
+    # await redisfast.set('get_right', '0')
 
 
 
