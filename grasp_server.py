@@ -123,6 +123,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # when arm has reached target location, energize magnet
     await loop.create_task(wait_for_dxl())
+    await asyncio.sleep(0.5)
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick"})
     else:
