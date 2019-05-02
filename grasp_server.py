@@ -326,13 +326,13 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         returning = [holding[0]]
     else:
         print('incompatibility between what the database says and what sensors say for left')
-        return
+
 
     if (right_connected and holding[1]) or (not right_connected and not holding[1]):
         returning.append(holding[1])
     else:
         print('incompatibility between what the database says and what sensors say for right')
-        return
+
 
     #arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:

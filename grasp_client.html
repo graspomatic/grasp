@@ -254,6 +254,58 @@
               });
         });
 
+        $('#findxmin').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"find_bounds", "axis":"x", "direction":"0" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "findxmin failed" );
+              });
+        });
+
+        $('#findxmax').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"find_bounds", "axis":"x", "direction":"1" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "findxmax failed" );
+              });
+        });
+
+        $('#findymin').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"find_bounds", "axis":"y", "direction":"0" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "findymin failed" );
+              });
+        });
+
+        $('#findymax').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"find_bounds", "axis":"y", "direction":"1" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "findymax failed" );
+              });
+        });
+
         $('#moveyaxis').click(function() {
             var ip = document.getElementById("GraspIP").value;
             var yloc = document.getElementById("ylocation").value;
@@ -589,7 +641,7 @@
 
 
     <!--X/Y control-->
-    <div class="input-group col-4 mb-2">
+    <div class="input-group col-8 mb-2">
         <div class="input-group-prepend">
             <span class="input-group-text">X-Axis Position</span>
         </div>
@@ -597,14 +649,26 @@
         <div class="input-group-append">
             <button class="btn btn-primary" id="movexaxis" data-id='{ "function":"move_xy_to_location", "axis":"x" }'>Move</button>
         </div>
+        <div class="input-group-append">
+            <button class="btn btn-light" id="findxmin">Find Left Bound</button>
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-light" id="findxmax">Find Right Bound</button>
+        </div>
     </div>
-    <div class="input-group col-4 mb-2">
+    <div class="input-group col-8 mb-2">
         <div class="input-group-prepend">
             <span class="input-group-text">Y-Axis Position</span>
         </div>
         <input type="text" id="ylocation" class="form-control" placeholder="0">
         <div class="input-group-append">
             <button class="btn btn-primary" id="moveyaxis">Move</button>
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-light" id="findymin">Find Upper Bound</button>
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-light" id="findymax">Find Lower Bound</button>
         </div>
     </div>
 
