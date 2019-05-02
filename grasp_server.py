@@ -130,6 +130,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
         await pub.publish_json('WebClient', {"rightarm": "pick"})
 
     await loop.create_task(mags.energize(side))
+    await asyncio.sleep(0.5)
     if side == 0:
         await pub.publish_json('WebClient', {"leftmag": "1"})
     else:
@@ -217,7 +218,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    distance_thresh = 10
+    distance_thresh = 15
     distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
