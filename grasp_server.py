@@ -56,9 +56,9 @@ async def return_object(side=-1, add=[0,0]):
 
 
     # de-energize magnet
-    await redisfast.set('get_left', '0')
-    await redisfast.set('get_right', '0')
-    await asyncio.sleep(0.01)
+    # await redisfast.set('get_left', '0')
+    # await redisfast.set('get_right', '0')
+    # await asyncio.sleep(0.01)
     await loop.create_task(wait_for_dxl())
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick"})
@@ -74,8 +74,8 @@ async def return_object(side=-1, add=[0,0]):
 
     # move arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
-    await redisfast.set('get_left', '1')
-    await redisfast.set('get_right', '1')
+    # await redisfast.set('get_left', '1')
+    # await redisfast.set('get_right', '1')
 
     # ensure that object was released (i2c not showing anything)
     await loop.create_task(wait_for_dxl())
@@ -111,9 +111,9 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     y.move_location(location=float(add[1]), vel=1)
 
     #stop reading from sensors
-    await redisfast.set('get_left', '0')
-    await redisfast.set('get_right', '0')
-    await asyncio.sleep(0.01)
+    # await redisfast.set('get_left', '0')
+    # await redisfast.set('get_right', '0')
+    # await asyncio.sleep(0.01)
 
     # move specified arm to 'pick' position
     await loop.create_task(wait_for_xy())
@@ -138,8 +138,8 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
-    await redisfast.set('get_left', '1')
-    await redisfast.set('get_right', '1')
+    # await redisfast.set('get_left', '1')
+    # await redisfast.set('get_right', '1')
 
     # ensure that object was picked up
     await loop.create_task(wait_for_dxl())
@@ -274,8 +274,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     global redisslow, redisfast
 
     # tell sensors to start reading so we know what we have
-    await redisfast.set('get_left', '1')
-    await redisfast.set('get_right', '1')
+    await redisfast.set('get_left', '0')
+    await redisfast.set('get_right', '0')
     await asyncio.sleep(0.010)
 
     hand = int(hand[0])
@@ -414,6 +414,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     #     await retrieve(side=1, objid=right_id)
 
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
 
 
 async def put_away(side=[-1]):
