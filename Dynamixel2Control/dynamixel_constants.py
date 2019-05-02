@@ -45,7 +45,8 @@ moving_pwms = [[880, 880, 300],
 # position of all motors when in the 'pick' arm position
 # 2044 to 2024
 #1980 to 2010
+#1027 to 1017
 pick_pos = [[2064, 3264, 2024],
-            [1510, 1027, 2010]]
+            [1510, 1017, 2010]]
 
 
