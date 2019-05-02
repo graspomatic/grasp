@@ -45,8 +45,8 @@ async def return_object(side=-1, add=[0,0]):
     # find nearest empty spot on grid
 
     # move x-y motors to that empty spot
-    x.move_location(location=float(add[0]), vel=1)
-    y.move_location(location=float(add[1]), vel=1)
+    x.move_location(location=float(add[0]), vel=5)
+    y.move_location(location=float(add[1]), vel=5)
 
     # if x and y are finished moving, move arm to 'pick' position
     await loop.create_task(wait_for_dxl())
@@ -106,9 +106,9 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move x-y motors to location of object
     print('moving x to ' + str(add[0]))
-    x.move_location(location=float(add[0]), vel=1)
+    x.move_location(location=float(add[0]), vel=5)
     print('moving y to ' + str(add[1]))
-    y.move_location(location=float(add[1]), vel=1)
+    y.move_location(location=float(add[1]), vel=5)
 
     #stop reading from sensors
     # await redisfast.set('get_left', '0')
