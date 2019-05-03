@@ -158,7 +158,7 @@ class AMC(object):
 
         # parameters for finding cw or ccw bound
         cmds = ['HA1100', 'HL1100', 'HA2100', 'HL2100', 'HA3100',
-                'HL3100', 'HV15', 'HV25', 'HV35', 'HC0.8', dval, 'HS0']
+                'HL3100', 'HV15', 'HV25', 'HV35', 'HC0.9', dval, 'HS0']
 
         self.send_command(limit + str(0))  # set current position to software limit
         self.send_command(cmds)             # start moving towards bound
