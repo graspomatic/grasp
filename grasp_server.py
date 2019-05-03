@@ -217,13 +217,13 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    distance_thresh = 25
+    distance_thresh = 40
     distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
         b = dxl.sync_get_goal_position()
         distance = max([abs(x) for x in [c - d for c, d in zip(a, b)]])
-        # await asyncio.sleep(0.005)
+        await asyncio.sleep(0.005)
 
     return 1
 
