@@ -142,7 +142,7 @@ class AMC(object):
 
         print("Done!")
 
-    def find_bound(self, direction):
+    def find_bound(self, direction, current=0.8):
         # finds requested hard bound and sets the software limit accordingly
         if direction == 1:      # clockwise
             dval = "HO200"      # home offset, this decides which direction we seek
@@ -156,9 +156,11 @@ class AMC(object):
             print('direction must be 0 or 1')
             return
 
+        curPar = 'HC' + str(current)
+
         # parameters for finding cw or ccw bound
         cmds = ['HA1100', 'HL1100', 'HA2100', 'HL2100', 'HA3100',
-                'HL3100', 'HV15', 'HV25', 'HV35', 'HC0.9', dval, 'HS0']
+                'HL3100', 'HV15', 'HV25', 'HV35', curPar, dval, 'HS0']
 
         self.send_command(limit + str(0))  # set current position to software limit
         self.send_command(cmds)             # start moving towards bound
