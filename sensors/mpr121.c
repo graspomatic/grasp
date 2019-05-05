@@ -133,8 +133,8 @@ int main()
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
-  int left_baseline[6] = {519, 536, 523, 567, 556, 572};
-  int right_baseline[6] = {516, 508, 525, 522, 527, 548};
+  int left_baseline[6] = {516, 535, 521, 566, 554, 570};
+  int right_baseline[6] = {515, 507, 524, 520, 524, 546};
   int left_current[6] = {0, 0, 0, 0, 0, 0};
   int right_current[6] = {0, 0, 0, 0, 0, 0};
   int left_touched[6] = {0, 0, 0, 0, 0, 0};
