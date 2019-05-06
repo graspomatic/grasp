@@ -67,7 +67,7 @@ class AMC(object):
 
     def get_target_position(self):
         self.read_udp_all()  # clear buffer first
-        self.send_command("DI")  # request position
+        self.send_command("FP")  # request position
         return self.read_udp_once()  # get response
 
     def move_distance_count(self, distance, accel=25.0, decel=25.0, vel=3.0):
