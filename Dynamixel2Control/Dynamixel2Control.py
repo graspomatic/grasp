@@ -195,10 +195,35 @@ class D2C(object):
         self.error_handler('set_current_limit: ', result, error)
 
     def get_accel_limit(self, motor):
-        # only relevant if in correct mode, like current limited position mode
         val, result, error = self.packet_handler.read4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_ACCELERATION_LIMIT)
         self.error_handler('get_accel_limit: ', result, error)
         return val
+
+    def set_accel_limit(self, motor, accel):
+        result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_ACCELERATION_LIMIT, accel)
+        self.error_handler('set_position: ', result, error)
+
+    def get_profile_accel(self, motor):
+        # how fast we should accelerate, works with profile_velocity
+        val, result, error = self.packet_handler.read4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_PROFILE_ACCEL)
+        self.error_handler('get_profile_accel: ', result, error)
+        return val
+
+    def set_profile_accel(self, motor, accel):
+        # how fast we should accelerate, works with profile_velocity
+        result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_PROFILE_ACCEL, accel)
+        self.error_handler('set_profile_accel: ', result, error)
+
+    def get_profile_vel(self, motor):
+        # top speed, works with profile_acceleration
+        val, result, error = self.packet_handler.read4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_PROFILE_VEL)
+        self.error_handler('get_profile_accel: ', result, error)
+        return val
+
+    def set_profile_vel(self, motor, vel):
+        # top speed, works with profile_acceleration
+        result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_PROFILE_VEL, vel)
+        self.error_handler('set_profile_accel: ', result, error)
 
     def get_moving(self, motor):
         # returns 1 if motor is moving, 0 if not

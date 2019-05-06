@@ -39,9 +39,20 @@ IDs = [[11, 12, 13],                # left
 threshs = [[2, 2, 2],
            [2, 2, 2]]
 
-# power to be used for movement
+# power to be used for movement, also how hard to resist pushing by subject
 moving_pwms = [[580, 880, 300],
                [580, 880, 300]]
+
+# top speed
+profile_vels = [[400, 0, 0],
+                [400, 0, 0]]
+
+# top accel for slow movement
+profile_accels_low = [[150, 0, 0],
+                      [150, 0, 0]]
+
+profile_accels_high = [[400, 0, 0],
+                       [400, 0, 0]]
 
 # position of all motors when in the 'pick' arm position
 # 2044 to 2024
