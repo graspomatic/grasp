@@ -133,7 +133,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
         await pub.publish_json('WebClient', {"rightarm": "pick"})
 
     await loop.create_task(mags.energize(side))
-    await asyncio.sleep(0.1)
+    await asyncio.sleep(0.15)
     if side == 0:
         await pub.publish_json('WebClient', {"leftmag": "1"})
     else:
