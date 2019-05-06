@@ -66,7 +66,7 @@ async def return_object(side=-1, add=[0,0]):
     # await redisfast.set('get_left', '0')
     # await redisfast.set('get_right', '0')
     # await asyncio.sleep(0.01)
-    await loop.create_task(wait_for_dxl(180))
+    await loop.create_task(wait_for_dxl(160))
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick"})
     else:
