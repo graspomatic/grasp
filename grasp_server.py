@@ -443,6 +443,10 @@ async def initialize_dxl(level=[1]):
     # dxl.set_moving_thresh_all()  # needs torque off
     dxl.set_torque_all(1)
     dxl.set_moving_pwms(level)
+    dxl.set_profile_accel(11, 150)
+    dxl.set_profile_accel(21, 150)
+    dxl.set_profile_vel(11,400)
+    dxl.set_profile_vel(21, 400)
 
     print('dxl motors initialized')
 
