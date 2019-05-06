@@ -47,8 +47,8 @@ async def return_object(side=-1, add=[0,0]):
     # find nearest empty spot on grid
 
     # move x-y motors to that empty spot
-    x.move_location(location=float(add[0]), accel=75, vel=20)
-    y.move_location(location=float(add[1]), accel=75, vel=20)
+    xtarg = x.move_location(location=float(add[0]), accel=75, vel=20)
+    ytarg = y.move_location(location=float(add[1]), accel=75, vel=20)
 
     # if x and y are finished moving, move arm to 'pick' position
     if side == 0:
