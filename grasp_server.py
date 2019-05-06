@@ -243,10 +243,14 @@ async def wait_for_xy(xtarg, ytarg):
 
     # 1 mm is ~300 units
 
-
-
-    xpos = x.get_position()
-    ypos = y.get_position()
+    xpos = '*'
+    ypos = '*'
+    while xpos == '*':
+        await asyncio.sleep(0.01)
+        xpos = x.get_position()
+    while ypos == '*':
+        await asyncio.sleep(0.01)
+        ypos = y.get_position()
 
 
 
