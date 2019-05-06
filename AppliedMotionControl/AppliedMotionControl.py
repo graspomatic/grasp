@@ -65,7 +65,10 @@ class AMC(object):
         self.send_command("EP")         # request position
         position = self.read_udp_once()  # get response
         print('get_position returns: ' + position)
-        return int(position[3:len(position)])
+        if len(position) > 2:
+            return int(position[3:len(position)])
+        else:
+            return '*'
 
     def move_distance_count(self, distance, accel=25.0, decel=25.0, vel=3.0):
         # move specified distance in counts. positive is clockwise
