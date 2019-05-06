@@ -114,9 +114,9 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move x-y motors to location of object
     print('moving x to ' + str(add[0]))
-    x.move_location(location=float(add[0]), accel=75, vel=20)
+    xtarg = x.move_location(location=float(add[0]), accel=75, vel=20)
     print('moving y to ' + str(add[1]))
-    y.move_location(location=float(add[1]), accel=75, vel=20)
+    ytarg = y.move_location(location=float(add[1]), accel=75, vel=20)
 
     #stop reading from sensors
     # await redisfast.set('get_left', '0')
@@ -124,7 +124,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     # await asyncio.sleep(0.01)
 
     # move specified arm to 'pick' position
-    await loop.create_task(wait_for_xy())
+    await loop.create_task(wait_for_xy(xtarg, ytarg))
     await loop.create_task(wait_for_dxl(200))
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
@@ -209,7 +209,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
     # move xy to present to specified hand
 
     # once xy is in position, move specified arms to present
-    await wait_for_xy()
+    # await wait_for_xy()
 
     if arms == 'both' or arms == 'left':
         dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle)
