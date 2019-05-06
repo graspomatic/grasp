@@ -34,8 +34,8 @@ async def return_object(side=-1, add=[0,0]):
         return 0
 
     # move both arms to 'prep_pick' position
-    dxl.set_profile_accel(motor=11, accel=130)
-    dxl.set_profile_accel(motor=21, accel=130)
+    # dxl.set_profile_accel(motor=11, accel=130)
+    # dxl.set_profile_accel(motor=21, accel=130)
     dxl.move_arm_to_pos(arm=0, pos='prep_pick')
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
@@ -51,9 +51,12 @@ async def return_object(side=-1, add=[0,0]):
     y.move_location(location=float(add[1]), accel=75, vel=20)
 
     # if x and y are finished moving, move arm to 'pick' position
-    dxl.set_profile_accel(motor=11, accel=400)
-    dxl.set_profile_accel(motor=21, accel=400)
-    await loop.create_task(wait_for_dxl())
+    if side == 0:
+        dxl.set_profile_accel(motor=11, accel=500)
+    elif side == 1:
+        dxl.set_profile_accel(motor=21, accel=500)
+
+    await loop.create_task(wait_for_dxl(250))
     await loop.create_task(wait_for_xy())
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
@@ -63,7 +66,7 @@ async def return_object(side=-1, add=[0,0]):
     # await redisfast.set('get_left', '0')
     # await redisfast.set('get_right', '0')
     # await asyncio.sleep(0.01)
-    await loop.create_task(wait_for_dxl())
+    await loop.create_task(wait_for_dxl(220))
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick"})
     else:
@@ -82,7 +85,7 @@ async def return_object(side=-1, add=[0,0]):
     # await redisfast.set('get_right', '1')
 
     # ensure that object was released (i2c not showing anything)
-    await loop.create_task(wait_for_dxl())
+    await loop.create_task(wait_for_dxl(180))
 
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": "0"})
@@ -121,12 +124,12 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move specified arm to 'pick' position
     await loop.create_task(wait_for_xy())
-    await loop.create_task(wait_for_dxl())
+    await loop.create_task(wait_for_dxl(200))
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
 
     # when arm has reached target location, energize magnet
-    await loop.create_task(wait_for_dxl())
+    await loop.create_task(wait_for_dxl(190))
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick"})
     else:
@@ -146,8 +149,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     # await redisfast.set('get_left', '1')
     # await redisfast.set('get_right', '1')
 
-    # ensure that object was picked up
-    await loop.create_task(wait_for_dxl())
+
 
 
     if side == 0:
@@ -173,6 +175,8 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
 
     await pub.publish_json('WebClient', {"leftsensor": str(objid)})
+    # ensure that object was picked up
+    await loop.create_task(wait_for_dxl(170))
 
 
 async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
@@ -213,7 +217,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
         dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle)
         await pub.publish_json('WebClient', {"rightarm": "prep_present"})
 
-    await wait_for_dxl()
+    await wait_for_dxl(200)
 
     if arms == 'both' or arms == 'left':
         await pub.publish_json('WebClient', {"leftarm": "present"})
@@ -221,9 +225,9 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
         await pub.publish_json('WebClient', {"rightarm": "present"})
 
 
-async def wait_for_dxl():
+async def wait_for_dxl(distance_thresh=180):
     print('waiting for dynamixel motors to stop moving')
-    distance_thresh = 180
+    # distance_thresh = 180
     distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
@@ -482,7 +486,7 @@ async def set_dxl_positions(side=[-1], position=['blah']):
         print('heading to move arm to pos')
 
         dxl.move_arm_to_pos(arm=side, pos=position)
-        await loop.create_task(wait_for_dxl())
+        await loop.create_task(wait_for_dxl(50))
         if side == 0:
             await pub.publish_json('WebClient', {"leftarm": position})
         else:
