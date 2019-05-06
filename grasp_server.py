@@ -58,7 +58,7 @@ async def return_object(side=-1, add=[0,0]):
         dxl.set_profile_accel(motor=21, accel=500)
 
     await loop.create_task(wait_for_dxl(250))
-    await loop.create_task(wait_for_xy(xtarg, ytarg))
+    await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg))
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
 
@@ -124,7 +124,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     # await asyncio.sleep(0.01)
 
     # move specified arm to 'pick' position
-    await loop.create_task(wait_for_xy(xtarg, ytarg))
+    await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg))
     await loop.create_task(wait_for_dxl(200))
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
@@ -255,13 +255,13 @@ async def wait_for_xy(xtarg, ytarg):
     distance = math.sqrt(abs(xpos - xtarg)**2 + abs(ypos-ytarg)**2)
     print('xy distance' + str(distance))
 
-    while distance > 100:
+    while distance > 200:
         await asyncio.sleep(0.01)
         xpos = x.get_position()
         ypos = y.get_position()
         if xpos != '*' and ypos != '*':
             distance = math.sqrt(abs(xpos - xtarg) ** 2 + abs(ypos - ytarg) ** 2)
-            print('xy distance' + str(distance))
+            print('xy distance: ' + str(distance))
     #
     #
     #
@@ -600,13 +600,13 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
         return
 
     if axis == 'x':
-        x.move_location(location=location, accel=accel, vel=vel)
-        await loop.create_task(wait_for_xy())
+        xtarg = x.move_location(location=location, accel=accel, vel=vel)
+        await loop.create_task(wait_for_xy(xtarg=xtarg))
         # await wait_for_xy()
         await pub.publish_json('WebClient', {"xpos": str(location)})
     else:
-        y.move_location(location=location, accel=accel, vel=vel)
-        await loop.create_task(wait_for_xy())
+        ytarg = y.move_location(location=location, accel=accel, vel=vel)
+        await loop.create_task(wait_for_xy(ytarg=ytarg))
         # await wait_for_xy
         await pub.publish_json('WebClient', {"ypos": str(location)})
 
