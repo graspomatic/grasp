@@ -66,7 +66,7 @@ async def return_object(side=-1, add=[0,0]):
     # await redisfast.set('get_left', '0')
     # await redisfast.set('get_right', '0')
     # await asyncio.sleep(0.01)
-    await loop.create_task(wait_for_dxl(220))
+    await loop.create_task(wait_for_dxl(180))
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick"})
     else:
@@ -136,7 +136,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
         await pub.publish_json('WebClient', {"rightarm": "pick"})
 
     await loop.create_task(mags.energize(side))
-    await asyncio.sleep(0.12)
+    await asyncio.sleep(0.05)
     if side == 0:
         await pub.publish_json('WebClient', {"leftmag": "1"})
     else:
