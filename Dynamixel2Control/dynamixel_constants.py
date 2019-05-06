@@ -40,8 +40,8 @@ threshs = [[2, 2, 2],
            [2, 2, 2]]
 
 # power to be used for movement, also how hard to resist pushing by subject
-moving_pwms = [[580, 880, 300],
-               [580, 880, 300]]
+moving_pwms = [[880, 880, 300],
+               [880, 880, 300]]
 
 # top speed
 profile_vels = [[400, 0, 0],

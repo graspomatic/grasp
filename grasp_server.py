@@ -34,8 +34,8 @@ async def return_object(side=-1, add=[0,0]):
         return 0
 
     # move both arms to 'prep_pick' position
-    dxl.set_profile_accel(motor=11, accel=150)
-    dxl.set_profile_accel(motor=21, accel=150)
+    dxl.set_profile_accel(motor=11, accel=100)
+    dxl.set_profile_accel(motor=21, accel=100)
     dxl.move_arm_to_pos(arm=0, pos='prep_pick')
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
@@ -51,8 +51,8 @@ async def return_object(side=-1, add=[0,0]):
     y.move_location(location=float(add[1]), accel=75, vel=20)
 
     # if x and y are finished moving, move arm to 'pick' position
-    dxl.set_profile_accel(motor=11, accel=400)
-    dxl.set_profile_accel(motor=21, accel=400)
+    dxl.set_profile_accel(motor=11, accel=350)
+    dxl.set_profile_accel(motor=21, accel=350)
     await loop.create_task(wait_for_dxl())
     await loop.create_task(wait_for_xy())
     dxl.move_arm_to_pos(arm=side, pos='pick')
@@ -195,10 +195,10 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
-        dxl.set_profile_accel(motor=11, accel=150)
+        dxl.set_profile_accel(motor=11, accel=100)
         dxl.move_arm_to_pos(arm=0, pos='prep_present', rotation=left_angle)
     if arms == 'both' or arms == 'right':
-        dxl.set_profile_accel(motor=21, accel=150)
+        dxl.set_profile_accel(motor=21, accel=100)
         dxl.move_arm_to_pos(arm=1, pos='prep_present', rotation=right_angle)
 
     # move xy to present to specified hand
@@ -223,7 +223,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    distance_thresh = 20
+    distance_thresh = 100
     distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
@@ -443,9 +443,9 @@ async def initialize_dxl(level=[1]):
     # dxl.set_moving_thresh_all()  # needs torque off
     dxl.set_torque_all(1)
     dxl.set_moving_pwms(level)
-    dxl.set_profile_accel(11, 150)
-    dxl.set_profile_accel(21, 150)
-    dxl.set_profile_vel(11,400)
+    dxl.set_profile_accel(11, 100)
+    dxl.set_profile_accel(21, 100)
+    dxl.set_profile_vel(11, 400)
     dxl.set_profile_vel(21, 400)
 
     print('dxl motors initialized')
