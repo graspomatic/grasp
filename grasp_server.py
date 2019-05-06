@@ -6,6 +6,7 @@ import json
 import aioredis
 import atexit
 import time
+import math
 
 active_task = 0
 
@@ -57,7 +58,7 @@ async def return_object(side=-1, add=[0,0]):
         dxl.set_profile_accel(motor=21, accel=500)
 
     await loop.create_task(wait_for_dxl(250))
-    await loop.create_task(wait_for_xy())
+    await loop.create_task(wait_for_xy(xtarg, ytarg))
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
 
@@ -237,23 +238,35 @@ async def wait_for_dxl(distance_thresh=180):
 
     return 1
 
-async def wait_for_xy():
+async def wait_for_xy(xtarg, ytarg):
     print('waiting for x-y motors to stop moving')
 
-    xtarg = x.get_target_position()
-    ytarg = y.get_target_position()
+    # 1 mm is ~300 units
 
+    xpos = x.get_position()
+    ypos = y.get_position()
 
+    distance = math.sqrt(abs(xpos - xtarg)**2 + abs(ypos-ytarg)**2)
 
-
-    xstatus = x.get_status()
-    ystatus = y.get_status()
-    await asyncio.sleep(0.01)
-
-    while xstatus[3] == 'M' or xstatus[3] == 'H' or ystatus[3] == 'M' or ystatus[3] == 'H':
-        xstatus = x.get_status()
-        ystatus = y.get_status()
+    while distance > 100:
         await asyncio.sleep(0.01)
+        xpos = x.get_position()
+        ypos = y.get_position()
+        distance = math.sqrt(abs(xpos - xtarg) ** 2 + abs(ypos - ytarg) ** 2)
+    #
+    #
+    #
+    #
+    #
+    #
+    # xstatus = x.get_status()
+    # ystatus = y.get_status()
+    # await asyncio.sleep(0.01)
+    #
+    # while xstatus[3] == 'M' or xstatus[3] == 'H' or ystatus[3] == 'M' or ystatus[3] == 'H':
+    #     xstatus = x.get_status()
+    #     ystatus = y.get_status()
+    #     await asyncio.sleep(0.01)
 
     print('target reached')
     return 1
