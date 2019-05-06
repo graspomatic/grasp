@@ -245,8 +245,8 @@ async def wait_for_xy(xtarg, ytarg):
 
 
 
-    xpos = int(x.get_position())
-    ypos = int(y.get_position())
+    xpos = x.get_position()
+    ypos = y.get_position()
 
 
 
