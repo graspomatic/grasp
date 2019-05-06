@@ -64,6 +64,7 @@ class AMC(object):
         self.read_udp_all()             # clear buffer first
         self.send_command("EP")         # request position
         position = self.read_udp_once()  # get response
+        print('get_position returns: ' + position)
         return int(position[3:len(position)])
 
     def move_distance_count(self, distance, accel=25.0, decel=25.0, vel=3.0):
