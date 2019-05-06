@@ -260,7 +260,7 @@ async def wait_for_xy(xtarg, ytarg):
     distance = math.sqrt(abs(xpos - xtarg)**2 + abs(ypos-ytarg)**2)
 
     while distance > 100:
-        await asyncio.sleep(0.01)
+        await asyncio.sleep(0.02)
         xpos = x.get_position()
         ypos = y.get_position()
         distance = math.sqrt(abs(xpos - xtarg) ** 2 + abs(ypos - ytarg) ** 2)
