@@ -243,8 +243,19 @@ async def wait_for_xy(xtarg, ytarg):
 
     # 1 mm is ~300 units
 
-    xpos = x.get_position()
-    ypos = y.get_position()
+
+
+    xpos = int(x.get_position())
+    ypos = int(y.get_position())
+
+
+
+    print(xtarg)
+    print(ytarg)
+    print(xpos)
+    print(ypos)
+
+
 
     distance = math.sqrt(abs(xpos - xtarg)**2 + abs(ypos-ytarg)**2)
 
