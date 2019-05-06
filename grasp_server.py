@@ -66,7 +66,7 @@ async def return_object(side=-1, add=[0,0]):
     # await redisfast.set('get_left', '0')
     # await redisfast.set('get_right', '0')
     # await asyncio.sleep(0.01)
-    await loop.create_task(wait_for_dxl(185))
+    await loop.create_task(wait_for_dxl(190))
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick"})
     else:
@@ -239,6 +239,12 @@ async def wait_for_dxl(distance_thresh=180):
 
 async def wait_for_xy():
     print('waiting for x-y motors to stop moving')
+
+    xtarg = x.get_target_position()
+    ytarg = y.get_target_position()
+
+
+
 
     xstatus = x.get_status()
     ystatus = y.get_status()
