@@ -51,8 +51,8 @@ async def return_object(side=-1, add=[0,0]):
     y.move_location(location=float(add[1]), accel=75, vel=20)
 
     # if x and y are finished moving, move arm to 'pick' position
-    dxl.set_profile_accel(motor=11, accel=380)
-    dxl.set_profile_accel(motor=21, accel=380)
+    dxl.set_profile_accel(motor=11, accel=400)
+    dxl.set_profile_accel(motor=21, accel=400)
     await loop.create_task(wait_for_dxl())
     await loop.create_task(wait_for_xy())
     dxl.move_arm_to_pos(arm=side, pos='pick')
@@ -223,7 +223,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
 async def wait_for_dxl():
     print('waiting for dynamixel motors to stop moving')
-    distance_thresh = 140
+    distance_thresh = 180
     distance = 10000
     while distance > distance_thresh:
         a = dxl.sync_get_position()
