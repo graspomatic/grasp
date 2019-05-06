@@ -194,6 +194,12 @@ class D2C(object):
         result, error = self.packet_handler.write2ByteTxRx(self.port_handler, motor, dxlcx.ADDR_CURRENT_LIMIT, limit)
         self.error_handler('set_current_limit: ', result, error)
 
+    def get_accel_limit(self, motor):
+        # only relevant if in correct mode, like current limited position mode
+        val, result, error = self.packet_handler.read4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_ACCELERATION_LIMIT)
+        self.error_handler('get_accel_limit: ', result, error)
+        return val
+
     def get_moving(self, motor):
         # returns 1 if motor is moving, 0 if not
         val, result, error = self.packet_handler.read1ByteTxRx(self.port_handler, motor, dxlcx.ADDR_MOVING)

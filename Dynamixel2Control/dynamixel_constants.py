@@ -10,6 +10,7 @@ ADDR_OPERATING_MODE     = 11        # operating mode, writeable only when torque
 ADDR_MOVING_THRESH      = 24        # 4 bytes, writeable only when torque disabled
 ADDR_PWM_LIMIT          = 36        # 2 bytes, writeable only when torque disabled
 ADDR_CURRENT_LIMIT      = 38        # 2 bytes, writeable only when torque disabled
+ADDR_ACCELERATION_LIMIT = 40        # 4 bytes, writeable only when torque disabled
 ADDR_VELOCITY_LIMIT     = 44        # 4 bytes, writeable only when torque disabled
 ADDR_MAX_POSITION       = 48        # 4 bytes, writeable only when torque disabled, must be >= min
 ADDR_MIN_POSITION       = 52        # 4 bytes, writeable only when torque disabled
