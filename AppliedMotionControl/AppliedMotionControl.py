@@ -64,10 +64,7 @@ class AMC(object):
         self.read_udp_all()             # clear buffer first
         # self.send_command("EP")         # request position
         self.send_command("IP")  # request position
-        position = '*'
-        while len(position) < 3:
-            position = self.read_udp_once()  # get response
-        print('get_position returns: ' + position)
+        position = self.read_udp_once()  # get response
         if len(position) > 2:
             return int(position[3:len(position)])
         else:
