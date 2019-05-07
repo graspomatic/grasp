@@ -242,18 +242,11 @@ async def wait_for_xy(xtarg='*', ytarg='*'):
     print('waiting for x-y motors to stop moving')
 
     # 1 mm is ~300 units
-
-    xpos = '*'
-    ypos = '*'
-    while xpos == '*':
-        await asyncio.sleep(0.01)
-        xpos = x.get_position()
-    while ypos == '*':
-        await asyncio.sleep(0.01)
-        ypos = y.get_position()
+    xpos = x.get_position()
+    ypos = y.get_position()
 
     if xtarg == '*':
-        distance = abs(ypos-ytarg)
+        distance = abs(ypos - ytarg)
     elif ytarg == '*':
         distance = abs(xpos - xtarg)
     else:
@@ -271,8 +264,9 @@ async def wait_for_xy(xtarg='*', ytarg='*'):
         else:
             xpos = x.get_position()
             ypos = y.get_position()
+            distance = math.sqrt(abs(xpos - xtarg) ** 2 + abs(ypos - ytarg) ** 2)
 
-        distance = math.sqrt(abs(xpos - xtarg) ** 2 + abs(ypos - ytarg) ** 2)
+
         print('xy distance: ' + str(distance))
     #
     #
