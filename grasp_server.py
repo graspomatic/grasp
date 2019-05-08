@@ -328,13 +328,14 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
     # left_id (integer) object id to present using left arm
     # right_id (integer) object id to present using right arm
+    # left_angle (integer) rotation in degrees for left object. positive angle is counter-clockwise rotation
 
     global redisslow, redisfast
 
     # tell sensors to start reading so we know what we have
     await redisfast.set('get_left', '0')
     await redisfast.set('get_right', '0')
-    await asyncio.sleep(0.010)
+    # await asyncio.sleep(0.010)
 
     hand = int(hand[0])
     left_id = int(left_id[0])
@@ -406,10 +407,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     else:
         arms = 'neither'
 
-    print(holding)
-    print(picking)
-    print(panel)
-
     panel, orders = pf.plan_path(holding.tolist(), picking, panel, arm_offset)
 
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
@@ -422,20 +419,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
 
 
-    print(panel)
-    print(orders)
-
-
-    print(len(orders))
-
     for i in range(len(orders)):
-        print(i)
-        print(orders[i])
-        print(orders[i][0])
-        print(orders[i][1])
-        print(orders[i][2])
-        print(orders[i][2][0])
-        print(orders[i][2][1])
 
         order = orders[i][0][0]
         side = orders[i][1][0]
@@ -478,6 +462,11 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
 async def put_away(side=[-1]):
     # side = 0 for left, 1 for right, 2 for both
+
+    ## not working
+    return
+
+
     side = int(side[0])
     print(side)
     if side == 0 or side == 2:
