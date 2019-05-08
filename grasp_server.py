@@ -570,7 +570,7 @@ async def find_bounds(axis = ['a'], direction = [-1]):
         return
 
     if axis == 'x':
-        await x.find_bound(direction, current=1.1)
+        await x.find_bound(direction, current=1.0)
     else:
         await y.find_bound(direction, current=0.8)
 
@@ -613,6 +613,8 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
     if axis == 'x':
         xtarg = x.move_location(location=location, accel=accel, vel=vel)
+        print(xtarg)
+        print(int(xtarg))
         await loop.create_task(wait_for_xy(xtarg=xtarg))
         # await wait_for_xy()
         await pub.publish_json('WebClient', {"xpos": str(location)})
