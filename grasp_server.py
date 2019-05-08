@@ -28,6 +28,7 @@ async def return_object(side=-1, add=[0,0]):
     # Put away the object currently held on specified side in
     print("put away " + str(side) + " at " + str(add))
     global redisfast
+    xy_accel = 75
 
     # error checking
     if side != 0 and side != 1:
@@ -48,8 +49,8 @@ async def return_object(side=-1, add=[0,0]):
     # find nearest empty spot on grid
 
     # move x-y motors to that empty spot
-    xtarg = x.move_location(location=float(add[0]), accel=5, vel=20)
-    ytarg = y.move_location(location=float(add[1]), accel=5, vel=20)
+    xtarg = x.move_location(location=float(add[0]), accel=xy_accel, vel=20)
+    ytarg = y.move_location(location=float(add[1]), accel=xy_accel, vel=20)
 
     # if x and y are finished moving, move arm to 'pick' position
     if side == 0:
@@ -58,7 +59,7 @@ async def return_object(side=-1, add=[0,0]):
         dxl.set_profile_accel(motor=21, accel=500)
 
     await loop.create_task(wait_for_dxl(250))
-    await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg))
+    await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg, distance_thresh=(100+xy_accel*10)))
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
 
@@ -100,6 +101,7 @@ async def return_object(side=-1, add=[0,0]):
 
 async def retrieve(side=-1, objid=0, add=[0,0]):
     global redisslow, redisfast
+    xy_accel = 75
     # Get the specified object ID on the specified arm
     print('retrieving side ' + str(side) + ' object ID ' + str(objid) + ' at ' + str(add))
 
@@ -114,9 +116,9 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move x-y motors to location of object
     print('moving x to ' + str(add[0]))
-    xtarg = x.move_location(location=float(add[0]), accel=5, vel=20)
+    xtarg = x.move_location(location=float(add[0]), accel=xy_accel, vel=20)
     print('moving y to ' + str(add[1]))
-    ytarg = y.move_location(location=float(add[1]), accel=5, vel=20)
+    ytarg = y.move_location(location=float(add[1]), accel=xy_accel, vel=20)
 
     #stop reading from sensors
     # await redisfast.set('get_left', '0')
@@ -124,7 +126,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     # await asyncio.sleep(0.01)
 
     # move specified arm to 'pick' position
-    await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg))
+    await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg, distance_thresh=(100+xy_accel*10)))
     await loop.create_task(wait_for_dxl(200))
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
@@ -238,7 +240,7 @@ async def wait_for_dxl(distance_thresh=180):
 
     return 1
 
-async def wait_for_xy(xtarg='*', ytarg='*'):
+async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
     print('waiting for x-y motors to stop moving')
 
     # 1 mm is ~300 units
@@ -256,7 +258,7 @@ async def wait_for_xy(xtarg='*', ytarg='*'):
         distance = math.sqrt(abs(xpos - xtarg)**2 + abs(ypos-ytarg)**2)
     print('xy distance: ' + str(distance))
 
-    while distance > 10:
+    while distance > distance_thresh:
         await asyncio.sleep(0.001)
         if xtarg == '*':
             ypos = y.get_position()
