@@ -151,33 +151,33 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     # await redisfast.set('get_right', '1')
 
 
-
-
-    if side == 0:
-        fut1 = redisfast.get('left_sensor_last_update')
-        fut2 = redisfast.get('left_connected')
-        await pub.publish_json('WebClient', {"leftarm": "prep_pick"})
-    else:
-        fut1 = redisfast.get('right_sensor_last_update')
-        fut2 = redisfast.get('right_connected')
-        await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
-
-    last_update, connected = await asyncio.gather(fut1, fut2)
-
-    print(int(last_update))
-    print(int(connected))
-    print(int(time.time()))
-
-    if (int(time.time()) - int(last_update)) > 3:
-        print('not updating')
-
-    if not int(connected):
-        print('not picked up')
+    #
+    #
+    # if side == 0:
+    #     fut1 = redisfast.get('left_sensor_last_update')
+    #     fut2 = redisfast.get('left_connected')
+    #     await pub.publish_json('WebClient', {"leftarm": "prep_pick"})
+    # else:
+    #     fut1 = redisfast.get('right_sensor_last_update')
+    #     fut2 = redisfast.get('right_connected')
+    #     await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
+    #
+    # last_update, connected = await asyncio.gather(fut1, fut2)
+    #
+    # print(int(last_update))
+    # print(int(connected))
+    # print(int(time.time()))
+    #
+    # if (int(time.time()) - int(last_update)) > 3:
+    #     print('not updating')
+    #
+    # if not int(connected):
+    #     print('not picked up')
 
 
     await pub.publish_json('WebClient', {"leftsensor": str(objid)})
     # ensure that object was picked up
-    await loop.create_task(wait_for_dxl(170))
+    await loop.create_task(wait_for_dxl(150))
 
 
 async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
