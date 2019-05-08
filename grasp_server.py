@@ -187,7 +187,6 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
     print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
     global redisslow
     xy_accel = 75
-    print(hand)
 
     # input variables"
     # arms (list of ints) [0] for left only, [1] for right only, [0 1] for both arms
@@ -199,7 +198,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
         return
 
     # if hand isn't 0 or 1, ask which hand we're supposed to present to
-    if hand != 0 & hand != 1:
+    if hand != 0 and hand != 1:
         print('Specify which hand to present to, 0 (left) or 1 (right)')
         return
 
