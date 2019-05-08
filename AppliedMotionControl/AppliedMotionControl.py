@@ -92,8 +92,6 @@ class AMC(object):
     def move_location(self, location, accel=25.0, vel=3.0):
         # move to a location based on distance from CW bound in mm
 
-        start = time.time()
-
         #first make sure that CW and CCW bounds have been set
         if not self.check_bounds():
             print("bounds not set!")
@@ -121,10 +119,6 @@ class AMC(object):
                 'FP' + str(target)]
 
         self.send_command(cmds)
-
-        end = time.time()
-
-        print(end-start)
         return target
         #self.wait_for_stop()
 
@@ -171,7 +165,6 @@ class AMC(object):
         self.move_distance_mm(buf, vel=0.2)    # move away from bound 1000 units
         self.wait_for_stop()                # wait until it stops
         pos = self.get_position()           # get that position
-        print(pos)
         self.send_command(limit + str(pos))  # set current position to software limit
 
     def check_bounds(self):
@@ -189,10 +182,6 @@ class AMC(object):
         if second[3] == '0':
             print('CW limit not set!')
             ok = 0
-
-        print(first)
-        print(second)
-
         return ok
 
     def send_command(self, message):
