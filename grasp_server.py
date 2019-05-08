@@ -48,8 +48,8 @@ async def return_object(side=-1, add=[0,0]):
     # find nearest empty spot on grid
 
     # move x-y motors to that empty spot
-    xtarg = x.move_location(location=float(add[0]), accel=75, vel=20)
-    ytarg = y.move_location(location=float(add[1]), accel=75, vel=20)
+    xtarg = x.move_location(location=float(add[0]), accel=25, vel=20)
+    ytarg = y.move_location(location=float(add[1]), accel=25, vel=20)
 
     # if x and y are finished moving, move arm to 'pick' position
     if side == 0:
@@ -114,9 +114,9 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move x-y motors to location of object
     print('moving x to ' + str(add[0]))
-    xtarg = x.move_location(location=float(add[0]), accel=75, vel=20)
+    xtarg = x.move_location(location=float(add[0]), accel=25, vel=20)
     print('moving y to ' + str(add[1]))
-    ytarg = y.move_location(location=float(add[1]), accel=75, vel=20)
+    ytarg = y.move_location(location=float(add[1]), accel=25, vel=20)
 
     #stop reading from sensors
     # await redisfast.set('get_left', '0')
@@ -257,7 +257,7 @@ async def wait_for_xy(xtarg='*', ytarg='*'):
     print('xy distance: ' + str(distance))
 
     while distance > 200:
-        # await asyncio.sleep(0.01)
+        await asyncio.sleep(0.001)
         if xtarg == '*':
             ypos = y.get_position()
             distance = abs(ypos - ytarg)
