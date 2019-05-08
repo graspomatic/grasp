@@ -171,6 +171,7 @@ class AMC(object):
         self.move_distance_mm(buf, vel=0.2)    # move away from bound 1000 units
         self.wait_for_stop()                # wait until it stops
         pos = self.get_position()           # get that position
+        print(pos)
         self.send_command(limit + pos[3:len(pos)])  # set current position to software limit
 
     def check_bounds(self):
