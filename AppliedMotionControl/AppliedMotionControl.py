@@ -172,7 +172,7 @@ class AMC(object):
         self.wait_for_stop()                # wait until it stops
         pos = self.get_position()           # get that position
         print(pos)
-        self.send_command(limit + pos[3:len(pos)])  # set current position to software limit
+        self.send_command(limit + str(pos)])  # set current position to software limit
 
     def check_bounds(self):
         self.read_udp_all()
