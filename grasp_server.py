@@ -254,7 +254,7 @@ async def wait_for_xy(xtarg='*', ytarg='*'):
     print('xy distance: ' + str(distance))
 
     while distance > 200:
-        await asyncio.sleep(0.01)
+        # await asyncio.sleep(0.01)
         if xtarg == '*':
             ypos = y.get_position()
             distance = abs(ypos - ytarg)
