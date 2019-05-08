@@ -51,6 +51,7 @@ profile_vels = [[400, 0, 0],
 profile_accels_low = [[130, 0, 0],
                       [130, 0, 0]]
 
+# top accel for fast movement
 profile_accels_high = [[400, 0, 0],
                        [400, 0, 0]]
 

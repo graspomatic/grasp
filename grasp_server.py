@@ -185,6 +185,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
     # present objects on specified arms to specified hand
     print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
+    global redisslow
 
     # input variables"
     # arms (list of ints) [0] for left only, [1] for right only, [0 1] for both arms
@@ -209,6 +210,27 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
         dxl.move_arm_to_pos(arm=1, pos='prep_present', rotation=right_angle)
 
     # move xy to present to specified hand
+    hand_xs = await redisslow.get('hand_xs')
+    hand_xs = np.array(json.loads(hand_xs))
+
+    print(hand_xs)
+    print(hand_xs[0])
+    print(hand_xs[1])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # once xy is in position, move specified arms to present
     # await wait_for_xy()
