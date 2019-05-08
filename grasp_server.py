@@ -177,7 +177,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     await pub.publish_json('WebClient', {"leftsensor": str(objid)})
     # ensure that object was picked up
-    await loop.create_task(wait_for_dxl(150))
+    await loop.create_task(wait_for_dxl(160))
 
 
 async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
@@ -268,6 +268,7 @@ async def wait_for_xy(xtarg='*', ytarg='*'):
 
 
         print('xy distance: ' + str(distance))
+        print(time.time())
     #
     #
     #
