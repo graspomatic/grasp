@@ -186,6 +186,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
     # present objects on specified arms to specified hand
     print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
     global redisslow
+    xy_accel = 75
 
     # input variables"
     # arms (list of ints) [0] for left only, [1] for right only, [0 1] for both arms
@@ -212,29 +213,10 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
     # move xy to present to specified hand
     hand_xs = await redisslow.get('hand_xs')
     hand_xs = np.array(json.loads(hand_xs))
-
-    print(hand_xs)
-    print(hand_xs[0])
-    print(hand_xs[1])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    xtarg = x.move_location(location=float(hand_xs[0]), accel=xy_accel, vel=20)
+    await loop.create_task(wait_for_xy(xtarg=xtarg, distance_thresh=(100 + xy_accel * 200)))
 
     # once xy is in position, move specified arms to present
-    # await wait_for_xy()
-
     if arms == 'both' or arms == 'left':
         dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle)
         await pub.publish_json('WebClient', {"leftarm": "prep_present"})
@@ -243,6 +225,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
         await pub.publish_json('WebClient', {"rightarm": "prep_present"})
 
     await wait_for_dxl(200)
+
 
     if arms == 'both' or arms == 'left':
         await pub.publish_json('WebClient', {"leftarm": "present"})
