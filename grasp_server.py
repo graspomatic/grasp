@@ -236,7 +236,7 @@ async def wait_for_dxl(distance_thresh=180):
         a = dxl.sync_get_position()
         b = dxl.sync_get_goal_position()
         distance = max([abs(x) for x in [c - d for c, d in zip(a, b)]])
-        print(distance)
+        # print(distance)
         await asyncio.sleep(0.001)
 
 
@@ -249,8 +249,8 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
     xpos = x.get_position()
     ypos = y.get_position()
 
-    print(xpos)
-    print(ypos)
+    # print(xpos)
+    # print(ypos)
 
     if xtarg == '*':
         distance = abs(ypos - ytarg)
@@ -258,7 +258,7 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
         distance = abs(xpos - xtarg)
     else:
         distance = math.sqrt(abs(xpos - xtarg)**2 + abs(ypos-ytarg)**2)
-    print('xy distance: ' + str(distance))
+    # print('xy distance: ' + str(distance))
 
     while distance > distance_thresh:
         await asyncio.sleep(0.001)
@@ -274,8 +274,8 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
             distance = math.sqrt(abs(xpos - xtarg) ** 2 + abs(ypos - ytarg) ** 2)
 
 
-        print('xy distance: ' + str(distance))
-        print(time.time())
+        # print('xy distance: ' + str(distance))
+        # print(time.time())
     #
     #
     #
