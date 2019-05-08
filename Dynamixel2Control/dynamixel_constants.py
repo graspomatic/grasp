@@ -1,4 +1,4 @@
-BAUDRATE        = 1000000
+BAUDRATE        = 4000000
 
 # DEVICENAME      = "COM6".encode('utf-8')    # Check which port is being used on your controller
 # DEVICENAME      = "COM6"    # Check which port is being used on your controller
