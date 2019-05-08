@@ -236,7 +236,9 @@ async def wait_for_dxl(distance_thresh=180):
         a = dxl.sync_get_position()
         b = dxl.sync_get_goal_position()
         distance = max([abs(x) for x in [c - d for c, d in zip(a, b)]])
-        await asyncio.sleep(0.005)
+        print(distance)
+        await asyncio.sleep(0.001)
+
 
     return 1
 
