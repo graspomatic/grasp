@@ -245,6 +245,9 @@ async def wait_for_xy(xtarg='*', ytarg='*'):
     xpos = x.get_position()
     ypos = y.get_position()
 
+    print(xpos)
+    print(ypos)
+
     if xtarg == '*':
         distance = abs(ypos - ytarg)
     elif ytarg == '*':
