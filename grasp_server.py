@@ -332,6 +332,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     global redisslow, redisfast
 
+    print(time.time())
+
     # tell sensors to start reading so we know what we have
     await redisfast.set('get_left', '0')
     await redisfast.set('get_right', '0')
@@ -359,6 +361,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     right_updated = (int(time.time()) - int(right_last_update)) < 3
     left_connected = int(left_connected)
     right_connected = int(right_connected)
+
+    print(time.time())
 
     # if not left_updated:
     #     print('not updating left')
@@ -392,6 +396,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     else:
         print('incompatibility between what the database says and what sensors say for right')
 
+    print(time.time())
+
 
     #arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
@@ -417,7 +423,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     # await redisfast.set('get_left', '0')
     # await redisfast.set('get_right', '0')
 
-
+    print(time.time())
 
     for i in range(len(orders)):
 
@@ -756,6 +762,8 @@ async def handle_request(reader, writer):
     message = data.decode()                         # decode it as utf-8 i think
     global active_task
 
+    print(time.time())
+
     try:
         print('message: ' + message)
 
@@ -779,6 +787,7 @@ async def handle_request(reader, writer):
                 else:
                     active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
                     result = 'accepted'  # 200 ok
+                    print(time.time())
         else:
             result = 'invalid'    # 418 im a teapot
 
