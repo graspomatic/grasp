@@ -113,7 +113,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
-    await loop.create_task(wait_for_dxl(100))  # at 180, sometimes rips off
+    await loop.create_task(wait_for_dxl(120))  # at 180, sometimes rips off
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": str(objid)})
     else:
