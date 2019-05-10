@@ -285,14 +285,11 @@ while (1==1) {
                 strcpy (str,"PUBLISH WebClient leftSensor=");
                 for (j = 0; j < 6; j++) {
                     char buffer [3];
-                    sprintf(buffer, "%d", 12+j);
+                    sprintf(buffer, "%d", left_current[j]);
                     strcat (str,buffer);
                     strcat (str, ",");
-
                 }
-
                 redisCommand(c, str);
-
             }
             usleep(20000);
 
@@ -358,6 +355,17 @@ while (1==1) {
                         printf("\t");
                     }
                 }
+            }
+            if (publish_output) {
+                char str[53];
+                strcpy (str,"PUBLISH WebClient rightSensor=");
+                for (j = 0; j < 6; j++) {
+                    char buffer [3];
+                    sprintf(buffer, "%d", right_current[j]);
+                    strcat (str,buffer);
+                    strcat (str, ",");
+                }
+                redisCommand(c, str);
             }
 
         }
