@@ -283,12 +283,13 @@ while (1==1) {
             if (publish_output) {
                 char str[53];
                 strcpy (str,"PUBLISH WebClient leftSensor=");
-                strcat (str,"12,");
-                strcat (str,"13,");
-                strcat (str,"14,");
-                strcat (str,"15,");
-                strcat (str,"16,");
-                strcat (str,"17");
+                for (j = 0; j < 6; j++) {
+                    char buffer [3];
+                    itoa (12+j,buffer,10)
+                    strcat (str,buffer);
+                    strcat (str, ",");
+
+                }
 
                 redisCommand(c, str);
 
