@@ -371,7 +371,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
         if order == 'p':
             print('picking up with arm ' + str(side) + ' at location ' + str(location))
-            await retrieve(side=side, objid=left_id, add=location)
+            if side == 0:
+                await retrieve(side=side, objid=left_id, add=location)
+            else:
+                await retrieve(side=side, objid=right_id, add=location)
 
 
 
