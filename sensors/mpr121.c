@@ -130,6 +130,7 @@ int main()
 {
   int i, n = 1000;
   int print_output = 1;
+  int publish_output = 1;
   uint32_t states;
   unsigned char filtdata[24];
   int channels_to_read = 6;
@@ -277,6 +278,12 @@ while (1==1) {
                 if (get_right == 0) {
                     printf("\n");
                 }
+            }
+
+            if (publish_output) {
+
+                redisCommand(c, "PUBLISH WebClient 'leftSensor=12,13,14,15,16,18'");
+
             }
             usleep(20000);
 
