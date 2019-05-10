@@ -68,7 +68,7 @@ async def return_object(side=-1, add=[0,0]):
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
 
     # ensure that object was released (i2c not showing anything)
-    await loop.create_task(wait_for_dxl(195))
+    # await loop.create_task(wait_for_dxl(195))
 
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": "0"})
