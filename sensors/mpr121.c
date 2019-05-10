@@ -281,8 +281,16 @@ while (1==1) {
             }
 
             if (publish_output) {
+                char str[53];
+                strcpy (str,"PUBLISH WebClient leftSensor=");
+                strcat (str,"12,");
+                strcat (str,"13,");
+                strcat (str,"14,");
+                strcat (str,"15,");
+                strcat (str,"16,");
+                strcat (str,"17");
 
-                redisCommand(c, "PUBLISH WebClient leftSensor=12,13,14,15,16,18");
+                redisCommand(c, str);
 
             }
             usleep(20000);
