@@ -282,7 +282,7 @@ while (1==1) {
 
             if (publish_output) {
 
-                redisCommand(c, "PUBLISH WebClient 'leftSensor=12,13,14,15,16,18'");
+                redisCommand(c, "PUBLISH WebClient leftSensor=12,13,14,15,16,18");
 
             }
             usleep(20000);
