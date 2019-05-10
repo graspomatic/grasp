@@ -285,7 +285,7 @@ while (1==1) {
                 strcpy (str,"PUBLISH WebClient leftSensor=");
                 for (j = 0; j < 6; j++) {
                     char buffer [3];
-                    itoa (12+j,buffer,10)
+                    sprintf(buffer, "%d", 12+j);
                     strcat (str,buffer);
                     strcat (str, ",");
 
