@@ -181,7 +181,6 @@ async def wait_for_dxl(distance_thresh=180):
         # print(distance)
         await asyncio.sleep(0.001)
 
-
     return 1
 
 async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
@@ -269,7 +268,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     global redisslow, redisfast
 
-    print(time.time())
+    starttime = time.time()
 
     # tell sensors to start reading so we know what we have
     await redisfast.set('get_left', '0')
@@ -400,6 +399,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
     await redisfast.set('get_left', '1')
     await redisfast.set('get_right', '1')
+
+    endtime = time.time()
+    print(endtime-starttime)
 
 
 async def put_away(side=[-1]):
