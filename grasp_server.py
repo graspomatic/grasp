@@ -92,71 +92,32 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
 
     # move x-y motors to location of object
-    print('moving x to ' + str(add[0]))
+    print('moving x to ' + str(add[0]) + ' and moving y to ' + str(add[1]))
     xtarg = x.move_location(location=float(add[0]), accel=xy_accel, vel=20)
-    print('moving y to ' + str(add[1]))
     ytarg = y.move_location(location=float(add[1]), accel=xy_accel, vel=20)
-
-    #stop reading from sensors
-    # await redisfast.set('get_left', '0')
-    # await redisfast.set('get_right', '0')
-    # await asyncio.sleep(0.01)
+    await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg, distance_thresh=(100 + xy_accel * 200)))
 
     # move specified arm to 'pick' position
-    await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg, distance_thresh=(100+xy_accel*200)))
     await loop.create_task(wait_for_dxl(200))
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
 
     # when arm has reached target location, energize magnet
     await loop.create_task(wait_for_dxl(190))
-    if side == 0:
-        await pub.publish_json('WebClient', {"leftarm": "pick"})
-    else:
-        await pub.publish_json('WebClient', {"rightarm": "pick"})
-
     await loop.create_task(mags.energize(side))
-    await asyncio.sleep(0.02)
+    await asyncio.sleep(0.02)  # need to wait a bit for the magnet to suck in the object
     if side == 0:
-        await pub.publish_json('WebClient', {"leftmag": "1"})
+        await pub.publish_json('WebClient', {"leftarm": "pick", "leftmag": "1"})
     else:
-        await pub.publish_json('WebClient', {"rightmag": "1"})
-
-
+        await pub.publish_json('WebClient', {"rightarm": "pick", "rightmag": "1"})
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
-    # await redisfast.set('get_left', '1')
-    # await redisfast.set('get_right', '1')
-
-
-    #
-    #
-    # if side == 0:
-    #     fut1 = redisfast.get('left_sensor_last_update')
-    #     fut2 = redisfast.get('left_connected')
-    #     await pub.publish_json('WebClient', {"leftarm": "prep_pick"})
-    # else:
-    #     fut1 = redisfast.get('right_sensor_last_update')
-    #     fut2 = redisfast.get('right_connected')
-    #     await pub.publish_json('WebClient', {"rightarm": "prep_pick"})
-    #
-    # last_update, connected = await asyncio.gather(fut1, fut2)
-    #
-    # print(int(last_update))
-    # print(int(connected))
-    # print(int(time.time()))
-    #
-    # if (int(time.time()) - int(last_update)) > 3:
-    #     print('not updating')
-    #
-    # if not int(connected):
-    #     print('not picked up')
-
-
-    await pub.publish_json('WebClient', {"leftsensor": str(objid)})
-    # ensure that object was picked up
     await loop.create_task(wait_for_dxl(180))
+    if side == 0:
+        await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": str(objid)})
+    else:
+        await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": str(objid)})
 
 
 async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
