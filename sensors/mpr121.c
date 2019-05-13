@@ -317,6 +317,10 @@ while (1==1) {
     }
 
     if (get_right) {
+        if (!getting_right) {
+            redisCommand(c, "PUBLISH WebClient rightSensor=clear");
+            getting_right = 1;
+        }
         if (mpr121_read_bytes(dev2, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
             printf("Error while reading filtered data\n");
         } else {
@@ -383,7 +387,9 @@ while (1==1) {
         if (print_output) {
             printf("\n");
         }
-      }
+      } else {
+        getting_right = 0;
+    }
   }
 
   clock_t end = clock();
