@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
     <style>
         .switch {
@@ -98,6 +98,14 @@
         }
         .rightcustom{
            display:none;
+        }
+
+        #block_container {
+            text-align: center;
+        }
+        #block_container > div {
+            display: inline-block;
+            vertical-align: middle;
         }
 
 
@@ -385,119 +393,325 @@
               }
         });
 
+        // graphs of grasp data
+        window.onload = function () {
+        var dps1 = [], dps2 = [], dps3 = [], dps4 = [], dps5 = [], dps6 = []; // dataPoints for left
+        var dps7 = [], dps8 = [], dps9 = [], dps10 = [], dps11 = [], dps12 = []; // dataPoints for right
+
+        chartLeft = new CanvasJS.Chart("chartContainerLeft", {
+            title :{
+                text: "Left Sensors"
+            },
+            axisY: {
+                includeZero: true
+            },
+            axisX:{
+                gridThickness: 0,
+                tickLength: 0,
+                lineThickness: 0,
+                labelFormatter: function(){
+                  return " ";
+                }
+            },
+            data: [{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps1
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps2
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps3
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps4
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps5
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps6
+            }]
+        });
+
+        chartRight = new CanvasJS.Chart("chartContainerRight", {
+            title :{
+                text: "Right Sensors"
+            },
+            axisY: {
+                includeZero: true
+            },
+            axisX:{
+                gridThickness: 0,
+                tickLength: 0,
+                lineThickness: 0,
+                labelFormatter: function(){
+                  return " ";
+                }
+            },
+            data: [{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps7
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps8
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps9
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps10
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps11
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps12
+            }]
+        });
+
+        var leftCounter = 0;
+        var rightCounter = 0;
+        var xValLeft = 0;
+        var xValRight = 0;
+        var updateInterval = 5;
+        var dataLength = 500; // number of dataPoints visible at any point
+
+        chartLeft.render();
+        chartRight.render();
+
+
+        updateChartLeft = function (vals) {
+            if (vals == 'clear') {
+                console.log('clearing left vals');
+                for (var i = 0; i < 6; i++) {
+                    for (var j = 0; j < dps1.length; j++) {
+                        dps1.shift();
+                        dps2.shift();
+                        dps3.shift();
+                        dps4.shift();
+                        dps5.shift();
+                        dps6.shift();
+                    }
+                }
+
+            } else {
+                dps1.push({x: xValLeft, y: parseInt(vals[0],10)});
+                dps2.push({x: xValLeft, y: parseInt(vals[1],10)});
+                dps3.push({x: xValLeft, y: parseInt(vals[2],10)});
+                dps4.push({x: xValLeft, y: parseInt(vals[3],10)});
+                dps5.push({x: xValLeft, y: parseInt(vals[4],10)});
+                dps6.push({x: xValLeft, y: parseInt(vals[5],10)});
+
+                if (dps1.length > dataLength) {
+                    dps1.shift();
+                    dps2.shift();
+                    dps3.shift();
+                    dps4.shift();
+                    dps5.shift();
+                    dps6.shift();
+                }
+
+                xValLeft++;
+            }
+            if (leftCounter > updateInterval) {
+                chartLeft.render();
+                leftCounter = 0;
+            }
+            leftCounter++;
+        };
+
+        updateChartRight = function (vals) {
+            if (vals == 'clear') {
+                console.log('clearing right vals');
+                for (var i = 0; i < 6; i++) {
+                    for (var j = 0; j < dps7.length; j++) {
+                        dps7.shift();
+                        dps8.shift();
+                        dps9.shift();
+                        dps10.shift();
+                        dps11.shift();
+                        dps12.shift();
+                    }
+                }
+
+            } else {
+                dps7.push({x: xValRight, y: parseInt(vals[0],10)});
+                dps8.push({x: xValRight, y: parseInt(vals[1],10)});
+                dps9.push({x: xValRight, y: parseInt(vals[2],10)});
+                dps10.push({x: xValRight, y: parseInt(vals[3],10)});
+                dps11.push({x: xValRight, y: parseInt(vals[4],10)});
+                dps12.push({x: xValRight, y: parseInt(vals[5],10)});
+
+                if (dps7.length > dataLength) {
+                    dps7.shift();
+                    dps8.shift();
+                    dps9.shift();
+                    dps10.shift();
+                    dps11.shift();
+                    dps12.shift();
+                }
+
+                xValRight++;
+            }
+
+            if (rightCounter > updateInterval) {
+                chartRight.render();
+                rightCounter = 0;
+            }
+            rightCounter++;
+        };
+
+    }
+
+
 
         // websocket for handling redis pubsub
 
-        var socket = new WebSocket("ws://128.148.110.89:7379/.json");
-            socket.onopen = function() {
-                socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
-            };
-            socket.onerror=function(event){
-                document.getElementById("redisServerConnected").style.color = "red";
-                document.getElementById("redisServerConnected").innerHTML = "No Connection";
-            }
-            socket.onmessage = function(evt)
-            {
-                console.log(evt.data);
-                try {
-                    var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
-                    console.log('message is from grasp_server');
+            var socket = new WebSocket("ws://128.148.110.89:7379/.json");
+                socket.onopen = function() {
+                    socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
+                };
+                socket.onerror=function(event){
+                    document.getElementById("redisServerConnected").style.color = "red";
+                    document.getElementById("redisServerConnected").innerHTML = "No Connection";
                 }
-                catch(err) {
-                    console.log('message is from mpr121.c');
-                    var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2].replace(/'/g, '"'));
+                socket.onmessage = function(evt)
+                {
+                    //console.log(evt.data);
+                    try {
+                        var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
+                        console.log('message is from grasp_server');
+                        if (parsed == '1') {
+                            document.getElementById("redisServerConnected").style.color = "green";
+                            document.getElementById("redisServerConnected").innerHTML = "Connected";
+                        } else {
+                            handlePub(parsed);
+                        }
+                    }
+                    catch(err) {
+                        //console.log('message is from mpr121.c');
+                        //console.log(JSON.parse(evt.data).SUBSCRIBE[2]);
+                        message = JSON.parse(evt.data).SUBSCRIBE[2];
+                        handleMPR121(message);
 
-                }
+                    }
 
-                if (parsed == '1') {
-                    document.getElementById("redisServerConnected").style.color = "green";
-                    document.getElementById("redisServerConnected").innerHTML = "Connected";
+
+                };
+
+            // Handle published messages from redis
+
+            armPos = ['pick', 'prep_pick', 'prep_present', 'present'];
+
+            function handleMPR121(message) {
+
+                var splitMessage = message.split("=");
+                var side = splitMessage[0];
+                if (splitMessage[1] == 'clear') {
+                    var vals = 'clear';
                 } else {
-                    handlePub(parsed);
+                    var vals = splitMessage[1].split(",");
                 }
+
+
+                if (side == 'leftSensor') {
+                    updateChartLeft(vals);
+                } else if (side == 'rightSensor') {
+                    updateChartRight(vals);
+                }
+
+            }
+
+            function handlePub(message) {
+                console.log(message);
+                for (key in message) {
+                    if (key == 'xpos') {
+                        document.getElementById("xlocation").value = message[key];
+                    } else if (key == 'ypos') {
+                        document.getElementById("ylocation").value = message[key];
+                    } else if (key == 'leftmag') {
+                        document.getElementById("magLeft").checked = parseInt(message[key]);
+                    } else if (key == 'rightmag') {
+                        document.getElementById("magRight").checked = parseInt(message[key]);
+                    } else if (key == 'leftsensor') {
+                        if (message[key] == 'dc') {
+                            document.getElementById("leftObjectAttached").value = '';
+                            document.getElementById("leftObjectUpdating").style.color = "red";
+                            document.getElementById("leftObjectUpdating").innerHTML = "Stale";
+                        } else {
+                            document.getElementById("leftObjectAttached").value = message[key];
+                            document.getElementById("leftObjectUpdating").style.color = "green";
+                            document.getElementById("leftObjectUpdating").innerHTML = "Live";
+                        }
+                    } else if (key == 'rightsensor') {
+                        if (message[key] == 'dc') {
+                            document.getElementById("rightObjectAttached").value = '';
+                            document.getElementById("rightObjectUpdating").style.color = "red";
+                            document.getElementById("rightObjectUpdating").innerHTML = "Stale";
+                        } else {
+                            document.getElementById("rightObjectAttached").value = message[key];
+                            document.getElementById("rightObjectUpdating").style.color = "green";
+                            document.getElementById("rightObjectUpdating").innerHTML = "Live";
+                        }
+                    } else if (key == 'leftarm') {
+                        //decide if they're sending a prescribed position or triplet
+                        if (armPos.includes(message[key])) {
+                            document.getElementById("leftarmsettingtype").selectedIndex = 0;
+                            $('select[name="leftarmsettingtype"]').change();
+                            document.getElementById("leftPrescribedSetting").value = message[key];
+                        } else {
+                            document.getElementById("leftarmsettingtype").selectedIndex = 1;
+                            $('select[name="leftarmsettingtype"]').change();
+                            var vals = message[key].split(',');
+                            if (vals.length == 3) {
+                                document.getElementById("leftMotor1").value = vals[0];
+                                document.getElementById("leftMotor2").value = vals[1];
+                                document.getElementById("leftMotor3").value = vals[2];
+                            } else {
+                                console.log('sent wrong number of values. should be leftarm=12,34,56');
+                            }
+                        }
+
+                    } else if (key == 'rightarm') {
+                        //decide if they're sending a prescribed position or triplet
+                        if (armPos.includes(message[key])) {
+                            document.getElementById("rightarmsettingtype").selectedIndex = 0;
+                            document.getElementById("rightPrescribedSetting").value = message[key];
+                            $('select[name="rightarmsettingtype"]').change();
+                        } else {
+                            document.getElementById("rightarmsettingtype").selectedIndex = 1;
+                            $('select[name="rightarmsettingtype"]').change();
+                            var vals = message[key].split(',');
+                            if (vals.length == 3) {
+                                document.getElementById("rightMotor1").value = vals[0];
+                                document.getElementById("rightMotor2").value = vals[1];
+                                document.getElementById("rightMotor3").value = vals[2];
+                            } else {
+                                console.log('sent wrong number of values. should be rightarm=12,34,56');
+                            }
+                        }
+                    } //end if
+                } // end for loop
+            } // end handlePub
+
+            // Unsubscribe when you close the window. otherwise it will crash the server.
+            window.onbeforeunload = function() {
+                socket.send(JSON.stringify(["UNSUBSCRIBE", "WebClient"]));
+                return null;
             };
-
-        // Handle published messages from redis
-
-        armPos = ['pick', 'prep_pick', 'prep_present', 'present'];
-
-        function handlePub(message) {
-            console.log(message);
-            for (key in message) {
-                if (key == 'xpos') {
-                    document.getElementById("xlocation").value = message[key];
-                } else if (key == 'ypos') {
-                    document.getElementById("ylocation").value = message[key];
-                } else if (key == 'leftmag') {
-                    document.getElementById("magLeft").checked = parseInt(message[key]);
-                } else if (key == 'rightmag') {
-                    document.getElementById("magRight").checked = parseInt(message[key]);
-                } else if (key == 'leftsensor') {
-                    if (message[key] == 'dc') {
-                        document.getElementById("leftObjectAttached").value = '';
-                        document.getElementById("leftObjectUpdating").style.color = "red";
-                        document.getElementById("leftObjectUpdating").innerHTML = "Stale";
-                    } else {
-                        document.getElementById("leftObjectAttached").value = message[key];
-                        document.getElementById("leftObjectUpdating").style.color = "green";
-                        document.getElementById("leftObjectUpdating").innerHTML = "Live";
-                    }
-                } else if (key == 'rightsensor') {
-                    if (message[key] == 'dc') {
-                        document.getElementById("rightObjectAttached").value = '';
-                        document.getElementById("rightObjectUpdating").style.color = "red";
-                        document.getElementById("rightObjectUpdating").innerHTML = "Stale";
-                    } else {
-                        document.getElementById("rightObjectAttached").value = message[key];
-                        document.getElementById("rightObjectUpdating").style.color = "green";
-                        document.getElementById("rightObjectUpdating").innerHTML = "Live";
-                    }
-                } else if (key == 'leftarm') {
-                    //decide if they're sending a prescribed position or triplet
-                    if (armPos.includes(message[key])) {
-                        document.getElementById("leftarmsettingtype").selectedIndex = 0;
-                        $('select[name="leftarmsettingtype"]').change();
-                        document.getElementById("leftPrescribedSetting").value = message[key];
-                    } else {
-                        document.getElementById("leftarmsettingtype").selectedIndex = 1;
-                        $('select[name="leftarmsettingtype"]').change();
-                        var vals = message[key].split(',');
-                        if (vals.length == 3) {
-                            document.getElementById("leftMotor1").value = vals[0];
-                            document.getElementById("leftMotor2").value = vals[1];
-                            document.getElementById("leftMotor3").value = vals[2];
-                        } else {
-                            console.log('sent wrong number of values. should be leftarm=12,34,56');
-                        }
-                    }
-
-                } else if (key == 'rightarm') {
-                    //decide if they're sending a prescribed position or triplet
-                    if (armPos.includes(message[key])) {
-                        document.getElementById("rightarmsettingtype").selectedIndex = 0;
-                        document.getElementById("rightPrescribedSetting").value = message[key];
-                        $('select[name="rightarmsettingtype"]').change();
-                    } else {
-                        document.getElementById("rightarmsettingtype").selectedIndex = 1;
-                        $('select[name="rightarmsettingtype"]').change();
-                        var vals = message[key].split(',');
-                        if (vals.length == 3) {
-                            document.getElementById("rightMotor1").value = vals[0];
-                            document.getElementById("rightMotor2").value = vals[1];
-                            document.getElementById("rightMotor3").value = vals[2];
-                        } else {
-                            console.log('sent wrong number of values. should be rightarm=12,34,56');
-                        }
-                    }
-                } //end if
-            } // end for loop
-        } // end handlePub
-
-        // Unsubscribe when you close the window. otherwise it will crash the server.
-        window.onbeforeunload = function() {
-            socket.send(JSON.stringify(["UNSUBSCRIBE", "WebClient"]));
-            return null;
-        };
 
 
 
@@ -693,7 +907,11 @@
     </div>
 
 
-
+    <!--Graphs of grasp data-->
+    <div id="block_container">
+        <div id="chartContainerLeft" style="height: 370px; width:45%;"></div>
+        <div id="chartContainerRight" style="height: 370px; width:45%;"></div>
+    </div>
 
 
 
