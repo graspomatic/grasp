@@ -151,6 +151,8 @@ int main()
   int calib = 0;                // holds value returned from redis about whether we're supposed to get calib values
   int get_left = 0;
   int get_right = 0;
+  int getting_left = 0;
+  int getting_right = 0;        // keeps track of if you've been getting it already or not
   int reading = 0;
   int cal_left[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
   int cal_right[6] = {0, 0, 0, 0, 0, 0};      // holds baseline calibration for currently held shape
@@ -221,6 +223,11 @@ while (1==1) {
     }
 
     if (get_left) {
+        if (!getting_left) {
+            redisCommand(c, "PUBLISH WebClient leftSensor=clear", current_time);
+            getting_left = 1;
+        }
+
         // read nchannels (8 bits in LB and 2 bits in high byte) all at once
         if (mpr121_read_bytes(dev, MPR121_ELE0_FILTDATA_REG, filtdata, channels_to_read*2) != UPM_SUCCESS) {
             printf("Error while reading filtered data\n");
