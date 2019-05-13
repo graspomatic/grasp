@@ -224,7 +224,7 @@ while (1==1) {
 
     if (get_left) {
         if (!getting_left) {
-            redisCommand(c, "PUBLISH WebClient leftSensor=clear", current_time);
+            redisCommand(c, "PUBLISH WebClient leftSensor=clear");
             getting_left = 1;
         }
 
