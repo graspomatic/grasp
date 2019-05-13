@@ -298,7 +298,7 @@ while (1==1) {
                 }
                 redisCommand(c, str);
             }
-            usleep(20000);
+            usleep(10000);
 
         }
     } else {
@@ -382,7 +382,7 @@ while (1==1) {
             }
 
         }
-        usleep(1000);
+        usleep(5000);
 
         if (print_output) {
             printf("\n");
