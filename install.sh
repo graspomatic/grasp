@@ -13,3 +13,6 @@ cp ./redis_conf_files/redis_6379.conf /etc/redis/
 cp ./redis_conf_files/redis_6380.conf /etc/redis/
 mkdir /var/lib/redis/6379
 mkdir /var/lib/redis/6380
+
+cp ./redis_conf_files/redis-6380-backup/dump.rdb /var/lib/redis/6380/
+
