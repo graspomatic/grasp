@@ -115,6 +115,31 @@
 
     $(document).ready(function() {
 
+        // check for connection to grasp_server
+        var ip = document.getElementById("GraspIP").value;
+        var query = "function=ping";
+        var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+        $.get("http://" + ip, js, function() {
+        })
+          .done(function(data, textStatus, jqXHR) {
+            console.log(jqXHR.statusText);
+            if (jqXHR.statusText == "pong") {
+                document.getElementById("graspServerConnected").style.color = "green";
+                document.getElementById("graspServerConnected").innerHTML = "Connected";
+            } else {
+                document.getElementById("graspServerConnected").style.color = "red";
+                document.getElementById("graspServerConnected").innerHTML = "Not Connected";
+            }
+          })
+          .fail(function(data) {
+            alert( "ping failed" );
+            document.getElementById("graspServerConnected").style.color = "red";
+            document.getElementById("graspServerConnected").innerHTML = "Not Connected";
+          });
+
+
+
+
         // ------------- arms ---------------
         // Change options shown to user
         $('select[name="leftarmsettingtype"]').on('change',function(){
@@ -136,6 +161,8 @@
                 $('.rightcustom').show();
            }
         });
+
+
 
         // Handle button press
 
@@ -207,28 +234,27 @@
             }
         });
 
-        $('#magRight').change(function() {
-            var ip = document.getElementById("GraspIP").value;
-            if(this.checked) {
-                $.get("http://" + ip, { "function":"magnets", "right_status":"1" }, function() {
-                })
-                  .done(function(data, textStatus, jqXHR) {
-                    console.log(jqXHR.statusText);
-                  })
-                  .fail(function(data) {
-                    alert( "magRight failed" );
-                  });
-            } else {
-               $.get("http://" + ip, { "function":"magnets", "right_status":"0" }, function() {
-                })
-                  .done(function(data, textStatus, jqXHR) {
-                    console.log(jqXHR.statusText);
-                  })
-                  .fail(function(data) {
-                    alert( "magRight failed" );
-                  });
+        // ------------- abort button  ---------------
+        // Handle special key presses
+        document.addEventListener ("keydown", function (zEvent) {
+            if (zEvent.altKey  &&  zEvent.key === "a") {  // case sensitive
+                $("#abort_button").click();
             }
+        } );
+
+        $(document.getElementById("abort_button")).click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"abort" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "abort failed" );
+              });
         });
+
 
 
         // ------------- x-y motors  ---------------
@@ -367,6 +393,7 @@
                 alert( "send_init_arms failed" );
               });
         });
+
 
 
 
@@ -839,15 +866,15 @@
 
 
     <!--Magnets-->
-    <div class="form-group row mb-5">
-        <div class="input-group col-6 mb-10">
+    <div class="form-group row mb-2">
+        <div class="input-group col-6 mb-2">
             <label class="switch mx-auto">
               <input type="checkbox" id="magLeft">
               <span class="slider"></span>
               <span class="magnetleft"></span>
             </label>
         </div>
-        <div class="input-group col-6 mb-5">
+        <div class="input-group col-6 mb-2">
             <label class="switch mx-auto">
               <input type="checkbox" id="magRight">
               <span class="slider"></span>
@@ -855,6 +882,8 @@
             </label>
         </div>
     </div>
+
+
 
 
 
@@ -906,8 +935,13 @@
 
 
     <!--Manual control-->
-    <div class="input-group col-16 mt-5">
+    <div class="input-group col-16 mt-5 mb-3">
         <input type="text" id="manualcontrol" class="form-control" placeholder="function=a&prop=b">
+    </div>
+
+    <!--Abort-->
+    <div class="input-group col-12 mb-5">
+        <button type="button" class="btn btn-danger btn-lg btn-block" id="abort_button">Abort (Alt + a)</button>
     </div>
 
 
