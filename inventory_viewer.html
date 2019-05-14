@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Graspomatic 2 Manual control</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+    <style>
+
+
+
+    </style>
+
+    <script>
+
+    $(document).ready(function() {
+
+        // check for connection to grasp_server
+        var ip = document.getElementById("GraspIP").value;
+        var query = "function=ping";
+        var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+        $.get("http://" + ip, js, function() {
+        })
+          .done(function(data, textStatus, jqXHR) {
+            console.log(jqXHR.statusText);
+            if (jqXHR.statusText == "pong") {
+                document.getElementById("graspServerConnected").style.color = "green";
+                document.getElementById("graspServerConnected").innerHTML = "Connected";
+            } else {
+                document.getElementById("graspServerConnected").style.color = "red";
+                document.getElementById("graspServerConnected").innerHTML = "Not Connected";
+            }
+          })
+          .fail(function(data) {
+            alert( "ping failed" );
+            document.getElementById("graspServerConnected").style.color = "red";
+            document.getElementById("graspServerConnected").innerHTML = "Not Connected";
+          });
+
+
+
+
+        $('#moveyaxis').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var yloc = document.getElementById("ylocation").value;
+            var cmd = { "function":"move_xy_to_location", "axis":"y", "location":yloc };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "moveyaxis failed" );
+              });
+
+
+            //$.get("http://128.148.110.89:7379/SET/foo/whawha"); // works
+
+            var jqxhr = $.get( "http://128.148.110.89:7379/GET/foo", function(data) {
+            })
+              .done(function(data) {
+                console.log(data.GET);
+              })
+              .fail(function() {
+                alert( "error" );
+              })
+              .always(function() {
+              });
+
+
+        });
+
+
+
+        // websocket for handling redis pubsub
+
+            var socket = new WebSocket("ws://128.148.110.89:7379/.json");
+                socket.onopen = function() {
+                    socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
+                };
+                socket.onerror=function(event){
+                    document.getElementById("redisServerConnected").style.color = "red";
+                    document.getElementById("redisServerConnected").innerHTML = "No Connection";
+                }
+                socket.onmessage = function(evt)
+                {
+                    //console.log(evt.data);
+                    try {
+                        var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
+                        console.log('message is from grasp_server');
+                        if (parsed == '1') {
+                            document.getElementById("redisServerConnected").style.color = "green";
+                            document.getElementById("redisServerConnected").innerHTML = "Connected";
+                        } else {
+                            handlePub(parsed);
+                        }
+                    }
+                    catch(err) {
+                        //console.log('message is from mpr121.c');
+                        //console.log(JSON.parse(evt.data).SUBSCRIBE[2]);
+                        message = JSON.parse(evt.data).SUBSCRIBE[2];
+                        handleMPR121(message);
+
+                    }
+
+
+                };
+
+            // Handle published messages from redis
+
+            armPos = ['pick', 'prep_pick', 'prep_present', 'present'];
+
+            function handleMPR121(message) {
+
+                var splitMessage = message.split("=");
+                var side = splitMessage[0];
+                if (splitMessage[1] == 'clear') {
+                    var vals = 'clear';
+                } else {
+                    var vals = splitMessage[1].split(",");
+                }
+
+
+                if (side == 'leftSensor') {
+                    updateChartLeft(vals);
+                } else if (side == 'rightSensor') {
+                    updateChartRight(vals);
+                }
+
+            }
+
+            function handlePub(message) {
+                console.log(message);
+                for (key in message) {
+                    if (key == 'xpos') {
+                        document.getElementById("xlocation").value = message[key];
+                    } else if (key == 'ypos') {
+                        document.getElementById("ylocation").value = message[key];
+                    } else if (key == 'leftmag') {
+                        document.getElementById("magLeft").checked = parseInt(message[key]);
+                    } else if (key == 'rightmag') {
+                        document.getElementById("magRight").checked = parseInt(message[key]);
+                    } else if (key == 'leftsensor') {
+                        if (message[key] == 'dc') {
+                            document.getElementById("leftObjectAttached").value = '';
+                            document.getElementById("leftObjectUpdating").style.color = "red";
+                            document.getElementById("leftObjectUpdating").innerHTML = "Stale";
+                        } else {
+                            document.getElementById("leftObjectAttached").value = message[key];
+                            document.getElementById("leftObjectUpdating").style.color = "green";
+                            document.getElementById("leftObjectUpdating").innerHTML = "Live";
+                        }
+                    } else if (key == 'rightsensor') {
+                        if (message[key] == 'dc') {
+                            document.getElementById("rightObjectAttached").value = '';
+                            document.getElementById("rightObjectUpdating").style.color = "red";
+                            document.getElementById("rightObjectUpdating").innerHTML = "Stale";
+                        } else {
+                            document.getElementById("rightObjectAttached").value = message[key];
+                            document.getElementById("rightObjectUpdating").style.color = "green";
+                            document.getElementById("rightObjectUpdating").innerHTML = "Live";
+                        }
+                    } else if (key == 'leftarm') {
+                        //decide if they're sending a prescribed position or triplet
+                        if (armPos.includes(message[key])) {
+                            document.getElementById("leftarmsettingtype").selectedIndex = 0;
+                            $('select[name="leftarmsettingtype"]').change();
+                            document.getElementById("leftPrescribedSetting").value = message[key];
+                        } else {
+                            document.getElementById("leftarmsettingtype").selectedIndex = 1;
+                            $('select[name="leftarmsettingtype"]').change();
+                            var vals = message[key].split(',');
+                            if (vals.length == 3) {
+                                document.getElementById("leftMotor1").value = vals[0];
+                                document.getElementById("leftMotor2").value = vals[1];
+                                document.getElementById("leftMotor3").value = vals[2];
+                            } else {
+                                console.log('sent wrong number of values. should be leftarm=12,34,56');
+                            }
+                        }
+
+                    } else if (key == 'rightarm') {
+                        //decide if they're sending a prescribed position or triplet
+                        if (armPos.includes(message[key])) {
+                            document.getElementById("rightarmsettingtype").selectedIndex = 0;
+                            document.getElementById("rightPrescribedSetting").value = message[key];
+                            $('select[name="rightarmsettingtype"]').change();
+                        } else {
+                            document.getElementById("rightarmsettingtype").selectedIndex = 1;
+                            $('select[name="rightarmsettingtype"]').change();
+                            var vals = message[key].split(',');
+                            if (vals.length == 3) {
+                                document.getElementById("rightMotor1").value = vals[0];
+                                document.getElementById("rightMotor2").value = vals[1];
+                                document.getElementById("rightMotor3").value = vals[2];
+                            } else {
+                                console.log('sent wrong number of values. should be rightarm=12,34,56');
+                            }
+                        }
+                    } //end if
+                } // end for loop
+            } // end handlePub
+
+            // Unsubscribe when you close the window. otherwise it will crash the server.
+            window.onbeforeunload = function() {
+                socket.send(JSON.stringify(["UNSUBSCRIBE", "WebClient"]));
+                return null;
+            };
+
+
+
+
+
+    });
+
+
+
+
+
+
+    </script>
+
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="form-group row mt-10">
+        <div class="input-group mb-1 col-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Grasp Server IP</span>
+            </div>
+            <input type="text" class="form-control col-4" value="128.148.110.89:8888" id="GraspIP">
+            <div class="input-group-append">
+                <button class="btn btn-outline-dark disabled" id="graspServerConnected">Connecting...</button>
+            </div>
+        </div>
+        <div class="input-group mb-1 col-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">webdis Server IP</span>
+            </div>
+            <input type="text" class="form-control col-4" value="128.148.110.89:7379" id="RedisIP">
+            <div class="input-group-append">
+                <button class="btn btn-outline-dark disabled" id="redisServerConnected">Connecting...</button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
