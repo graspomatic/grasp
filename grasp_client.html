@@ -393,7 +393,11 @@
               }
         });
 
-        // graphs of grasp data
+
+
+
+
+        // ------------------ graphs of grasp data ----------------------------
         window.onload = function () {
         var dps1 = [], dps2 = [], dps3 = [], dps4 = [], dps5 = [], dps6 = []; // dataPoints for left
         var dps7 = [], dps8 = [], dps9 = [], dps10 = [], dps11 = [], dps12 = []; // dataPoints for right
@@ -486,7 +490,7 @@
         var rightCounter = 0;
         var xValLeft = 0;
         var xValRight = 0;
-        var updateInterval = 5;
+        var updateInterval = 4; //number of updates received before redrawing graph
         var dataLength = 500; // number of dataPoints visible at any point
 
         chartLeft.render();
