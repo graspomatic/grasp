@@ -1,13 +1,10 @@
 const http = require('http');
 
-'use strict';
-
 var os = require('os');
 var ifaces = os.networkInterfaces();
 
 hostname = ifaces['eth0'][0]['address'];
-
-const port = 3000;
+const port = 80;
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
