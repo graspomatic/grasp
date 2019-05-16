@@ -22,7 +22,6 @@ chmod 644 /var/lib/redis/6380/appendonly6380.aof
 
 /usr/bin/redis-server /etc/redis/redis_6379.conf
 /usr/bin/redis-server /etc/redis/redis_6380.conf
-cd /usr/bin/webdis
-./webdis &
+
 
 

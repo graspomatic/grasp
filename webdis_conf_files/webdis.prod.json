@@ -9,6 +9,7 @@
 	"threads":	4,
 
 	"daemonize":	true,
+	"websockets":	true,
 
 	"database":	0,
 
