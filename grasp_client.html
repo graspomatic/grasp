@@ -234,6 +234,29 @@
             }
         });
 
+        $('#magRight').change(function() {
+            var ip = document.getElementById("GraspIP").value;
+            if(this.checked) {
+                $.get("http://" + ip, { "function":"magnets", "right_status":"1" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magRight failed" );
+                  });
+            } else {
+               $.get("http://" + ip, { "function":"magnets", "right_status":"0" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magRight failed" );
+                  });
+            }
+        });
+
         // ------------- abort button  ---------------
         // Handle special key presses
         document.addEventListener ("keydown", function (zEvent) {
