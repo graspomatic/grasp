@@ -8,6 +8,8 @@ const hostname = '128.148.110.89';
 var os = require('os');
 var ifaces = os.networkInterfaces();
 
+console.log(ifaces);
+
 Object.keys(ifaces).forEach(function (ifname) {
   var alias = 0;
 
