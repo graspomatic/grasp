@@ -10,7 +10,7 @@ var ifaces = os.networkInterfaces();
 
 console.log(ifaces);
 console.log(ifaces['eth0']);
-console.log(ifaces['eth0'].address);
+console.log(ifaces['eth0']['address']);
 
 Object.keys(ifaces).forEach(function (ifname) {
   var alias = 0;
