@@ -81,9 +81,14 @@ var server = http.createServer(function (req, res) {
         s.pipe(res);
     });
     s.on('error', function () {
-        res.setHeader('Content-Type', 'text/plain');
-        res.statusCode = 404;
-        res.end('Not found');
+        getAsync(key).then(function(res) {
+            console.log(res); // => 'bar'
+            res.setHeader('Content-Type', 'text/plain');
+            res.statusCode = 404;
+            res.end(res);
+        });
+
+
     });
 });
 
