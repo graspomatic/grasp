@@ -20,13 +20,15 @@ const setAsync = promisify(client.set).bind(client);
 key = 'foo';
 
 
-return getAsync(key).then(function(res) {
+getAsync(key).then(function(res) {
     console.log(res); // => 'bar'
 });
 
-client.set(key, "string val", redis.print);
+setAsync(key,'barz').then(function(res) {
+    console.log(res); // => 'bar'
+});
 
-return getAsync(key).then(function(res) {
+getAsync(key).then(function(res) {
     console.log(res); // => 'bar'
 });
 
