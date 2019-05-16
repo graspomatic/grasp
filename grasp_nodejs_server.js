@@ -1,9 +1,8 @@
+// Set up redis connections
+
 var redis = require("redis"),
     client_6379 = redis.createClient();
     client_6380 = redis.createClient(6380)
-
-// if you'd like to select database 3, instead of 0 (default), call
-// client.select(3, function() { /* ... */ });
 
 client_6379.on("error", function (err) {
     console.log("Error " + err);
@@ -19,25 +18,9 @@ const setAsync_6379 = promisify(client_6379.set).bind(client_6379);
 const getAsync_6380 = promisify(client_6380.get).bind(client_6380);
 const setAsync_6380 = promisify(client_6380.set).bind(client_6380);
 
-// We expect a value 'foo': 'bar' to be present
-// So instead of writing client.get('foo', cb); you have to write:
 
 
-
-//key = 'foo';
-//
-//
-//getAsync(key).then(function(res) {
-//    console.log(res); // => 'bar'
-//});
-//
-//setAsync(key,'barz').then(function(res) {
-//    console.log(res); // => 'bar'
-//});
-//
-//getAsync(key).then(function(res) {
-//    console.log(res); // => 'bar'
-//});
+// Set up nodejs
 
 const http = require('http');
 var path = require('path');

@@ -24,7 +24,7 @@ import path_find
 pf = path_find.path_find()
 
 
-async def return_object(side=-1, add=[0,0]):
+async def return_object(side=-1, add=[0,0]):pub
     # Put away the object currently held on specified side in
     print("put away " + str(side) + " at " + str(add))
     global redisfast
