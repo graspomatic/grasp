@@ -24,9 +24,7 @@ return getAsync(key).then(function(res) {
     console.log(res); // => 'bar'
 });
 
-return setAsync(key,'barz').then(function(res) {
-    console.log(res); // => 'bar'
-});
+client.set(key, "string val", redis.print);
 
 return getAsync(key).then(function(res) {
     console.log(res); // => 'bar'
