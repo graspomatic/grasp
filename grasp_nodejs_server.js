@@ -1,6 +1,32 @@
 const http = require('http');
 
-const hostname = '128.148.110.89';
+
+
+
+//To fetch IPv4 address of server
+var getIpAddress = function()
+{
+  var ifaces = os.networkInterfaces();
+    var ips = 0;
+
+    for(var dev in ifaces)
+    {
+        ifaces[dev].forEach(function(details){
+            //console.log(details);
+           if(details.family == 'IPv4' && details.internal == false)
+           {
+               //ips[dev+(alias?':'+alias:'')] = details.address;
+               ips = details.address;
+           }
+        });
+    }
+  return ips;
+};
+
+const hostname = getIpAddress();
+
+
+
 const port = 3000;
 
 const server = http.createServer((req, res) => {
