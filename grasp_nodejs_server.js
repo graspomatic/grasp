@@ -1,16 +1,23 @@
 var redis = require("redis"),
-    client = redis.createClient();
+    client_6379 = redis.createClient();
+    client_6380 = redis.createClient(port=6380)
 
 // if you'd like to select database 3, instead of 0 (default), call
 // client.select(3, function() { /* ... */ });
 
-client.on("error", function (err) {
+client_6379.on("error", function (err) {
+    console.log("Error " + err);
+});
+
+client_6380.on("error", function (err) {
     console.log("Error " + err);
 });
 
 const {promisify} = require('util');
-const getAsync = promisify(client.get).bind(client);
-const setAsync = promisify(client.set).bind(client);
+const getAsync_6379 = promisify(client_6379.get).bind(client);
+const setAsync_6379 = promisify(client_6379.set).bind(client);
+const getAsync_6380 = promisify(client_6380.get).bind(client);
+const setAsync_6380 = promisify(client_6380.set).bind(client);
 
 // We expect a value 'foo': 'bar' to be present
 // So instead of writing client.get('foo', cb); you have to write:
@@ -81,7 +88,7 @@ var server = http.createServer(function (req, res) {
         s.pipe(res);
     });
     s.on('error', function () {
-        getAsync('foo').then(function(result) {
+        getAsync_6379('foo').then(function(result) {
             console.log(result); // => 'bar'
             res.setHeader('Content-Type', 'text/plain');
             res.statusCode = 404;
