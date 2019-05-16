@@ -1,4 +1,6 @@
 const http = require('http');
+var path = require('path');
+var fs = require('fs');
 
 var os = require('os');
 var ifaces = os.networkInterfaces();
@@ -11,10 +13,6 @@ const port = 8080;
 //  res.end('Hello World\n');
 //});
 
-
-var path = require('path');
-var http = require('http');
-var fs = require('fs');
 
 var dir = path.join(__dirname, 'public');
 
