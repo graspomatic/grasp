@@ -8,12 +8,14 @@ client.on("error", function (err) {
     console.log("Error " + err);
 });
 
-console.log('getting');
-a = client.get('get_left');
-console.log('got:');
-console.log(a);
+const {promisify} = require('util');
+const getAsync = promisify(client.get).bind(client);
 
-
+// We expect a value 'foo': 'bar' to be present
+// So instead of writing client.get('foo', cb); you have to write:
+return getAsync('foo').then(function(res) {
+    console.log(res); // => 'bar'
+});
 
 
 //const http = require('http');
