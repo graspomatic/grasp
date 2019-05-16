@@ -81,11 +81,11 @@ var server = http.createServer(function (req, res) {
         s.pipe(res);
     });
     s.on('error', function () {
-        getAsync('foo').then(function(res) {
-            console.log(res); // => 'bar'
+        getAsync('foo').then(function(result) {
+            console.log(result); // => 'bar'
             res.setHeader('Content-Type', 'text/plain');
             res.statusCode = 404;
-            res.end(res);
+            res.end(result);
         });
 
 
