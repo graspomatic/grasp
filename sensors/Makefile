@@ -1,3 +1,5 @@
+:%s/^[ ]\+/^I/
+
 mpr121:	mpr121.o
 	$(CC) -g -o $@ $< -lhiredis -lupmc-mpr121
 
