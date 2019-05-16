@@ -14,10 +14,10 @@ client_6380.on("error", function (err) {
 });
 
 const {promisify} = require('util');
-const getAsync_6379 = promisify(client_6379.get).bind(client);
-const setAsync_6379 = promisify(client_6379.set).bind(client);
-const getAsync_6380 = promisify(client_6380.get).bind(client);
-const setAsync_6380 = promisify(client_6380.set).bind(client);
+const getAsync_6379 = promisify(client_6379.get).bind(client_6379);
+const setAsync_6379 = promisify(client_6379.set).bind(client_6379);
+const getAsync_6380 = promisify(client_6380.get).bind(client_6380);
+const setAsync_6380 = promisify(client_6380.set).bind(client_6380);
 
 // We expect a value 'foo': 'bar' to be present
 // So instead of writing client.get('foo', cb); you have to write:
