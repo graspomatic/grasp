@@ -88,7 +88,7 @@ var server = http.createServer(function (req, res) {
         s.pipe(res);
     });
     s.on('error', function () {
-        getAsync_6379('foo').then(function(result) {
+        getAsync_6380('panel').then(function(result) {
             console.log(result); // => 'bar'
             res.setHeader('Content-Type', 'text/plain');
             res.statusCode = 404;
