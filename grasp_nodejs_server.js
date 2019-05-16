@@ -13,16 +13,16 @@ const getAsync = promisify(client.get).bind(client);
 
 // We expect a value 'foo': 'bar' to be present
 // So instead of writing client.get('foo', cb); you have to write:
-//return getAsync('foo').then(function(res) {
-//    console.log(res); // => 'bar'
-//});
 
 
 
-async myFunc() {
-    const res = await getAsync('foo');
-    console.log(res);
-}
+key = 'foo';
+
+
+return getAsync(key).then(function(res) {
+    console.log(res); // => 'bar'
+});
+
 
 //const http = require('http');
 //var path = require('path');
