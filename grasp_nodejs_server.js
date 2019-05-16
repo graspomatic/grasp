@@ -13,10 +13,6 @@ a = client.get('get_left');
 console.log('got:');
 console.log(a);
 
-});
-
-
-
 
 
 
