@@ -8,7 +8,7 @@ app.use('/css', express.static(__dirname + '/public/css'));
 app.use('/js', express.static(__dirname + '/public/js'));
 //app.use('../shapes/SVGs', express.static('../shapes/SVGs'));
 
-app.use('/shapes', express.static('/home/root/grasp'));
+app.use('/SVGs', express.static('/home/root/grasp/shapes'));
 
 var os = require('os');
 var ifaces = os.networkInterfaces();
