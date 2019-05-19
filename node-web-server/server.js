@@ -17,3 +17,4 @@ hostname = ifaces['eth0'][0]['address'];
 var server = app.listen(8081, hostname, function(){
     var port = server.address().port;
     console.log('Server running at http://${hostname}:${port}/');
+});
