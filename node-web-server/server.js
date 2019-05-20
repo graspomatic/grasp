@@ -4,8 +4,8 @@ var app = express();
 app.use(express.static('public'));
 
 //make way for some custom css, js and images
-app.use('/css', express.static(__dirname + '/public/css'));
-app.use('/js', express.static(__dirname + '/public/js'));
+//app.use('/css', express.static(__dirname + '/public/css'));
+//app.use('/js', express.static(__dirname + '/public/js'));
 //app.use('../shapes/SVGs', express.static('../shapes/SVGs'));
 
 app.use('/SVGs', express.static('/home/root/grasp/shapes/SVGs'));

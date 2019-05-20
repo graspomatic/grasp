@@ -2,33 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <title>Title</title>
+    <style>
+        .grid {
+          display: grid;
+          grid-auto-rows: 1fr;
+        }
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+        .grid::before {
+          content: '';
+          width: 0;
+          padding-bottom: 100%;
+          grid-row: 1 / 1;
+          grid-column: 1 / 1;
+        }
 
-    <title>Minimal Static Website</title>
+        .grid > *:first-child {
+          grid-row: 1 / 1;
+          grid-column: 1 / 1;
+        }
 
-    <link href="/css/sticky-footer-navbar.css">
+        .grid > * {
+          background: rgba(0,0,0,0);
+          border: 0.5px lightgrey solid;
+        }
+
+        .centered {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+
+    </style>
+    <script>
+
+        function createGrid(cols,rows) {
+            var num = cols * rows;
+            for(var i =1; i<= num; i++){
+              $('#target').append($('<div/>', { id: 'r' + i}));
+
+              $('#r' + i).prepend($('<img>',{id: 'img' + i,src:'http://exmoorpet.com/wp-content/uploads/2012/08/cat.png',class:"thumbnail"}))
+              var texty = document.createTextNode("2021");
+              texty.className = "centered";
+              $('#r' + i).prepend(texty);
+
+            }
+            sizeGrid(cols,rows);
+        }
+
+        function sizeGrid(desired_cols, desired_rows) {
+            var window_width = $(window).width();
+            var window_height = $(window).height();
+            var max_row_height = Math.round(window_height/desired_rows)*.96;
+            var max_col_width = Math.round(window_width/desired_cols)*.96;
+            var edge_size = Math.min(max_row_height, max_col_width);
+            var total_width = edge_size * desired_cols;
+            $('.grid').css("max-width" , total_width + "px");
+            $('.grid').css( "grid-template-columns", "repeat(auto-fill, minmax(" + edge_size + "px, 0fr)" );
+            $('.thumbnail').css( "height", edge_size-8 + "px" );
+        }
+
+        function changeImage() {
+
+            //document.getElementById("img1").src = "https://www.w3schools.com/jsref/compman.gif";
+            document.getElementById("img1").src = "/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg";
+
+        }
+
+    </script>
 </head>
-<body>
-    <div class="row">
-        <div class="column">
-            <img src="/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Kiwi stzxczxczxanding on oval">
-            <img src="/SVGs/blob2002.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Kiwi standhsing on oval">
-            <img src="/SVGs/blob2003.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Kiwi standhsing on oval">
-        </div>
-        <div class="column">
-            <img src="/SVGs/blob2004.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Kiwdghi standing on oval">
-            <img src="/SVGs/blob2005.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Kiwsdfi standing on oval">
-            <img src="/SVGs/blob2006.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Kiwsdfi standing on oval">
-        </div>
-    </div>
+<body onload="createGrid(7,12)" onresize="sizeGrid(7,12)">
 
+<div class="grid" id="target">
+  <!--<div><img src="http://exmoorpet.com/wp-content/uploads/2012/08/cat.png" class="thumbnail"></div>-->
+  <!--<div><img src="http://exmoorpet.com/wp-content/uploads/2012/08/cat.png" class="thumbnail"></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div></div>-->
+  <!--<div><img src="http://exmoorpet.com/wp-content/uploads/2012/08/cat.png" class="thumbnail"></div>-->
 
+</div>
 
-
+<button type="button" onclick="changeImage()">Click Me!</button>
 </body>
 </html>
