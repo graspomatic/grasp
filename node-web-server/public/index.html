@@ -28,11 +28,12 @@
           border: 0.5px lightgrey solid;
         }
 
-        .centered {
+        img {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          clip: rect(10px,150px,150px,10px);  //top edge from top, right edge from left, bottom edge from top, left edge from left
+          width:150px;
+          height:150px;
+          object-fit: contain;
         }
 
 
@@ -45,9 +46,9 @@
               $('#target').append($('<div/>', { id: 'r' + i}));
 
               $('#r' + i).prepend($('<img>',{id: 'img' + i,src:'http://exmoorpet.com/wp-content/uploads/2012/08/cat.png',class:"thumbnail"}))
-              var texty = document.createTextNode("2021");
-              texty.className = "centered";
-              $('#r' + i).prepend(texty);
+              //var texty = document.createTextNode("2021");
+              //texty.className = "centered";
+              //$('#r' + i).prepend(texty);
 
             }
             sizeGrid(cols,rows);
