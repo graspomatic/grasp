@@ -5,38 +5,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <title>Title</title>
     <style>
-        .grid {
-          display: grid;
-          grid-auto-rows: 1fr;
-        }
-
-        .grid::before {
-          content: '';
-          width: 0;
-          padding-bottom: 100%;
-          grid-row: 1 / 1;
-          grid-column: 1 / 1;
-        }
-
-        .grid > *:first-child {
-          grid-row: 1 / 1;
-          grid-column: 1 / 1;
-        }
-
-        .grid > * {
-          background: rgba(0,0,0,0);
-          border: 0.5px lightgrey solid;
-        }
-
-
 
         .imgContainer {
           overflow: hidden;
         }
-        .imgContainer img {
-          width: 280px;
-          height: 250px;
-          margin-left:-50px;
+        .grid {
+          display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-flex-wrap: wrap;
+              -ms-flex-wrap: wrap;
+                  flex-wrap: wrap;
         }
 
 
@@ -46,9 +26,9 @@
         function createGrid(cols,rows) {
             var num = cols * rows;
             for(var i =1; i<= num; i++){
-              $('#target').append($('<div/>', { id: 'r' + i,class:'imgContainer'}));
-              //$('#r' + i).prepend($('<img>',{id: 'img' + i,src:'http://exmoorpet.com/wp-content/uploads/2012/08/cat.png',class:"thumbnail"}))
-              $('#r' + i).prepend($('<img>',{id: 'img' + i,src:"/SVGs/blob2002.dgz_0.0132_10_6_2_3_25_0_1_1.svg",class:"thumbnail"}))
+              $('#target').append($('<div/>', { id: 'r' + i,class:"imgContainer"}));
+
+              $('#r' + i).prepend($('<img>',{id: 'img' + i,src:'/SVGs/blob2002.dgz_0.0132_10_6_2_3_25_0_1_1.svg'}))
               //var texty = document.createTextNode("2021");
               //texty.className = "centered";
               //$('#r' + i).prepend(texty);
@@ -64,6 +44,11 @@
             var max_col_width = Math.round(window_width/desired_cols)*.96;
             var edge_size = Math.min(max_row_height, max_col_width);
             var total_width = edge_size * desired_cols;
+            $('.imgContainer').css("width", edge_size);
+            $('.imgContainer').css("height", edge_size);
+            $('.imgContainer img').css("width", 1200);
+            $('.imgContainer img').css("margin-left", -450);
+            $('.imgContainer img').css("margin-top", -400);
             $('.grid').css("max-width" , total_width + "px");
             $('.grid').css( "grid-template-columns", "repeat(auto-fill, minmax(" + edge_size + "px, 0fr)" );
             $('.thumbnail').css( "height", edge_size-8 + "px" );
@@ -78,24 +63,9 @@
 
     </script>
 </head>
-<body onload="createGrid(7,12)" onresize="sizeGrid(7,12)">
+<body onload="createGrid(7,2)" onresize="sizeGrid(7,2)">
 
-<div class="grid" id="target">
-  <!--<div><img src="http://exmoorpet.com/wp-content/uploads/2012/08/cat.png" class="thumbnail"></div>-->
-  <!--<div><img src="http://exmoorpet.com/wp-content/uploads/2012/08/cat.png" class="thumbnail"></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div></div>-->
-  <!--<div><img src="http://exmoorpet.com/wp-content/uploads/2012/08/cat.png" class="thumbnail"></div>-->
-
-</div>
+<div class="grid" id="target"></div>
 
 <button type="button" onclick="changeImage()">Click Me!</button>
 </body>
