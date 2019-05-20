@@ -30,7 +30,7 @@
 
         img {
           position: absolute;
-          clip: rect(10px,150px,150px,10px);  //top edge from top, right edge from left, bottom edge from top, left edge from left
+          clip: rect(100px,250px,250px,100px);  //top edge from top, right edge from left, bottom edge from top, left edge from left
           width:150px;
           height:150px;
           object-fit: contain;
@@ -44,8 +44,8 @@
             var num = cols * rows;
             for(var i =1; i<= num; i++){
               $('#target').append($('<div/>', { id: 'r' + i}));
-
-              $('#r' + i).prepend($('<img>',{id: 'img' + i,src:'http://exmoorpet.com/wp-content/uploads/2012/08/cat.png',class:"thumbnail"}))
+              //$('#r' + i).prepend($('<img>',{id: 'img' + i,src:'http://exmoorpet.com/wp-content/uploads/2012/08/cat.png',class:"thumbnail"}))
+              $('#r' + i).prepend($('<img>',{id: 'img' + i,src:"https://www.w3schools.com/jsref/compman.gif",class:"thumbnail"}))
               //var texty = document.createTextNode("2021");
               //texty.className = "centered";
               //$('#r' + i).prepend(texty);
