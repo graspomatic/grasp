@@ -46,9 +46,9 @@
             var total_width = edge_size * desired_cols;
             $('.imgContainer').css("width", edge_size);
             $('.imgContainer').css("height", edge_size);
-            $('.imgContainer img').css("width", 1200);
-            $('.imgContainer img').css("margin-left", -450);
-            $('.imgContainer img').css("margin-top", -400);
+            $('.imgContainer img').css("width", 800);
+            $('.imgContainer img').css("margin-left", -350);
+            $('.imgContainer img').css("margin-top", -300);
             $('.grid').css("max-width" , total_width + "px");
             $('.grid').css( "grid-template-columns", "repeat(auto-fill, minmax(" + edge_size + "px, 0fr)" );
             $('.thumbnail').css( "height", edge_size-8 + "px" );
@@ -63,7 +63,7 @@
 
     </script>
 </head>
-<body onload="createGrid(7,2)" onresize="sizeGrid(7,2)">
+<body onload="createGrid(7,12)" onresize="sizeGrid(7,12)">
 
 <div class="grid" id="target"></div>
 
