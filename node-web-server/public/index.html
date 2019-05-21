@@ -27,6 +27,23 @@
                   flex-wrap: wrap;
         }
 
+        * {
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 
     </style>
     <script>
@@ -156,7 +173,16 @@
     </div>
 </div>
 
-<div class="holdinggrid" id="holdinggridid"></div>
+<div class="row" id="holdinggridid">
+  <div class="column">
+    <img src= "/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Snow" style="width:100%">
+  </div>
+  <div class="column">
+    <img src= "/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Forest" style="width:100%">
+  </div>
+</div>
+
+</div>
 <div class="grid" id="gridid"></div>
 
 <button type="button" onclick="changeImage('img5','/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg')">Click Me!</button>
