@@ -660,7 +660,9 @@ async def publish_inventory():
     global redisslow
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
-    await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist())})
+    arms = await redisslow.get('arms')
+    arms = np.array(json.loads(arms))
+    await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "arms": json.dumps(arms)})
 
 
 async def ping():
