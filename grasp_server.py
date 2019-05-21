@@ -609,28 +609,28 @@ async def magnets(left_status = [-1], right_status = [-1]):
         await redisfast.set('get_right', '1')
         await pub.publish_json('WebClient', {"rightmag": "1"})
 
-async def find_address(shapeid=0):
-    global redisslow
-
-    if shapeid <= 1:
-        print('need a number >1')
-        return -1
-
-    panel = await redisslow.get('panel')
-    panel = np.array(json.loads(panel))
-    add = np.where(panel[:, :, 2] == shapeid)
-
-    if len(add[0]) == 0:
-        print('object not found on panel')
-        return -1
-    elif len(add[0]) > 1:
-        print('object on panel multiple times')
-        return -1
-
-    x = panel[add[0][0], add[1][0], 0]
-    y = panel[add[0][0], add[1][0], 1]
-
-    return x, y
+# async def find_address(shapeid=0):
+#     global redisslow
+#
+#     if shapeid <= 1:
+#         print('need a number >1')
+#         return -1
+#
+#     panel = await redisslow.get('panel')
+#     panel = np.array(json.loads(panel))
+#     add = np.where(panel[:, :, 0] == shapeid)
+#
+#     if len(add[0]) == 0:
+#         print('object not found on panel')
+#         return -1
+#     elif len(add[0]) > 1:
+#         print('object on panel multiple times')
+#         return -1
+#
+#     x = panel[add[0][0], add[1][0], 1]
+#     y = panel[add[0][0], add[1][0], 2]
+#
+#     return x, y
 
 
 
@@ -646,12 +646,12 @@ async def change_address(row, col, shapeid):
     panel = np.array(json.loads(panel))
 
     # find if object is already on panel and remove it if so
-    add = np.where(panel[:, :, 2] == shapeid)
+    add = np.where(panel[:, :, 0] == shapeid)
     for i in range(len(add[0])):
-        panel[add[0][i], add[1][i], 2] = 0
+        panel[add[0][i], add[1][i], 0] = 0
 
     # put shape at new address
-    panel[row, col, 2] = shapeid
+    panel[row, col, 0] = shapeid
 
     # update redis
     await redisslow.set('panel', json.dumps(panel.tolist()))
@@ -660,7 +660,7 @@ async def publish_inventory():
     global redisslow
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
-    await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 2].tolist())})
+    await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist())})
 
 
 async def ping():
