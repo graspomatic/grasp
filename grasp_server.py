@@ -397,6 +397,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     #     await retrieve(side=0, objid=left_id)
     #     await retrieve(side=1, objid=right_id)
 
+    # publish current status of arms and panel to inventory viewer
+
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
     await redisfast.set('get_left', '1')
     await redisfast.set('get_right', '1')

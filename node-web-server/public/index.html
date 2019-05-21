@@ -55,9 +55,11 @@
             }
         };
 
-        function handlePub(parsed) {
-
-            console.log(parsed);
+        function handlePub(message) {
+            console.log(message);
+            for (key in message) {
+                console.log(key);
+            }
         }
 
         // Unsubscribe from redis when you close the window. otherwise it will crash the server.
