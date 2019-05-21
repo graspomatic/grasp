@@ -27,6 +27,39 @@
     </style>
     <script>
 
+        // websocket for handling redis pubsub
+        var socket = new WebSocket("ws://128.148.110.89:7379/.json");
+        socket.onopen = function() {
+            socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
+        };
+        socket.onerror=function(event){
+            document.getElementById("redisServerConnected").style.color = "red";
+            document.getElementById("redisServerConnected").innerHTML = "No Connection";
+        }
+        socket.onmessage = function(evt)
+        {
+            //console.log(evt.data);
+            try {
+                var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
+                console.log('message is from grasp_server');
+                if (parsed == '1') {
+                    document.getElementById("redisServerConnected").style.color = "green";
+                    document.getElementById("redisServerConnected").innerHTML = "Connected";
+                } else {
+                    handlePub(parsed);
+                }
+            }
+            catch(err) {
+                //console.log('message is from mpr121.c');
+                //console.log(JSON.parse(evt.data).SUBSCRIBE[2]);
+                message = JSON.parse(evt.data).SUBSCRIBE[2];
+                handleMPR121(message);
+
+            }
+
+
+        };
+
         function createGrid(cols,rows) {
             // Make a container for all necessary locations
             for(var i =1; i<= (cols * rows); i++){
