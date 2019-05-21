@@ -657,7 +657,10 @@ async def change_address(row, col, shapeid):
     await redisslow.set('panel', json.dumps(panel.tolist()))
 
 async def publish_inventory():
-    await pub.publish_json('WebClientInventory', {"ypos": "123"})
+    global redisslow
+    panel = await redisslow.get('panel')
+    panel = np.array(json.loads(panel))
+    await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel.tolist())})
 
 
 async def ping():
