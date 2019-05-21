@@ -656,6 +656,9 @@ async def change_address(row, col, shapeid):
     # update redis
     await redisslow.set('panel', json.dumps(panel.tolist()))
 
+async def publish_inventory():
+    await pub.publish_json('WebClientInventory', {"ypos": "123"})
+
 
 async def ping():
     return 'pong'
@@ -692,6 +695,8 @@ fx_list = {
     'magnets': magnets,
 
     'change_address': change_address,
+
+    'publish_inventory': publish_inventory,
 
     'ping': ping,
     'abort': abort
