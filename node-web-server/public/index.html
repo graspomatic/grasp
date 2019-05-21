@@ -102,6 +102,8 @@
 
         function sizeHoldingGrid() {
             // Size all the images and restructure it into a grid shape
+            desired_rows = 1;
+            desired_cols = 2;
             var window_width = $(window).width();
             var window_height = $(window).height() - 31;                                // Subtract 31 for header stuff
             var max_row_height = Math.round(window_height/desired_rows)*.96;            // tallest row which would fit all rows on screen
