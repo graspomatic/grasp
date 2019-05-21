@@ -30,7 +30,7 @@
         // websocket for handling redis pubsub
         var socket = new WebSocket("ws://128.148.110.89:7379/.json");
         socket.onopen = function() {
-            socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
+            socket.send(JSON.stringify(["SUBSCRIBE", "WebClientInventory"]));
         };
         socket.onerror=function(event){
             document.getElementById("redisServerConnected").style.color = "red";
