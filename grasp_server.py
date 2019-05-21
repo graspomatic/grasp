@@ -660,8 +660,11 @@ async def publish_inventory():
     global redisslow
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
+    print(panel)
     arms = await redisslow.get('arms')
+    print(arms)
     arms = np.array(json.loads(arms))
+    print(arms)
     await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "arms": json.dumps(arms)})
 
 
