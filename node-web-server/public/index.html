@@ -100,6 +100,17 @@
             $('.grid').css("max-width" , total_width + "px");                           // set width of entire grid, determines when images will get stuck on the next row
         }
 
+        function createGridHolding(cols,rows) {
+            // Make a container for all necessary locations
+            for(var i =1; i<= (cols * rows); i++){
+              $('#holdinggridid').append($('<div/>', { id: 'rwe' + i,class:"imgContainerHolding"}));
+              $('#rwe' + i).append($('<img>',{id: 'imgholding' + i, title: 'eys', src:'/SVGs/blob2002.dgz_0.0132_10_6_2_3_25_0_1_1.svg'}))
+            }
+
+            // Size all the images and restructure it into a grid shape
+            sizeHoldingGrid();
+        }
+
         function sizeHoldingGrid() {
             // Size all the images and restructure it into a grid shape
             desired_rows = 1;
@@ -113,10 +124,10 @@
 
             $('.imgContainerHolding').css("width", edge_size);                                 // set width of each image container
             $('.imgContainerHolding').css("height", edge_size);                                // set height of each image container
-            $('.imgContainerHolding holdingImg').css("width", edge_size * 4.5);                       // scale svg
-            $('.imgContainerHolding holdingImg').css("margin-left", edge_size * -1.85);               // cut off some from the left
-            $('.imgContainerHolding holdingImg').css("margin-top", edge_size * -1.1);                 // cut off some from the top
-            $('.holdinggrid').css("max-width" , total_width + "px");                           // set width of entire grid, determines when images will get stuck on the next row
+            $('.imgContainerHolding imgholding').css("width", edge_size * 4.5);                       // scale svg
+            $('.imgContainerHolding imgholding').css("margin-left", edge_size * -1.85);               // cut off some from the left
+            $('.imgContainerHolding imgholding').css("margin-top", edge_size * -1.1);                 // cut off some from the top
+            $('.holdinggridid').css("max-width" , total_width + "px");                           // set width of entire grid, determines when images will get stuck on the next row
         }
 
         function changeImage(port, filename) {
@@ -125,7 +136,7 @@
             document.getElementById(port).title = filename;
         }
 
-        sizeHoldingGrid();
+        createGridHolding(2,1);
 
     </script>
 </head>
@@ -144,16 +155,7 @@
     </div>
 </div>
 
-<div class="holdinggrid" id="holdinggridid">
-    <div class="imgContainerHolding" id="holdingLeft">
-        <img src="/SVGs/blob2004.dgz_0.0132_10_6_2_3_25_0_1_1.svg" id="holdingImg">
-    </div>
-    <div class="imgContainerHolding" id="holdingRight">
-        <img src="/SVGs/blob2005.dgz_0.0132_10_6_2_3_25_0_1_1.svg" id="holdingImg">
-    </div>
-
-
-</div>
+<div class="holdinggrid" id="holdinggridid"></div>
 <div class="grid" id="gridid"></div>
 
 <button type="button" onclick="changeImage('img5','/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg')">Click Me!</button>
