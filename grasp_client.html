@@ -763,7 +763,7 @@
 
             // Unsubscribe when you close the window. otherwise it will crash the server.
             window.onbeforeunload = function() {
-                socket.send(JSON.stringify(["UNSUBSCRIBE", "WebClient"]));
+                socket.send(JSON.stringify(["UNSUBSCRIBE", "WebClientInventory"]));
                 return null;
             };
 
