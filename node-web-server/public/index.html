@@ -45,18 +45,18 @@
         function sizeGrid(desired_cols, desired_rows) {
             var window_width = $(window).width();
             var window_height = $(window).height();
-            var max_row_height = Math.round(window_height/desired_rows)*.96;
-            var max_col_width = Math.round(window_width/desired_cols)*.96;
-            var edge_size = Math.min(max_row_height, max_col_width);
-            console.log(edge_size);
-            var total_width = edge_size * desired_cols;
-            $('.imgContainer').css("width", edge_size);
-            $('.imgContainer').css("height", edge_size);
-            $('.imgContainer img').css("width", edge_size * 4.5);
-            $('.imgContainer img').css("margin-left", edge_size * -1.85); //-1.8 is too small
-            $('.imgContainer img').css("margin-top", edge_size * -1.1);  //-1 is too small
-            $('.grid').css("max-width" , total_width + "px");
-            $('.grid').css( "grid-template-columns", "repeat(auto-fill, minmax(" + edge_size + "px, 0fr)" );
+            var max_row_height = Math.round(window_height/desired_rows)*.96;            // tallest row which would fit all rows on screen
+            var max_col_width = Math.round(window_width/desired_cols)*.96;              // widest col which would fit all cols on screen
+            var edge_size = Math.min(max_row_height, max_col_width);                    // we'll use squares that will fit all rows and all cols
+            var total_width = edge_size * desired_cols;                                 // width of all our columns
+
+            $('.imgContainer').css("width", edge_size);                                 // set width of each image container
+            $('.imgContainer').css("height", edge_size);                                // set height of each image container
+            $('.imgContainer img').css("width", edge_size * 4.5);                       // scale svg
+            $('.imgContainer img').css("margin-left", edge_size * -1.85);               // cut off some from the left
+            $('.imgContainer img').css("margin-top", edge_size * -1.1);                 // cut off some from the top
+            $('.grid').css("max-width" , total_width + "px");                           // set width of entire grid, determines when images will get stuck on the next row
+            //$('.grid').css( "grid-template-columns", "repeat(auto-fill, minmax(" + edge_size + "px, 0fr)" );  // dont know what this does
             $('.thumbnail').css( "height", edge_size-8 + "px" );
         }
 
