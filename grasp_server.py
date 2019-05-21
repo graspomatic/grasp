@@ -665,7 +665,8 @@ async def publish_inventory():
     print(holding)
     holding = np.array(json.loads(holding))
     print(holding)
-    await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "holding": json.dumps(holding)})
+    await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
+
 
 
 async def ping():
