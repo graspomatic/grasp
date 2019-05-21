@@ -41,7 +41,7 @@
         function sizeGrid(desired_cols, desired_rows) {
             // Size all the images and restructure it into a grid shape
             var window_width = $(window).width();
-            var window_height = $(window).height() - 30;
+            var window_height = $(window).height() - 31;
             var max_row_height = Math.round(window_height/desired_rows)*.96;            // tallest row which would fit all rows on screen
             var max_col_width = Math.round(window_width/desired_cols)*.96;              // widest col which would fit all cols on screen
             var edge_size = Math.min(max_row_height, max_col_width);                    // we'll use squares that will fit all rows and all cols
