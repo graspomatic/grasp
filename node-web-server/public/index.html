@@ -74,7 +74,7 @@
         function sizeGrid(desired_cols, desired_rows) {
             // Size all the images and restructure it into a grid shape
             var window_width = $(window).width();
-            var window_height = $(window).height() - 31;
+            var window_height = $(window).height() - 31;                                // Subtract 31 for header stuff
             var max_row_height = Math.round(window_height/desired_rows)*.96;            // tallest row which would fit all rows on screen
             var max_col_width = Math.round(window_width/desired_cols)*.96;              // widest col which would fit all cols on screen
             var edge_size = Math.min(max_row_height, max_col_width);                    // we'll use squares that will fit all rows and all cols
@@ -88,8 +88,8 @@
             $('.grid').css("max-width" , total_width + "px");                           // set width of entire grid, determines when images will get stuck on the next row
         }
 
-        function changeImage() {
-            var addr = "/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg";
+        function changeImage(addr) {
+            //var addr = "/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg";
             document.getElementById("img1").src = addr;
             document.getElementById("img1").title = addr;
         }
@@ -123,6 +123,6 @@
 
 <div class="grid" id="target"></div>
 
-<button type="button" onclick="changeImage()">Click Me!</button>
+<button type="button" onclick="changeImage('/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg')">Click Me!</button>
 </body>
 </html>
