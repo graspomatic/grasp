@@ -50,15 +50,15 @@
                 }
             }
             catch(err) {
-                //console.log('message is from mpr121.c');
-                //console.log(JSON.parse(evt.data).SUBSCRIBE[2]);
                 message = JSON.parse(evt.data).SUBSCRIBE[2];
-                handleMPR121(message);
-
+                console.log(message);
             }
-
-
         };
+
+        function handlePub(parsed) {
+
+            console.log(parsed);
+        }
 
         // Unsubscribe from redis when you close the window. otherwise it will crash the server.
         window.onbeforeunload = function() {
