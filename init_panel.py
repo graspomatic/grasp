@@ -66,8 +66,8 @@ for i in range(ports_y):          # for each row
         unrotated = np.array([ii * spacing_x, i * spacing_y])
         rotated = np.dot(unrotated, R.T)
         panel[i, ii, 0] = 0
-        panel[i, ii, 1] = new_tl[0] - round(rotated[0], 1)
-        panel[i, ii, 2] = new_tl[1] + round(rotated[1], 1)
+        panel[i, ii, 1] = round(new_tl[0] - rotated[0], 1)
+        panel[i, ii, 2] = round(new_tl[1] + rotated[1], 1)
 
 #panel[11,6,:] returns [  0.    4.8 486.1] for the bottom right
 panelJSON = json.dumps(panel.tolist())
