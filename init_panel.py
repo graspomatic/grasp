@@ -69,8 +69,8 @@ for i in range(ports_y):          # for each row
         panel[i, ii, 2] = new_tl[1] + round(rotated[1], 1)
 
 #panel[11,6,:] returns [  0.    4.8 486.1] for the bottom right
-
+panelJSON = json.dumps(panel.tolist())
+redisslow.set('panel', panelJSON)
 
 r = redis.Redis(host='localhost', port=6380, db=0)
-pold = r.get('panel')
-print(pold)
+r.set('panel', panelJSON)
