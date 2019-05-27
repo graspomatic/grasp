@@ -69,7 +69,7 @@ for i in range(ports_y):          # for each row
         unrotated = np.array([ii * spacing_x, i * spacing_y])
         rotated = np.dot(unrotated, R.T)
         #check if this is supposed to be a blank spot
-        if np.isin(DNU, np.array([i, ii])).all(axis=1).any():
+        if np.array([np.isin(DNU[:, 0], i), np.isin(DNU[:, 1], ii)]).all(axis=0).any():
             panel[i, ii, 0] = 99999
         else:
             panel[i, ii, 0] = 0
