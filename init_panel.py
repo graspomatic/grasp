@@ -8,6 +8,9 @@ ports_y = 12                # how many ports in y direction
 spacing_x = 43.5            # spacing between ports in x direction
 spacing_y = 43.5            # spacing between ports in y direction
 
+# DO NOT USE LIST -- spaces that cant be used
+DNU = np.array([[5, 3], [5, 4], [9, 3], [9, 4]])
+
 # measured values
 tl = np.array([268, 9])     # top left x,y position using left arm
 tr = np.array([6.5, 7])     # top right x,y position using left arm
@@ -65,7 +68,11 @@ for i in range(ports_y):          # for each row
     for ii in range(ports_x):     # for each column
         unrotated = np.array([ii * spacing_x, i * spacing_y])
         rotated = np.dot(unrotated, R.T)
-        panel[i, ii, 0] = 0
+        #check if this is supposed to be a blank spot
+        if np.isin(DNU, np.array([i, ii])).all(axis=1).any():
+            panel[i, ii, 0] = 99999
+        else:
+            panel[i, ii, 0] = 0
         panel[i, ii, 1] = round(new_tl[0] - rotated[0], 1)
         panel[i, ii, 2] = round(new_tl[1] + rotated[1], 1)
 
