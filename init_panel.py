@@ -1,5 +1,6 @@
 import numpy as np
 import redis
+import json
 
 #constants
 ports_x = 7                 # how many ports in x direction
