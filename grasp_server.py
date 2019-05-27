@@ -11,8 +11,8 @@ import math
 active_task = 0
 
 import AppliedMotionControl
-x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649)
-y = AppliedMotionControl.AMC(motor_ip="10.10.10.11", local_port=60648)
+x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649, belt='standard')
+y = AppliedMotionControl.AMC(motor_ip="10.10.10.11", local_port=60648, belt='steel')
 
 import Dynamixel2Control
 dxl = Dynamixel2Control.D2C()

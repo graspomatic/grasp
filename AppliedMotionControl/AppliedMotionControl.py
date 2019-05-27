@@ -5,11 +5,17 @@ from struct import pack
 
 class AMC(object):
 
-    def __init__(self, motor_ip="10.10.10.10", motor_port=7775, local_port=60649):
+    def __init__(self, motor_ip="10.10.10.10", motor_port=7775, local_port=60649, belt='standard'):
         self.bound_buff = 2  # distance from hardware limits to software limits in mm
         self.motor_ip = motor_ip
         self.motor_port = motor_port
         self.local_port = local_port
+        if belt == 'standard':
+            self.mmscale = 303.03
+        elif belt == 'steel':
+            self.mmscale = 285.71
+        else:
+            print('specify belt=standard or steel')
 
         print("UDP target IP:", self.motor_ip)
         print("UDP target port:", self.motor_port)
@@ -216,8 +222,13 @@ class AMC(object):
             return ''
 
     def mm_to_count(self, mm):
-        scale = 302.66  # number of counts per mm
-        return round(mm * scale)
+        # TSM34IP-3DG is 20000 counts per rotation i think
+        # vertical (steel-reinforced belt) is 70 mm per revolution
+        # horizontal (neoprene belt) is 66 mm per revolution
+
+        #scale = 303.03  # horizontal counts per mm
+        #scale = 285.71  # vertical counts per mm
+        return round(mm * self.mmscale)
 
 
 # if __name__ == "__main__":
