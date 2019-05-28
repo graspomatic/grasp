@@ -14,7 +14,7 @@ class path_find():
 
 
 
-        self.mid_point = np.array([20, 18])  # when only putting away something, aim for this spot
+        self.mid_point = np.array([150, 200])  # when only putting away something, aim for this spot
 
         # self.empties = self.find_empty_spots(self.panel)
 
