@@ -253,11 +253,17 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
 
 
 
-################################################
+################################################################################################################################################################################################
 
 #  Functions callable from client
 
-#################################################
+#################################################################################################################################################################################################
+
+
+
+
+
+
 
 async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0], right_angle=[0]):
     # put away current objects, if any, get new objects, present those objects
@@ -271,16 +277,15 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
 
     starttime = time.time()
 
-    # tell sensors to start reading so we know what we have
-    await redisfast.set('get_left', '0')
-    await redisfast.set('get_right', '0')
-    # await asyncio.sleep(0.010)
-
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
     left_angle = int(left_angle[0])
     right_angle = int(right_angle[0])
+
+    # tell sensors to stop reading so we dont crash mpr121
+    await redisfast.set('get_left', '0')
+    await redisfast.set('get_right', '0')
 
     if hand == -1:
         print('specify which hand to present to, 0 or 1 for left or right')
@@ -299,17 +304,16 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     left_connected = int(left_connected)
     right_connected = int(right_connected)
 
-
-    # if not left_updated:
-    #     print('not updating left')
-    #     return
-    # if not right_updated:
-    #     print('not updating right')
-    #     return
-    # if not left_connected:
-    #     print('nothing on left')
-    # if not right_connected:
-    #     print('nothing on right')
+    if not left_updated:
+        print('not updating left')
+        return
+    if not right_updated:
+        print('not updating right')
+        return
+    if not left_connected:
+        print('nothing on left')
+    if not right_connected:
+        print('nothing on right')
 
     # get information from panels database
     fut1 = redisslow.get('panel')
@@ -325,16 +329,15 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
         returning = [holding[0]]
     else:
         print('incompatibility between what the database says and what sensors say for left')
-
+        return
 
     if (right_connected and holding[1]) or (not right_connected and not holding[1]):
         returning.append(holding[1])
     else:
         print('incompatibility between what the database says and what sensors say for right')
+        return
 
-
-
-    #arms that will be used for retrieving objects
+    # arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
         arms = 'left'
         picking = [left_id, 0]
@@ -348,18 +351,11 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     else:
         arms = 'neither'
 
+    # now we know what we're holding and what we need, lets plan the path of how we're going to get it
     panel, orders = pf.plan_path(holding.tolist(), picking, panel, arm_offset)
 
-    fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
-    fut2 = redisslow.set('holding', json.dumps(picking))
-    await asyncio.gather(fut1, fut2)
-
-    # tell sensors to stop reading
-    # await redisfast.set('get_left', '0')
-    # await redisfast.set('get_right', '0')
-
+    # step through the plan
     for i in range(len(orders)):
-
         order = orders[i][0][0]
         side = orders[i][1][0]
         location = orders[i][2]
@@ -375,53 +371,112 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
             else:
                 await retrieve(side=side, objid=right_id, add=location)
 
-
-
-
-
-
-
-
-
-    # if holding anything in left arm
-    # await return_object(0)
-    # if holding anything in right arm
-    # await return_object(1)
-
-    # if arms == 'left':
-    #     await retrieve(side=0, objid=left_id)
-    # elif arms == 'right':
-    #     await retrieve(side=1, objid=right_id)
-    # else:
-    #     # determine if its faster to get left or right first
-    #     await retrieve(side=0, objid=left_id)
-    #     await retrieve(side=1, objid=right_id)
-
-    # publish current status of arms and panel to inventory viewer
-
+    # move arms to present
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
+
+    # restart sensor readings
     await redisfast.set('get_left', '1')
     await redisfast.set('get_right', '1')
+
+    # update redis with what the panel looks like
+    fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
+    fut2 = redisslow.set('holding', json.dumps(picking))
+    await asyncio.gather(fut1, fut2)
 
     endtime = time.time()
     print(endtime-starttime)
 
 
 async def put_away(side=[-1]):
-    # side = 0 for left, 1 for right, 2 for both
+    # put away current objects, if any, get new objects, present those objects
+    # input variables:
+    # side (integer) is position where we want to present object. 0 (left) or (1) right or (2) for both
 
-    ## not working
-    return
 
+    global redisslow, redisfast
+
+    starttime = time.time()
 
     side = int(side[0])
-    print(side)
-    if side == 0 or side == 2:
-        print('put away left')
-        await return_object(0)
-    if side == 1 or side == 2:
-        print('put away right')
-        await return_object(1)
+    if side == -1:
+        print('specify which sides to put away. 0 (left), 1 (right), 2 (both)')
+        return
+
+    ## determine arms that will be used for returning objects
+    # get information from sensors
+    fut1 = redisfast.get('left_sensor_last_update')
+    fut2 = redisfast.get('left_connected')
+    fut3 = redisfast.get('right_sensor_last_update')
+    fut4 = redisfast.get('right_connected')
+    left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
+
+    left_updated = (int(time.time()) - int(left_last_update)) < 3
+    right_updated = (int(time.time()) - int(right_last_update)) < 3
+    left_connected = int(left_connected)
+    right_connected = int(right_connected)
+
+    if not left_updated:
+        print('not updating left')
+        return
+    if not right_updated:
+        print('not updating right')
+        return
+    if not left_connected:
+        print('nothing on left')
+    if not right_connected:
+        print('nothing on right')
+
+    # tell sensors to stop reading so we dont crash mpr121
+    await redisfast.set('get_left', '0')
+    await redisfast.set('get_right', '0')
+
+    # get information from panels database
+    fut1 = redisslow.get('panel')
+    fut2 = redisslow.get('holding')
+    fut3 = redisslow.get('arm_offset')
+    panel, holding, arm_offset = await asyncio.gather(fut1, fut2, fut3)
+    panel = np.array(json.loads(panel))
+    holding = np.array(json.loads(holding))
+    arm_offset = np.array(json.loads(arm_offset))
+
+    # make list of objects to return, assuming that database and sensor readings agree on what we're holding
+    if (left_connected and holding[0]) or (not left_connected and not holding[0]):
+        returning = [holding[0]]
+    else:
+        print('incompatibility between what the database says and what sensors say for left')
+        return
+
+    if (right_connected and holding[1]) or (not right_connected and not holding[1]):
+        returning.append(holding[1])
+    else:
+        print('incompatibility between what the database says and what sensors say for right')
+        return
+
+    # now we know what we're holding and what we need, lets plan the path of how we're going to get it
+    panel, orders = pf.plan_path(holding.tolist(), [0, 0], panel, arm_offset)
+
+    # step through the plan
+    for i in range(len(orders)):
+        order = orders[i][0][0]
+        side = orders[i][1][0]
+        location = orders[i][2]
+
+        if order == 'd':
+            print('dropping off with arm ' + str(side) + ' at location ' + str(location))
+            await return_object(side=side, add=location)
+
+
+    # restart sensor readings
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
+
+    # update redis with what the panel looks like
+    fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
+    fut2 = redisslow.set('holding', json.dumps(picking))
+    await asyncio.gather(fut1, fut2)
+
+    endtime = time.time()
+    print(endtime - starttime)
 
 
 async def initialize_dxl(level=[1]):
