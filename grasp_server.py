@@ -471,7 +471,7 @@ async def put_away(side=[-1]):
         return
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
-    panel, orders = pf.plan_path(returning.tolist(), [0, 0], panel, arm_offset)
+    panel, orders = pf.plan_path(returning, [0, 0], panel, arm_offset)
 
     # step through the plan
     for i in range(len(orders)):
