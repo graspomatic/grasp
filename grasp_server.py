@@ -489,11 +489,11 @@ async def put_away(side=[-1]):
     await redisfast.set('get_right', '1')
 
     print(remaining)
-    print(type(remaining))
+    print(str(remaining))
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
-    fut2 = redisslow.set('holding', json.dumps(int(remaining)))
+    fut2 = redisslow.set('holding', str(remaining))
     await asyncio.gather(fut1, fut2)
 
     endtime = time.time()
