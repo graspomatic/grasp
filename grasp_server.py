@@ -440,20 +440,30 @@ async def put_away(side=[-1]):
     arm_offset = np.array(json.loads(arm_offset))
 
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
-    if (left_connected and holding[0]) or (not left_connected and not holding[0]):
-        returning = [holding[0]]
+    if left_connected and holding[0]:
+        if side == 0 or side == 2:
+            returning = [holding[0]]
+        else:
+            returning = [0]
+    elif not left_connected and not holding[0]:
+        returning = [0]
     else:
         print('incompatibility between what the database says and what sensors say for left')
         return
 
-    if (right_connected and holding[1]) or (not right_connected and not holding[1]):
-        returning.append(holding[1])
+    if right_connected and holding[1]:
+        if side == 1 or side == 2:
+            returning.append(holding[1])
+        else:
+            returning.append(0)
+    elif not right_connected and not holding[1]:
+        returning.append(0)
     else:
         print('incompatibility between what the database says and what sensors say for right')
         return
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
-    panel, orders = pf.plan_path(holding.tolist(), [0, 0], panel, arm_offset)
+    panel, orders = pf.plan_path(returning.tolist(), [0, 0], panel, arm_offset)
 
     # step through the plan
     for i in range(len(orders)):
