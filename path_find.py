@@ -31,18 +31,9 @@ class path_find():
         print('change_panel_entry')
         x = round(x, 1)
         y = round(y, 1)
-        print(panel)
-        print(x)
-        print(y)
-        print(new_val)
-
-
         loc = np.where(np.logical_and(panel[:, :, 1] == x, panel[:, :, 2] == y))
-        print(loc)
         panel[loc[0][0], loc[1][0], 0] = new_val
         empties = self.find_empty_spots(panel)
-        print(panel)
-        print(empties)
         return panel, empties
 
     def find_nearest(self, ref, empties):
