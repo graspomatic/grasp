@@ -443,10 +443,13 @@ async def put_away(side=[-1]):
     if left_connected and holding[0]:
         if side == 0 or side == 2:
             returning = [holding[0]]
+            remaining = [0]
         else:
             returning = [0]
+            remaining = [holding[0]]
     elif not left_connected and not holding[0]:
         returning = [0]
+        remaining = [holding[0]]
     else:
         print('incompatibility between what the database says and what sensors say for left')
         return
@@ -454,10 +457,13 @@ async def put_away(side=[-1]):
     if right_connected and holding[1]:
         if side == 1 or side == 2:
             returning.append(holding[1])
+            remaining.append(0)
         else:
             returning.append(0)
+            remaining.append(holding[1])
     elif not right_connected and not holding[1]:
         returning.append(0)
+        remaining.append(holding[1])
     else:
         print('incompatibility between what the database says and what sensors say for right')
         return
@@ -482,7 +488,7 @@ async def put_away(side=[-1]):
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
-    fut2 = redisslow.set('holding', json.dumps(picking))
+    fut2 = redisslow.set('holding', json.dumps(remaining))
     await asyncio.gather(fut1, fut2)
 
     endtime = time.time()
