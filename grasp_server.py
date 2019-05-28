@@ -283,9 +283,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     left_angle = int(left_angle[0])
     right_angle = int(right_angle[0])
 
-    # tell sensors to stop reading so we dont crash mpr121
-    await redisfast.set('get_left', '0')
-    await redisfast.set('get_right', '0')
+
 
     if hand == -1:
         print('specify which hand to present to, 0 or 1 for left or right')
@@ -336,6 +334,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     else:
         print('incompatibility between what the database says and what sensors say for right')
         return
+
+    # tell sensors to stop reading so we dont crash mpr121
+    await redisfast.set('get_left', '0')
+    await redisfast.set('get_right', '0')
 
     # arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
