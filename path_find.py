@@ -29,6 +29,8 @@ class path_find():
 
     def change_panel_entry(self, panel, x, y, new_val, empties):
         print('change_panel_entry')
+        x = round(x, 1)
+        y = round(y, 1)
         print(panel)
         print(x)
         print(y)
@@ -187,7 +189,7 @@ class path_find():
                     xy = self.find_nearest(add, empties - right_offset)  # find empty spot
 
                     orders.append(np.array([['d'], [1], xy]))  # add this location to list
-                    panel, empties = self.change_panel_entry(panel, xy[0] + right_offset[0], xy[1] + right_offset[1], drop[1], empties)  # update panel
+                    panel, empties = self.change_panel_entry(panel, xy[0] + right_offset[0], xy[1] + right_offset[1], drop[1], empties)  # update panel  I THINK THIS LINE GIVES ME PROBLEMS
                     empties = self.find_empty_spots(panel)  # update empties
 
                 else:   # we need to drop off right, but not pick up anything else
