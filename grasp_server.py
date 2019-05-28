@@ -488,6 +488,8 @@ async def put_away(side=[-1]):
     await redisfast.set('get_left', '1')
     await redisfast.set('get_right', '1')
 
+    print(remaining)
+
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
     fut2 = redisslow.set('holding', json.dumps(remaining))
