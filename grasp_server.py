@@ -842,6 +842,7 @@ fx_list = {
     'change_address': change_address,
 
     'publish_inventory': publish_inventory,
+    'publish_object_database': publish_object_database,
 
     'ping': ping,
     'abort': abort
