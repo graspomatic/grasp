@@ -246,7 +246,7 @@
 
             // Step through each row of the table and fill the object
             var rows = document.getElementById('myTable').rows.length - 3; // There are 3 rows that dont hold data
-            var sa = '[';
+            var sa = '"[';
             for (i = 0; i < rows; i++) {
                 //When the user manually re-orders the table, the element ids move as well.
                 //We need to first get that id number so we can store to DB in same order as user-ordered table.
@@ -266,7 +266,7 @@
                 //tableData.channelMapCol[i] = document.getElementById("channel_map" + r).innerHTML;
             }
             sa = sa.substring(0, sa.length-1);
-            sa += ']';
+            sa += ']"';
 
             console.log(sa);
             var ip = '128.148.110.89:8888';
