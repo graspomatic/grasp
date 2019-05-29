@@ -253,7 +253,7 @@
                 var thisRowID = document.getElementById('myTable').rows[i+1].cells[0].id;
                 var r = thisRowID.replace(/[^0-9]/g,'');
 
-                sa += '[';
+                sa += '"[';
                 sa += document.getElementById("id_number" + r).innerHTML;
                 sa += ', ';
                 sa += document.getElementById("filename" + r).value;
@@ -265,7 +265,7 @@
                 //tableData.fileCol[i] = document.getElementById("filename" + r).value;
                 //tableData.channelMapCol[i] = document.getElementById("channel_map" + r).innerHTML;
             }
-            sa += ']';
+            sa += ']"';
 
             console.log(sa);
             var ip = '128.148.110.89:8888';
