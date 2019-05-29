@@ -257,11 +257,12 @@
                 tableData.channelMapCol[i] = document.getElementById("channel_map" + r).innerHTML;
             }
 
-            var tab = JSON.stringify(tableData);
+            //var tab = JSON.stringify(tableData);
 
-            console.log(tab);
+            //console.log(tab);
             var ip = '128.148.110.89:8888';
             var cmd = { "function":"update_object_database","ID":JSON.stringify(tableData.IDCol),"file":JSON.stringify(tableData.fileCol),"channelMap":JSON.stringify(tableData.channelMapCol) };
+            console.log(cmd);
             $.get("http://" + ip, cmd, function() {
             })
               .done(function(data, textStatus, jqXHR) {
