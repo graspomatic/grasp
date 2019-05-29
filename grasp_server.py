@@ -472,8 +472,10 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1]):
         print('incompatibility between what the database says and what sensors say for right')
         return
 
-    print('returning: ')
-    print(returning)
+    if not returning[0] and not returning[1]:  # nothing to return, then we have nothing to do
+        await redisfast.set('get_left', '1')
+        await redisfast.set('get_right', '1')
+        return
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
     panel, orders = pf.plan_path(returning, [0, 0], panel, arm_offset)
