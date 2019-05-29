@@ -389,10 +389,12 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     print(endtime-starttime)
 
 
-async def put_away(side=[-1]):
-    # put away current objects, if any, get new objects, present those objects
+async def put_away(side=[-1], left_id=[-1], right_id=[-1]):
+    # put away currently held objects
     # input variables:
-    # side (integer) is position where we want to present object. 0 (left) or (1) right or (2) for both
+    # side (integer) is sides we want to put away. 0 (left) or (1) right or (2) for both
+    # left_id (integer). if specified, overrules whatever the redis database says we're holding
+    # right_id (integer). if specified, overrules whatever the redis database says we're holding
 
 
     global redisslow, redisfast
@@ -474,30 +476,44 @@ async def put_away(side=[-1]):
     panel, orders = pf.plan_path(returning, [0, 0], panel, arm_offset)
 
     # step through the plan
-    for i in range(len(orders)):
-        order = orders[i][0][0]
-        side = orders[i][1][0]
-        location = orders[i][2]
+    if panel == 0:
+        # this means we have no plan, probably because we specified some weird request
+        await redisfast.set('get_left', '1')
+        await redisfast.set('get_right', '1')
+    else:
+        for i in range(len(orders)):
+            order = orders[i][0][0]
+            side = orders[i][1][0]
+            location = orders[i][2]
 
-        if order == 'd':
-            print('dropping off with arm ' + str(side) + ' at location ' + str(location))
-            await return_object(side=side, add=location)
+            if order == 'd':
+                print('dropping off with arm ' + str(side) + ' at location ' + str(location))
+                await return_object(side=side, add=location)
 
 
-    # restart sensor readings
-    await redisfast.set('get_left', '1')
-    await redisfast.set('get_right', '1')
+        # restart sensor readings
+        await redisfast.set('get_left', '1')
+        await redisfast.set('get_right', '1')
 
-    print(remaining)
-    print(str(remaining))
+        print(remaining)
+        print(str(remaining))
 
-    # update redis with what the panel looks like
-    fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
-    fut2 = redisslow.set('holding', str(remaining))
-    await asyncio.gather(fut1, fut2)
+        # update redis with what the panel looks like
+        fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
+        fut2 = redisslow.set('holding', str(remaining))
+        await asyncio.gather(fut1, fut2)
 
-    endtime = time.time()
-    print(endtime - starttime)
+        endtime = time.time()
+        print(endtime - starttime)
+
+
+
+# async def put_away_all(left_id=[-1], right_id=[-1]):
+#     # This is mainly intended to be used when manually putting away objects
+#     global redisslow, redisfast
+#
+
+
 
 
 async def initialize_dxl(level=[1]):
@@ -782,6 +798,7 @@ async def abort():
 fx_list = {
     'pick_and_place': pick_and_place,
     'put_away': put_away,
+    'put_away_all': put_away_all,
 
     'initialize_dxl': initialize_dxl,
     'enable_arms': enable_arms,
