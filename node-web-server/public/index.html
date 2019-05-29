@@ -101,6 +101,7 @@
                     console.log(m[0][0]);
 
 
+                    populateTable(m);
                 }
             }
         }
@@ -212,13 +213,13 @@
 
             let rows = Object.keys(res).length;
             let cols = Object.keys(res[0]);
-            if (rows < 1 | cols.length != 14) {return;} // make sure input is n x 14
+            if (rows < 1 | cols.length != 8) {return;} // make sure input is n x 8
 
             for (let i = 0; i <rows; i++) {
                 add_a_row();
-                document.getElementById("id_number" + i).innerHTML = res[i].dStartCol;
-                document.getElementById("filename" + i).value = res[i].notesCol;
-                document.getElementById("channel_map" + i).innerHTML = res[i].dStartCol;
+                document.getElementById("id_number" + i).innerHTML = res[i][0];
+                document.getElementById("filename" + i).value = res[i][1];
+                document.getElementById("channel_map" + i).innerHTML = res[i][2];
             }
         }
 
