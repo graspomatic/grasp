@@ -59,6 +59,7 @@
     </style>
     <script>
 
+
         // websocket for handling redis pubsub
         var socket = new WebSocket("ws://128.148.110.89:7379/.json");
         socket.onopen = function() {
@@ -137,6 +138,42 @@
 
         //createGridHolding(2,1);
 
+        $(document).ready(function () {
+            $("#addrow").on("click", add_a_row);
+
+            // When clicking the button to delete a row
+            $("table.order-list").on("click", ".ibtnDel", function (event) {
+                $(this).closest("tr").remove();
+                counter -= 1;
+                startCallWait();
+            });
+
+            // When clicking the button to move a row up one
+            $("table.order-list").on("click", ".table-up", function (event) {
+                console.log("table up");
+                var $row = $(this).parents('tr');
+                console.log($row.index());
+                if ($row.index() === 0) return; // Don't go above the header
+                $row.prev().before($row.get(0));
+                startCallWait();
+            });
+
+            // When clicking the button to move a row down one
+            $("table.order-list").on("click", ".table-down", function (event) {
+                console.log("table down");
+                var $row = $(this).parents('tr');
+                console.log($row.index());
+                $row.next().after($row.get(0));
+                startCallWait();
+            });
+
+            // This prevents the dropdown box from closing as soon as you click on something
+            $(document).on('click', '.allow-focus', function (e) {
+                e.stopPropagation();
+            });
+
+        });
+
     </script>
 </head>
 <body onload="createGrid(7,12)" onresize="sizeGrid(7,12)">
@@ -168,5 +205,37 @@
 <div class="grid" id="gridid"></div>
 
 <button type="button" onclick="changeImage('imgLeft','/SVGs/blob2003.dgz_0.0132_10_6_2_3_25_0_1_1.svg')">Click Me!</button>
+
+<div class="col-sm-9 card card-body">
+
+    <table id="myTable" class="table table-bordered table-responsive-md table-striped text-center order-list">
+
+        <thead>
+            <tr>
+                  <th class="text-center" style="width: 25px">ID#</th>
+                  <th class="text-center" style="width: 20px">FileName</th>
+                  <th class="text-center" style="width: 20px">Channel Map</th>
+                  <th class="text-center" style="width: 15px">Order</th>
+                  <th class="text-center" style="width: 30px">Delete</th>
+            </tr>
+        </thead>
+
+        <tbody id="myTableBody">
+
+            <!-- placeholder for body which is handled with javascript -->
+
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="9" style="text-align: left;">
+                    <input type="button" class="btn btn-lg btn-block tableAble" id="addrow" value="Add Row" />
+                </td>
+            </tr>
+            <tr>
+            </tr>
+        </tfoot>
+    </table>
+    </div>
 </body>
 </html>
