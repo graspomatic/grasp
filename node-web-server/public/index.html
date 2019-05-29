@@ -95,10 +95,10 @@
             for (key in message) {
                 console.log(key);
                 if (key == 'shapeData') {
-
-                    console.log(message[key]);
-                    console.log(message[key][0]);
-                    console.log(JSON.parse(message[key]));
+                    m = JSON.parse(message[key]);
+                    console.log(m);
+                    console.log(m[0]);
+                    console.log(m[0][0]);
 
 
                 }
