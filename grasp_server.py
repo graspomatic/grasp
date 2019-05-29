@@ -472,39 +472,36 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1]):
         print('incompatibility between what the database says and what sensors say for right')
         return
 
+    print('returning: ')
+    print(returning)
+
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
     panel, orders = pf.plan_path(returning, [0, 0], panel, arm_offset)
 
-    # step through the plan
-    if panel == 0:
-        # this means we have no plan, probably because we specified some weird request
-        await redisfast.set('get_left', '1')
-        await redisfast.set('get_right', '1')
-    else:
-        for i in range(len(orders)):
-            order = orders[i][0][0]
-            side = orders[i][1][0]
-            location = orders[i][2]
+    for i in range(len(orders)):
+        order = orders[i][0][0]
+        side = orders[i][1][0]
+        location = orders[i][2]
 
-            if order == 'd':
-                print('dropping off with arm ' + str(side) + ' at location ' + str(location))
-                await return_object(side=side, add=location)
+        if order == 'd':
+            print('dropping off with arm ' + str(side) + ' at location ' + str(location))
+            await return_object(side=side, add=location)
 
 
-        # restart sensor readings
-        await redisfast.set('get_left', '1')
-        await redisfast.set('get_right', '1')
+    # restart sensor readings
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
 
-        print(remaining)
-        print(str(remaining))
+    print(remaining)
+    print(str(remaining))
 
-        # update redis with what the panel looks like
-        fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
-        fut2 = redisslow.set('holding', str(remaining))
-        await asyncio.gather(fut1, fut2)
+    # update redis with what the panel looks like
+    fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
+    fut2 = redisslow.set('holding', str(remaining))
+    await asyncio.gather(fut1, fut2)
 
-        endtime = time.time()
-        print(endtime - starttime)
+    endtime = time.time()
+    print(endtime - starttime)
 
 
 
