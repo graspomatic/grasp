@@ -268,7 +268,7 @@
             sa += ']';
 
             console.log(sa);
-            var ip = document.getElementById("GraspIP").value;
+            var ip = '128.148.110.89:8888';
             var cmd = { "function":"update_object_database","table":sa };
             $.get("http://" + ip, cmd, function() {
             })
