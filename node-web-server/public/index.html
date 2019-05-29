@@ -255,8 +255,8 @@
 
                 sa += '["';
                 sa += document.getElementById("id_number" + r).innerHTML;
-                //sa += '","';
-                //sa += document.getElementById("filename" + r).value;
+                sa += '","';
+                sa += document.getElementById("filename" + r).value;
                 //sa += '","';
                 //sa += document.getElementById("channel_map" + r).innerHTML;
                 sa += '"],';
@@ -265,6 +265,7 @@
                 //tableData.fileCol[i] = document.getElementById("filename" + r).value;
                 //tableData.channelMapCol[i] = document.getElementById("channel_map" + r).innerHTML;
             }
+            sa = sa.substring(0, str.length-1);
             sa += ']"';
 
             console.log(sa);
