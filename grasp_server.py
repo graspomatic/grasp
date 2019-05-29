@@ -407,6 +407,18 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         print('specify which sides to put away. 0 (left), 1 (right), 2 (both)')
         return
 
+    # if we're told what we're holding, change redis to match
+    left_id = int(left_id[0])
+    right_id = int(right_id[0])
+    if left_id > -1 or right_id > -1:
+        holding = await redisslow.get('holding')
+        holding = np.array(json.loads(holding))
+        if left_id > -1:
+            holding[0] = left_id
+        if right_id > -1:
+            holding[1] = right_id
+
+
     ## determine arms that will be used for returning objects
     # get information from sensors
     fut1 = redisfast.get('left_sensor_last_update')
