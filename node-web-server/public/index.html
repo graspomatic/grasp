@@ -94,6 +94,12 @@
             console.log(message);
             for (key in message) {
                 console.log(key);
+                if (key == 'shapeData') {
+
+                    console.log(key[0]);
+
+
+                }
             }
         }
 
@@ -197,9 +203,34 @@
             newRow.append(cols);
             $("table.order-list").append(newRow);
             counter++;
+        }
+
+        function populateTable(res) {
+            deleteAllMainTable(); //before we add in table from database, delete what's currently there
+
+            let rows = Object.keys(res).length;
+            let cols = Object.keys(res[0]);
+            if (rows < 1 | cols.length != 14) {return;} // make sure input is n x 14
+
+            for (let i = 0; i <rows; i++) {
+                add_a_row();
+                document.getElementById("id_number" + i).innerHTML = res[i].dStartCol;
+                document.getElementById("filename" + i).value = res[i].notesCol;
+                document.getElementById("channel_map" + i).innerHTML = res[i].dStartCol;
+            }
+        }
 
 
+        function deleteAllMainTable() {
+            let rows = document.getElementById('myTable').rows.length - 3; // There are 3 rows that dont hold data
 
+            console.log("deleting " + rows + " rows");
+
+            for (i = rows; i > 0; i--) {
+                console.log("deleting row " + i);
+                document.getElementById('myTable').rows[i].remove();
+            }
+            counter=0;
         }
 
     </script>
