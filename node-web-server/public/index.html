@@ -253,20 +253,10 @@
                 var thisRowID = document.getElementById('myTable').rows[i+1].cells[0].id;
                 var r = thisRowID.replace(/[^0-9]/g,'');
 
-                sa += '["';
-                sa += document.getElementById("id_number" + r).innerHTML;
-                sa += '","';
-                sa += document.getElementById("filename" + r).value;
-                //sa += '","';
-                //sa += document.getElementById("channel_map" + r).innerHTML;
-                sa += '"],';
-
-                //tableData.IDCol[i] = document.getElementById("id_number" + r).innerHTML;
-                //tableData.fileCol[i] = document.getElementById("filename" + r).value;
-                //tableData.channelMapCol[i] = document.getElementById("channel_map" + r).innerHTML;
+                tableData.IDCol[i] = document.getElementById("id_number" + r).innerHTML;
+                tableData.fileCol[i] = document.getElementById("filename" + r).value;
+                tableData.channelMapCol[i] = document.getElementById("channel_map" + r).innerHTML;
             }
-            sa = sa.substring(0, sa.length-1);
-            sa += ']"';
 
             console.log(sa);
             var ip = '128.148.110.89:8888';
