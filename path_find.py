@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 class path_find():
     def __init__(self):
@@ -45,6 +46,7 @@ class path_find():
         return empties[idx]
 
     def find_nearest_pair(self, empties, right_offset):
+        starttime = time.time()
         shortest = np.array([np.array([0, 0]), np.array([0, 0]), 1000000])
         for i in empties:
             for ii in empties:
@@ -53,6 +55,8 @@ class path_find():
                     d = self.distance(i, ii - right_offset)
                     if d < shortest[2]:
                         shortest = [i, ii - right_offset, d]
+        stoptime = time.time()
+        print(stoptime - starttime)
         return shortest
 
     def get_address(self, panel, id, offset):
