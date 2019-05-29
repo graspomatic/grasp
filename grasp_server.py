@@ -510,6 +510,10 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     if get_next:
         await present(arms='left', hand=1)
         await loop.create_task(mags.energize(0))
+        if left_id > 0:
+            await pub.publish_json('WebClient', {"leftmag": "1"})
+        if right_id > 0:
+            await pub.publish_json('WebClient', {"rightmag": "1"})
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
@@ -791,9 +795,13 @@ async def publish_inventory():
             print(c)
             print(panel[r][c][0])
 
-
-
     await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
+
+async def publish_object_database():
+    global redisslow
+    shapeData = await redisslow.get('shapeData')
+    await pub.publish_json('WebClientInventory', {"shapeData": json.dumps(shapeData.tolist())})
+
 
 
 
@@ -895,6 +903,8 @@ async def handle_request(reader, writer):
 
 # check redis for panel variable and initialize it if it doesn't exist
 def init_panel():
+
+    # no longer used -- switched to init_panel.py
     global redisslow
     w = 2   # columns in panel
     h = 1   # rows
