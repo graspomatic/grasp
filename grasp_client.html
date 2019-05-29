@@ -419,7 +419,7 @@
 
         $('#put_away_button').click(function() {
             var ip = document.getElementById("GraspIP").value;
-            var cmd = { "function":"put_away_and_get_next", "axis":"y", "direction":"0" };
+            var cmd = { "function":"put_away", "side":"2", "get_next":"1"};
             $.get("http://" + ip, cmd, function() {
             })
             .done(function(data, textStatus, jqXHR) {

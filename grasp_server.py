@@ -127,7 +127,7 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
     xy_accel = 75
 
     # input variables"
-    # arms (list of ints) [0] for left only, [1] for right only, [0 1] for both arms
+    # arms (list of ints) 'left', 'right', 'both', or 'neither'
     # hand (list of single int) [0] for left, [1] for right
 
     # if arms is empty or -1, ask for arms
@@ -389,12 +389,13 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0],
     print(endtime-starttime)
 
 
-async def put_away(side=[-1], left_id=[-1], right_id=[-1]):
+async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     # put away currently held objects
     # input variables:
     # side (integer) is sides we want to put away. 0 (left) or (1) right or (2) for both
     # left_id (integer). if specified, overrules whatever the redis database says we're holding
     # right_id (integer). if specified, overrules whatever the redis database says we're holding
+    # get_next (binary). if 1, that means we need to extend the arm to prepare to put another object away
 
 
     global redisslow, redisfast
@@ -490,12 +491,16 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1]):
             await return_object(side=side, add=location)
 
 
+    # if we need to get another object from the user, extend the arm
+    if get_next:
+        await present(arms='left', hand=0)
+
+
     # restart sensor readings
     await redisfast.set('get_left', '1')
     await redisfast.set('get_right', '1')
 
-    print(remaining)
-    print(str(remaining))
+
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
