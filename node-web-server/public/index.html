@@ -156,7 +156,6 @@
             $("table.order-list").on("click", ".ibtnDel", function (event) {
                 $(this).closest("tr").remove();
                 counter -= 1;
-                startCallWait();
             });
 
             // When clicking the button to move a row up one
@@ -166,7 +165,6 @@
                 console.log($row.index());
                 if ($row.index() === 0) return; // Don't go above the header
                 $row.prev().before($row.get(0));
-                startCallWait();
             });
 
             // When clicking the button to move a row down one
@@ -175,7 +173,6 @@
                 var $row = $(this).parents('tr');
                 console.log($row.index());
                 $row.next().after($row.get(0));
-                startCallWait();
             });
 
             // This prevents the dropdown box from closing as soon as you click on something
@@ -193,9 +190,9 @@
             var newRow = $("<tr>");
             var cols = "";
 
-            cols += '<td class="pt-3-half tableAble" contenteditable="true" onkeyup="javascript:startCallWait();" id="id_number' + counter + '"></td>';
-            cols += '<td><input type="text" contenteditable="false" class="form-control tableAble" onkeyup="javascript:startCallWait();" id="filename' + counter + '"/></td>';
-            cols += '<td class="pt-3-half tableAble" contenteditable="true" onkeyup="javascript:startCallWait();" id="channel_map' + counter + '"></td>';
+            cols += '<td class="pt-3-half tableAble" contenteditable="true" id="id_number' + counter + '"></td>';
+            cols += '<td><input type="text" contenteditable="false" class="form-control tableAble" id="filename' + counter + '"/></td>';
+            cols += '<td class="pt-3-half tableAble" contenteditable="true" id="channel_map' + counter + '"></td>';
 
             cols += '<td class="pt-3-half">';
             cols += '<span class="table-up arrowAble "><a href="#!" class="indigo-text"  ><i class="fas fa-long-arrow-alt-up "></i></a></span>';
@@ -219,7 +216,7 @@
                 add_a_row();
                 document.getElementById("id_number" + i).innerHTML = res[i][0];
                 document.getElementById("filename" + i).value = res[i][1];
-                document.getElementById("channel_map" + i).innerHTML = res[i][2];
+                document.getElementById("channel_map" + i).innerHTML = res[i][2] + ', ' + res[i][3] + ', ' + res[i][4] + ', ' + res[i][5] + ', ' + res[i][6] + ', ' + res[i][7];
             }
         }
 
