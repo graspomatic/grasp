@@ -46,6 +46,7 @@ class path_find():
         return empties[idx]
 
     def find_nearest_pair(self, empties, right_offset):
+        # This function takes a full second with the 7x12 panel
         starttime = time.time()
         shortest = np.array([np.array([0, 0]), np.array([0, 0]), 1000000])
         for i in empties:
@@ -55,6 +56,8 @@ class path_find():
                     d = self.distance(i, ii - right_offset)
                     if d < shortest[2]:
                         shortest = [i, ii - right_offset, d]
+                        if d < 50:
+                            return shortest
         stoptime = time.time()
         print(stoptime - starttime)
         return shortest
