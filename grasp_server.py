@@ -493,19 +493,17 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
 
     # if we need to get another object from the user, extend the arm
     if get_next:
-        await present(arms='left', hand=0)
-
-
-    # restart sensor readings
-    await redisfast.set('get_left', '1')
-    await redisfast.set('get_right', '1')
-
-
+        await present(arms='left', hand=1)
+        await loop.create_task(mags.energize(0))
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
     fut2 = redisslow.set('holding', str(remaining))
     await asyncio.gather(fut1, fut2)
+
+    # restart sensor readings
+    await redisfast.set('get_left', '1')
+    await redisfast.set('get_right', '1')
 
     endtime = time.time()
     print(endtime - starttime)

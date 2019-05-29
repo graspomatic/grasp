@@ -417,7 +417,18 @@
               });
         });
 
-        $('#put_away_button').click(function() {
+
+        // ----------------- put away objects -------------------------------------
+
+        var put_away = document.getElementById("form3");
+        put_away.addEventListener("keyup", function(event) {
+              if (event.keyCode === 13) {
+                   event.preventDefault();
+                   document.getElementById("put_away_new").click();
+              }
+        });
+
+        $('#put_away_current').click(function() {
             var ip = document.getElementById("GraspIP").value;
             var cmd = { "function":"put_away", "side":"2", "get_next":"1"};
             $.get("http://" + ip, cmd, function() {
@@ -426,12 +437,22 @@
               console.log(jqXHR.statusText);
             })
             .fail(function(data) {
-              alert( "put_away_button failed" );
+              alert( "put_away_current failed" );
             });
+        });
 
-
-
-
+        $('#put_away_new').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var id = document.getElementById("form3").value;
+            var cmd = { "function":"put_away", "side":"0", "get_next":"1", "left_id":id};
+            $.get("http://" + ip, cmd, function() {
+            })
+            .done(function(data, textStatus, jqXHR) {
+              console.log(jqXHR.statusText);
+            })
+            .fail(function(data) {
+              alert( "put_away_new failed" );
+            });
         });
 
 
@@ -986,14 +1007,15 @@
             </div>
           </div>
           <div class="modal-footer d-flex justify-content-center">
-            <button class="btn btn-secondary">Put away </button>
+            <button id="put_away_current" class="btn btn-secondary">Put away current </button>
+            <button id="put_away_new" class="btn btn-primary">Put away new</button>
           </div>
         </div>
       </div>
     </div>
 
     <div class="input-group col-6 mt-3 mb-3">
-      <a href="" id="put_away_button" class="btn btn-primary btn-rounded mb-4" data-toggle="modal" data-target="#modalSubscriptionForm">Put away an object</a>
+      <a href="" class="btn btn-primary btn-rounded mb-4" data-toggle="modal" data-target="#modalSubscriptionForm">Put away an object</a>
     </div>
 
 
