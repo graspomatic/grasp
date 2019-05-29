@@ -258,10 +258,10 @@
             }
 
             //var tab = JSON.stringify(tableData);
-
+            //,"file":JSON.stringify(tableData.fileCol),"channelMap":JSON.stringify(tableData.channelMapCol)
             //console.log(tab);
             var ip = '128.148.110.89:8888';
-            var cmd = { "function":"update_object_database","ID":JSON.stringify(tableData.IDCol),"file":JSON.stringify(tableData.fileCol),"channelMap":JSON.stringify(tableData.channelMapCol) };
+            var cmd = { "function":"update_object_database","ID":JSON.stringify(tableData.IDCol) };
             console.log(cmd);
             $.get("http://" + ip, cmd, function() {
             })
