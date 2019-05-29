@@ -17,6 +17,11 @@ tr = np.array([6.5, 7])     # top right x,y position using left arm
 bl = np.array([267, 487])   # bottom left x,y position using left arm
 br = np.array([4, 486])     # bottom right x,y position using left arm
 
+#tlr = np.array([325, 9])     # top left x,y position using right arm
+#trr = np.array([63.5, 7])     # top right x,y position using right arm
+#blr = np.array([267, 487])   # bottom left x,y position using right arm
+#brr = np.array([4, 486])     # bottom right x,y position using right arm
+
 
 # calculate angles on the four sides and then find the weighted average (vertical is about 2x the distance of hori)
 top_angle =    np.arctan((tr[1]-tl[1])/(tr[0]-tl[0]))

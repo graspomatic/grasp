@@ -87,6 +87,12 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
         print('specify side=0 (left) or side=1 (right)')
         return
 
+    # prep dxl motor to pick
+    if side == 0:
+        dxl.set_profile_accel(motor=11, accel=500)
+    elif side == 1:
+        dxl.set_profile_accel(motor=21, accel=500)
+
     # move both arms to 'prep_pick' position
     dxl.move_arm_to_pos(arm=0, pos='prep_pick')
     dxl.move_arm_to_pos(arm=1, pos='prep_pick')
