@@ -803,7 +803,9 @@ async def publish_object_database():
     shapeData = np.array(json.loads(shapeData))
     await pub.publish_json('WebClientInventory', {"shapeData": json.dumps(shapeData.tolist())})
 
-
+async def publish_object_database(table):
+    global redisslow
+    print(table)
 
 
 async def ping():
@@ -844,6 +846,7 @@ fx_list = {
 
     'publish_inventory': publish_inventory,
     'publish_object_database': publish_object_database,
+    'update_object_database': update_object_database,
 
     'ping': ping,
     'abort': abort
