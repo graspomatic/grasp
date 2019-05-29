@@ -246,14 +246,14 @@
 
             // Step through each row of the table and fill the object
             var rows = document.getElementById('myTable').rows.length - 3; // There are 3 rows that dont hold data
-            var sa = '[';
+            var sa = '"[';
             for (i = 0; i < rows; i++) {
                 //When the user manually re-orders the table, the element ids move as well.
                 //We need to first get that id number so we can store to DB in same order as user-ordered table.
                 var thisRowID = document.getElementById('myTable').rows[i+1].cells[0].id;
                 var r = thisRowID.replace(/[^0-9]/g,'');
 
-                sa += '"[';
+                sa += '[';
                 sa += document.getElementById("id_number" + r).innerHTML;
                 sa += ', ';
                 sa += document.getElementById("filename" + r).value;
