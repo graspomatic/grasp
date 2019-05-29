@@ -402,21 +402,12 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
 
     starttime = time.time()
 
+    left_id = int(left_id[0])
+    right_id = int(right_id[0])
     side = int(side[0])
     if side == -1:
         print('specify which sides to put away. 0 (left), 1 (right), 2 (both)')
         return
-
-    # if we're told what we're holding, change redis to match
-    left_id = int(left_id[0])
-    right_id = int(right_id[0])
-    if left_id > -1 or right_id > -1:
-        holding = await redisslow.get('holding')
-        holding = np.array(json.loads(holding))
-        if left_id > -1:
-            holding[0] = left_id
-        if right_id > -1:
-            holding[1] = right_id
 
 
     ## determine arms that will be used for returning objects
@@ -455,6 +446,12 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     panel = np.array(json.loads(panel))
     holding = np.array(json.loads(holding))
     arm_offset = np.array(json.loads(arm_offset))
+
+    # if we're told what we're holding, change redis to match
+    if left_id > -1:
+        holding[0] = left_id
+    if right_id > -1:
+        holding[1] = right_id
 
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
     if left_connected and holding[0]:
