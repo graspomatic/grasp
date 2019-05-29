@@ -269,7 +269,7 @@
 
             console.log(sa);
             var ip = document.getElementById("GraspIP").value;
-            var cmd = { "function":"publish_object_database","table":sa };
+            var cmd = { "function":"update_object_database","table":sa };
             $.get("http://" + ip, cmd, function() {
             })
               .done(function(data, textStatus, jqXHR) {
