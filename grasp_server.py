@@ -800,6 +800,7 @@ async def publish_inventory():
 async def publish_object_database():
     global redisslow
     shapeData = await redisslow.get('shapeData')
+    shapeData = np.array(json.loads(shapeData))
     await pub.publish_json('WebClientInventory', {"shapeData": json.dumps(shapeData.tolist())})
 
 
