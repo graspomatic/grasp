@@ -798,7 +798,6 @@ async def abort():
 fx_list = {
     'pick_and_place': pick_and_place,
     'put_away': put_away,
-    'put_away_all': put_away_all,
 
     'initialize_dxl': initialize_dxl,
     'enable_arms': enable_arms,
