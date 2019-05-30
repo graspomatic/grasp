@@ -14,7 +14,7 @@ let db = new sqlite3.Database('/home/root/grasp/shapes/objects.db', sqlite3.OPEN
 });
 
 db.serialize(() => {
-  db.each('SELECT ObjectID as id, blobName as panel FROM objectsTable', (err, row) => {
+  db.each('SELECT objectID as id, blobName as panel FROM objectsTable', (err, row) => {
     if (err) {
       console.error(err.message);
     }
