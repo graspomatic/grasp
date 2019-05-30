@@ -797,15 +797,15 @@ async def publish_inventory():
 
     await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
 
-async def publish_object_database():
-    global redisslow
-    shapeData = await redisslow.get('shapeData')
-    shapeData = np.array(json.loads(shapeData))
-    await pub.publish_json('WebClientInventory', {"shapeData": json.dumps(shapeData.tolist())})
-
-async def update_object_database(table=''):
-    global redisslow
-    print(table)
+# async def publish_object_database():
+#     global redisslow
+#     shapeData = await redisslow.get('shapeData')
+#     shapeData = np.array(json.loads(shapeData))
+#     await pub.publish_json('WebClientInventory', {"shapeData": json.dumps(shapeData.tolist())})
+#
+# async def update_object_database(table=''):
+#     global redisslow
+#     print(table)
 
 
 async def ping():
@@ -845,8 +845,8 @@ fx_list = {
     'change_address': change_address,
 
     'publish_inventory': publish_inventory,
-    'publish_object_database': publish_object_database,
-    'update_object_database': update_object_database,
+    # 'publish_object_database': publish_object_database,
+    # 'update_object_database': update_object_database,
 
     'ping': ping,
     'abort': abort

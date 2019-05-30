@@ -3,6 +3,24 @@ var express = require("express");
 var app = express();
 app.use(express.static('public'));
 
+const sqlite3 = require('sqlite3').verbose();
+
+// open database in memory
+let db = new sqlite3.Database(':memory:', (err) => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log('Connected to the in-memory SQlite database.');
+});
+
+// close the database connection
+db.close((err) => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log('Close the database connection.');
+});
+
 //make way for some custom css, js and images
 //app.use('/css', express.static(__dirname + '/public/css'));
 //app.use('/js', express.static(__dirname + '/public/js'));
