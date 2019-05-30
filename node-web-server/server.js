@@ -14,11 +14,11 @@ let db = new sqlite3.Database('/home/root/grasp/shapes/objects2.db', sqlite3.OPE
 });
 
 db.serialize(() => {
-  db.each('SELECT objectID as id, blobName as panel FROM objectsTable', (err, row) => {
+  db.each('SELECT objectID as id, blobName as blobName, SVG as svg FROM objectsTable', (err, row) => {
     if (err) {
       console.error(err.message);
     }
-    console.log(row.id + "\t" + row.panel);
+    console.log(row.id + "\t" + row.blobName + "\t" + row.objectsTable);
   });
 });
 
