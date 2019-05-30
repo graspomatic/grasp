@@ -6,11 +6,20 @@ app.use(express.static('public'));
 const sqlite3 = require('sqlite3').verbose();
 
 // open database in memory
-let db = new sqlite3.Database('/home/root/grasp/shapes/objects.db', (err) => {
+let db = new sqlite3.Database('/home/root/grasp/shapes/objects.db', sqlite3.OPEN_READONLY (err) => {
   if (err) {
     return console.error(err.message);
   }
   console.log('Connected to the objects database.');
+});
+
+db.serialize(() => {
+  db.each('SELECT UniqueID as id, Panel as panel FROM UniqueShapesTable', (err, row) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log(row.id + "\t" + row.panel);
+  });
 });
 
 // close the database connection
