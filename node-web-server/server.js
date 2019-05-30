@@ -6,11 +6,11 @@ app.use(express.static('public'));
 const sqlite3 = require('sqlite3').verbose();
 
 // open database in memory
-let db = new sqlite3.Database(':memory:', (err) => {
+let db = new sqlite3.Database('/home/root/grasp/shapes/objects.db', (err) => {
   if (err) {
     return console.error(err.message);
   }
-  console.log('Connected to the in-memory SQlite database.');
+  console.log('Connected to the objects database.');
 });
 
 // close the database connection
