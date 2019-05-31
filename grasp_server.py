@@ -796,15 +796,15 @@ async def publish_inventory():
     pshape = panel.shape
     for r in range(pshape[0]):
         for c in range(pshape[1]):
-            print(r)
-            print(c)
             print(panel[r][c][0])
 
             if panel[r][c][0] > 0 and panel[r][c][0] < 9999:
                 id = (str(panel[r][c][0]),)
                 sqlc.execute('SELECT SVG FROM objectsTable WHERE objectID=?', id)
                 svg = sqlc.fetchall()
-                print(svg)
+                if len(svg) == 1:
+                    print(svg[0][0])
+                    panel[r][c][0] = svg[0][0]
 
 
     await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
