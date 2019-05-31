@@ -786,12 +786,12 @@ async def publish_inventory():
     holding = np.array(json.loads(holding))
     print(holding)
 
-    shapeData = await redisslow.get('shapeData')
-    print(shapeData)
-    shapeData = json.loads(shapeData)
-    print(shapeData)
-    shapeData = np.chararray(shapeData)
-    print(shapeData)
+    # shapeData = await redisslow.get('shapeData')
+    # print(shapeData)
+    # shapeData = json.loads(shapeData)
+    # print(shapeData)
+    # shapeData = np.chararray(shapeData)
+    # print(shapeData)
     # loop through all objects on the panel and replace id number with filename
     pshape = panel.shape
     for r in range(pshape[0]):
