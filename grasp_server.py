@@ -807,6 +807,8 @@ async def publish_inventory():
                     print(svg[0][0])
                     pstring[r][c][0] = svg[0][0]
 
+    print(json.dumps(pstring[:, :, 0].tolist()))
+
 
     await pub.publish_json('WebClientInventory', {"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
 
