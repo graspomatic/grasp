@@ -794,6 +794,7 @@ async def publish_inventory():
     # print(shapeData)
     # loop through all objects on the panel and replace id number with filename
     pshape = panel.shape
+    pstring = np.char.mod('%d', panel)
     for r in range(pshape[0]):
         for c in range(pshape[1]):
             print(panel[r][c][0])
@@ -804,7 +805,7 @@ async def publish_inventory():
                 svg = sqlc.fetchall()
                 if len(svg) == 1:
                     print(svg[0][0])
-                    panel[r][c][0] = svg[0][0]
+                    pstring[r][c][0] = svg[0][0]
 
 
     await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
