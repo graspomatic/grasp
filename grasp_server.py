@@ -808,7 +808,7 @@ async def publish_inventory():
                     pstring[r][c][0] = svg[0][0]
 
 
-    await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
+    await pub.publish_json('WebClientInventory', {"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
 
 # async def publish_object_database():
 #     global redisslow
