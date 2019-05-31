@@ -7,6 +7,7 @@ import aioredis
 import atexit
 import time
 import math
+import sqlite3
 
 active_task = 0
 
@@ -22,6 +23,10 @@ mags = MagControl.MAGS()
 
 import path_find
 pf = path_find.path_find()
+
+conn = sqlite3.connect('/home/root/grasp/shapes/objects2.db')
+sqlc = conn.cursor()
+
 
 
 async def return_object(side=-1, add=[0,0]):
@@ -794,6 +799,13 @@ async def publish_inventory():
             print(r)
             print(c)
             print(panel[r][c][0])
+
+            if panel[r][c][0] > 0 and panel[r][c][0] < 9999:
+                id = (str(panel[r][c][0]),)
+                sqlc.execute('SELECT SVG FROM objectsTable WHERE objectID=?', id)
+                svg = sqlc.fetchall()
+                print(svg)
+
 
     await pub.publish_json('WebClientInventory', {"panel": json.dumps(panel[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
 
