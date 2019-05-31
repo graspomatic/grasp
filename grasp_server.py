@@ -796,6 +796,7 @@ async def publish_inventory():
     pshape = panel.shape
     # pstring = np.char.mod('%f', panel)
     pstring = np.array(map(str, panel))
+    print(pstring)
     for r in range(pshape[0]):
         for c in range(pshape[1]):
             print(panel[r][c][0])
