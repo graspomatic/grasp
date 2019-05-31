@@ -795,7 +795,8 @@ async def publish_inventory():
     # loop through all objects on the panel and replace id number with filename
     pshape = panel.shape
     # pstring = np.char.mod('%f', panel)
-    pstring = np.array(map(str, panel))
+    # pstring = np.array(map(str, panel))
+    pstring = panel.astype(str)
     print(pstring)
     for r in range(pshape[0]):
         for c in range(pshape[1]):
