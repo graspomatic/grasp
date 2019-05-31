@@ -780,11 +780,8 @@ async def publish_inventory():
     global redisslow
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
-    print(panel)
     holding = await redisslow.get('holding')
-    print(holding)
     holding = np.array(json.loads(holding))
-    print(holding)
 
     # shapeData = await redisslow.get('shapeData')
     # print(shapeData)
@@ -792,25 +789,28 @@ async def publish_inventory():
     # print(shapeData)
     # shapeData = np.chararray(shapeData)
     # print(shapeData)
-    # loop through all objects on the panel and replace id number with filename
+
     pshape = panel.shape
-    # pstring = np.char.mod('%f', panel)
-    # pstring = np.array(map(str, panel))
     pstring = panel.astype('U256')
-    print(pstring)
+    hstring = holding.astype('U256')
+
+    # loop through all objects on the panel and holding and replace id number with filename
     for r in range(pshape[0]):
         for c in range(pshape[1]):
-            print(panel[r][c][0])
-
-            if panel[r][c][0] > 0 and panel[r][c][0] < 9999:
+            if panel[r][c][0] > 0 and panel[r][c][0] < 99999:
                 id = (str(panel[r][c][0]),)
                 sqlc.execute('SELECT SVG FROM objectsTable WHERE objectID=?', id)
                 svg = sqlc.fetchall()
                 if len(svg) == 1:
-                    print(svg[0][0])
                     pstring[r][c][0] = svg[0][0]
 
-    print(json.dumps(pstring[:, :, 0].tolist()))
+    for i in range(2):
+        if holding[i] > 0 and holding[i] < 99999:
+            id = (str(holding[i]),)
+            sqlc.execute('SELECT SVG FROM objectsTable WHERE objectID=?', id)
+            svg = sqlc.fetchall()
+            if len(svg) == 1:
+                hstring[i] = svg[0][0]
 
 
     await pub.publish_json('WebClientInventory', {"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
