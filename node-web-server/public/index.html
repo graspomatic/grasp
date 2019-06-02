@@ -104,13 +104,6 @@
                     //changeImage('imgLeft','/SVGs/blob2003.dgz_0.0132_10_6_2_3_25_0_1_1.svg')
                 } else if (key == 'panel') {
                     var m = JSON.parse(message[key]);
-                    console.log(m);         // breaks it down into 12 arrays of 7 values each
-                    console.log(m[0]);      // shows the 7 values in the first array
-                    console.log(m[0][0]);   // shows the first value in the first array
-
-                    console.log(m.length);      // number of rows on panel
-                    console.log(m[0].length);   // number of columns on panel
-
                     var rows = m.length;
                     var cols = m[0].length;
                     var idCounter = 1;
@@ -118,18 +111,12 @@
                     for (row = 0; row < rows; row++) {
                         for (col = 0; col < cols; col++) {
                             objID = m[row][col];
-                            console.log(objID);
-                            console.log(objID[0]);
                             if (objID[0] == 'b') {
-                                console.log('changing');
                                 changeImage('img' + idCounter.toString(), '/SVGs/' + objID)
-
                             }
-
                             idCounter++;
                         }
                     }
-
                 }
             }
         }
@@ -144,7 +131,7 @@
             // Make a container for all necessary locations
             for(var i =1; i<= (cols * rows); i++){
               $('#gridid').append($('<div/>', { id: 'r' + i,class:"imgContainer"}));
-              $('#r' + i).append($('<img>',{id: 'img' + i, title: 'eys', src:'/SVGs/blob2002.dgz_0.0132_10_6_2_3_25_0_1_1.svg'}))
+              $('#r' + i).append($('<img>',{id: 'img' + i, title: 'eys', src:''}))
             }
 
             // Size all the images and restructure it into a grid shape
