@@ -806,6 +806,7 @@ async def publish_inventory():
 
     for i in range(2):
         if holding[i] > 0 and holding[i] < 99999:
+            print('object is here')
             id = (str(holding[i]),)
             sqlc.execute('SELECT SVG FROM objectsTable WHERE objectID=?', id)
             svg = sqlc.fetchall()
