@@ -114,12 +114,12 @@
                     var rows = m.length;
                     var cols = m[0].length;
                     var idCounter = 1;
-                    var this = 0;
+                    var objID = 0;
                     for (row = 0; row < rows; row++) {
                         for (col = 0; col < cols; col++) {
-                            this = m[row][col];
-                            if (this[0] = 'b') {
-                               changeImage('r' + idCounter.toString(), this)
+                            objID = m[row][col];
+                            if (objID[0] = 'b') {
+                               changeImage('r' + idCounter.toString(), objID)
 
                             }
 
