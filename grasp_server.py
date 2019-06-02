@@ -810,6 +810,7 @@ async def publish_inventory():
             id = (str(holding[i]),)
             sqlc.execute('SELECT SVG FROM objectsTable WHERE objectID=?', id)
             svg = sqlc.fetchall()
+            print(svg)
             if len(svg) == 1:
                 hstring[i] = svg[0][0]
 
