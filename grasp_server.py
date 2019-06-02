@@ -806,19 +806,15 @@ async def publish_inventory():
 
     for i in range(2):
         if holding[i] > 0 and holding[i] < 99999:
-
             id = (str(holding[i]),)
             sqlc.execute('SELECT SVG FROM objectsTable WHERE objectID=?', id)
             svg = sqlc.fetchall()
-            print(svg)
             if len(svg) == 1:
-                print('object is heres')
                 hstring[i] = svg[0][0]
-                print(hstring[i])
-                print(hstring)
 
 
-    await pub.publish_json('WebClientInventory', {"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(holding.tolist())})
+
+    await pub.publish_json('WebClientInventory', {"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(hstring.tolist())})
 
 # async def publish_object_database():
 #     global redisslow
