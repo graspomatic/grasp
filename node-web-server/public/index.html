@@ -81,6 +81,19 @@
                 if (parsed == '1') {
                     document.getElementById("redisServerConnected").style.color = "green";
                     document.getElementById("redisServerConnected").innerHTML = "Connected";
+
+                    var ip = document.getElementById("GraspIP").value;
+                    var query = 'function=publish_inventory';
+                    var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+                    $.get("http://" + ip, js, function() {
+                    })
+                      .done(function(data, textStatus, jqXHR) {
+                        console.log(jqXHR.statusText);
+                      })
+                      .fail(function(data) {
+                        alert( "manualcontrol failed" );
+                      });
+
                 } else {
                     handlePub(parsed);
                 }
