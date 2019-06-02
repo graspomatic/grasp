@@ -102,6 +102,14 @@
                     //console.log(m[0][0]);
 
                     //changeImage('imgLeft','/SVGs/blob2003.dgz_0.0132_10_6_2_3_25_0_1_1.svg')
+
+                    if (m[0][0] == 'b') {
+                        changeImage('imgLeft', '/SVGs/' + m[0])
+                    }
+                    if (m[1][0] == 'b') {
+                        changeImage('imgRight', '/SVGs/' + m[1])
+                    }
+
                 } else if (key == 'panel') {
                     var m = JSON.parse(message[key]);
                     var rows = m.length;
@@ -310,17 +318,16 @@
 
 <div class="rowOfHolding" id="holdinggridid">
   <div class="column">
-    <img src= "/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Left" class="holdingIMG" id="imgLeft">
+    <img src= "" alt="Left" class="holdingIMG" id="imgLeft">
   </div>
   <div class="column">
-    <img src="/SVGs/blob2002.dgz_0.0132_10_6_2_3_25_0_1_1.svg" alt="Left" class="holdingIMG" id="imgRight">
+    <img src="" alt="Right" class="holdingIMG" id="imgRight">
   </div>
 </div>
 
 
 <div class="grid" id="gridid"></div>
 
-<button type="button" onclick="changeImage('imgLeft','/SVGs/blob2003.dgz_0.0132_10_6_2_3_25_0_1_1.svg')">Click Me!</button>
 
 <div class="col-sm-9 card card-body">
 
