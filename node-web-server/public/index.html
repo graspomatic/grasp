@@ -13,12 +13,10 @@
     <style>
         .imgContainerHolding {
           overflow: hidden;
-          transform: rotate(180deg);
         }
 
         .imgContainer {
-          overflow: hidden;
-
+            overflow: hidden;
         }
 
         .grid {
@@ -49,17 +47,14 @@
             width: 330px;
             height: 170px;
             overflow: hidden;
-
         }
 
 
 
         .holdingIMG {
-          overflow: hidden;
-          position: absolute;
-          clip: rect(125px, 360px, 275px, 210px);  // top from top, right from left, bottom from top, left from left
-
-
+            overflow: hidden;
+            position: absolute;
+            clip: rect(125px, 360px, 275px, 210px);  // top from top, right from left, bottom from top, left from left
         }
 
 
@@ -109,9 +104,13 @@
 
                     if (m[0][0] == 'b') {
                         changeImage('imgLeft', '/SVGs/' + m[0])
+                    } else {
+                        changeImage('imgLeft', '/SVGs/empty.jpg')
                     }
                     if (m[1][0] == 'b') {
                         changeImage('imgRight', '/SVGs/' + m[1])
+                    } else {
+                        changeImage('imgRight', '/SVGs/empty.jpg')
                     }
 
                 } else if (key == 'panel') {
@@ -125,6 +124,8 @@
                             objID = m[row][col];
                             if (objID[0] == 'b') {
                                 changeImage('img' + idCounter.toString(), '/SVGs/' + objID)
+                            } else {
+                                changeImage('img' + idCounter.toString(), '/SVGs/empty.jpg')
                             }
                             idCounter++;
                         }
