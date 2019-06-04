@@ -154,10 +154,10 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180):
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
         dxl.set_profile_accel(motor=11, accel=130)
-        dxl.move_arm_to_pos(arm=0, pos='prep_present', rotation=left_angle)
+        dxl.move_arm_to_pos(arm=0, pos='prep_present', rotation=left_angle-180)
     if arms == 'both' or arms == 'right':
         dxl.set_profile_accel(motor=21, accel=130)
-        dxl.move_arm_to_pos(arm=1, pos='prep_present', rotation=right_angle)
+        dxl.move_arm_to_pos(arm=1, pos='prep_present', rotation=right_angle-180)
 
     # move xy to present to specified hand
     hand_xs = await redisslow.get('hand_xs')
