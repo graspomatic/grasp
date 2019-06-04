@@ -131,7 +131,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
         await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": str(objid)})
 
 
-async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
+async def present(arms='neither', hand=-1, left_angle=180, right_angle=180):
     # present objects on specified arms to specified hand
     print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
     global redisslow
@@ -168,10 +168,10 @@ async def present(arms='neither', hand=-1, left_angle=0, right_angle=0):
 
     # once xy is in position, move specified arms to present
     if arms == 'both' or arms == 'left':
-        dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle)
+        dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle-180)          # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
         await pub.publish_json('WebClient', {"leftarm": "prep_present"})
     if arms == 'both' or arms == 'right':
-        dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle)
+        dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle-180)         # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
         await pub.publish_json('WebClient', {"rightarm": "prep_present"})
 
     await wait_for_dxl(300)
@@ -276,7 +276,7 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
 
 
 
-async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[0], right_angle=[0]):
+async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
