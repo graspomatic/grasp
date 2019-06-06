@@ -21,7 +21,7 @@ sock.on('message', function(topic, message) {
     var label = ss[0].split(':');
     label = label[1];
     console.log(label);
-    console.log(ss[6][1:]);
+    console.log(ss[6].slice(1));
 
 
 //    if (label == 0) {
