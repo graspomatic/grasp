@@ -7,4 +7,6 @@ console.log('Subscriber connected to port 5681');
 
 sock.on('message', function(topic, message) {
   console.log('received a message related to:', topic, 'containing message:', message);
+  var output = new Buffer(topic, 'hex');
+  console.log(output);  // Result: 32343630 -> 2460
 });
