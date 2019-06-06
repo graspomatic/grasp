@@ -14,10 +14,10 @@ sock.on('message', function(topic, message) {
     full = topic.toString('ascii');
 
     console.log(full);
-    console.log(typeof full);
+//    console.log(typeof full);  // its a string
 
 
-    var ss = full[0].split();
+    var ss = full.split(' ');
 
     console.log(typeof ss);
     console.log(ss);
