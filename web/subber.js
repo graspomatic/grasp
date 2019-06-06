@@ -18,11 +18,13 @@ sock.on('message', function(topic, message) {
 
 
     var ss = full.split();
+
     console.log(typeof ss);
-    console.log(Object.keys(ss));
+    console.log(ss);
+//    console.log(Object.keys(ss));
 
 //
-    console.log(ss[0][0])
+    console.log(ss[0][0]);
 //    console.log(ss[7])
 
     pub.publish("WebClient", "rightSensor=10,10,10,10,10,10");
