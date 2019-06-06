@@ -18,14 +18,22 @@ sock.on('message', function(topic, message) {
 
 
     var ss = full.split(' ');
+    var label = ss[0].split(':');
+    label = label[1];
+    console.log(label);
+    console.log(ss[6][1:]);
 
-    console.log(typeof ss);
-    console.log(ss);
-//    console.log(Object.keys(ss));
 
+//    if (label == 0) {
+
+
+//    console.log(typeof ss);
+//    console.log(ss);
+////    console.log(Object.keys(ss));
 //
-    console.log(ss[0]);
-    console.log(ss[7])
+////
+//    console.log(ss[0]);
+//    console.log(ss[7])
 
     pub.publish("WebClient", "rightSensor=10,10,10,10,10,10");
 });
