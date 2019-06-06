@@ -10,6 +10,15 @@ console.log('Subscriber connected to port 5681');
 
 sock.on('message', function(topic, message) {
     //console.log('received a message related to:', topic, 'containing message:', message);
-    console.log(topic.toString('ascii'))
+
+    full = topic.toString('ascii');
+
+    console.log(full);
+
+    var ss = full.split();
+
+    console.log(ss[0])
+    console.log(ss[7])
+
     pub.publish("WebClient", "rightSensor=10,10,10,10,10,10");
 });
