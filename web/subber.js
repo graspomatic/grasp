@@ -11,6 +11,6 @@ sock.on('message', function(topic, message) {
 
 
 
-  //var output = new Buffer(topic, 'hex');
-  //console.log(output);  // Result: 32343630 -> 2460
+  var output = Buffer.from(topic);
+  console.log(output);  // Result: 32343630 -> 2460
 });
