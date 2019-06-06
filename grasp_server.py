@@ -784,7 +784,7 @@ async def remove_object(shapeid):
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
     panel = pf.remove_from_panel(panel, shapeid)
-    if panel != 0:
+    if any(panel):
         await redisslow.set('panel', json.dumps(panel.tolist()))
 
 
