@@ -17,7 +17,7 @@ sock.on('message', function(topic, message) {
     console.log(typeof full);
 
 
-    var ss = full.split();
+    var ss = full[0].split();
 
     console.log(typeof ss);
     console.log(ss);
