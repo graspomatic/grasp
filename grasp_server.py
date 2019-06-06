@@ -784,9 +784,8 @@ async def remove_object(shapeid):
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
     panel = pf.remove_from_panel(panel, shapeid)
-    print(type(panel))
-    #if type(panel) is np.ndarray:       # should either return a numpy array of the panel or
-     #   await redisslow.set('panel', json.dumps(panel.tolist()))
+    if type(panel) is np.ndarray:       # should either return a numpy array of the panel or a zero
+        await redisslow.set('panel', json.dumps(panel.tolist()))
 
 
 async def publish_inventory():
