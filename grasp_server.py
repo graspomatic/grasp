@@ -935,32 +935,6 @@ async def handle_request(reader, writer):
 
 
 
-
-
-# check redis for panel variable and initialize it if it doesn't exist
-def init_panel():
-
-    # no longer used -- switched to init_panel.py
-    global redisslow
-    w = 2   # columns in panel
-    h = 1   # rows
-    d = 3   # depth (should be 3 for x, y, and ID
-
-    panel = np.zeros((h, w, d))
-    panel[0, 0, 0] = 11.1
-    panel[0, 0, 1] = 11.2
-    panel[0, 0, 2] = 73
-    panel[0, 1, 0] = 21.1
-    panel[0, 1, 1] = 21.2
-    panel[0, 1, 2] = 74
-
-    panelJSON = json.dumps(panel.tolist())
-    redisslow.set('panel', panelJSON)
-
-    # to retrieve:
-    # np.array(json.loads(r.get('panel')))
-
-
 async def reader(ch):
     while (await ch.wait_message()):
         msg = await ch.get_json()
@@ -988,15 +962,6 @@ async def disconnect_redis():
     pub.close()
     await pub.wait_closed()
 
-
-
-# verify redis connection
-# if r.ping():
-#     if not r.exists('panel'):
-#         init_panel()
-#     print('redis connected')
-# else:
-#     print('redis not connected')
 
 
 loop = asyncio.get_event_loop()     # makes a new event loop if one doesnt exist
