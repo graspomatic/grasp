@@ -776,6 +776,18 @@ async def change_address(row, col, shapeid):
     # update redis
     await redisslow.set('panel', json.dumps(panel.tolist()))
 
+
+async def remove_object(shapeid):
+    global redisslow
+    panel = await redisslow.get('panel')
+    panel = np.array(json.loads(panel))
+    panel = pf.remove_from_panel(panel, shapeid)
+    if panel != 0:
+        await redisslow.set('panel', json.dumps(panel.tolist()))
+
+
+
+
 async def publish_inventory():
     global redisslow
     panel = await redisslow.get('panel')
@@ -862,7 +874,7 @@ fx_list = {
     'magnets': magnets,
 
     'change_address': change_address,
-
+    'remove_object': remove_object,
     'publish_inventory': publish_inventory,
     # 'publish_object_database': publish_object_database,
     # 'update_object_database': update_object_database,
