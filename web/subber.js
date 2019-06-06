@@ -19,12 +19,20 @@ sock.on('message', function(topic, message) {
 
     var ss = full.split(' ');
     var label = ss[0].split(':');
-    label = label[1];
+    var sensor = label[1];
     console.log(label);
     console.log(ss[6].slice(1));
 
 
-//    if (label == 0) {
+    if (sensor == 0) {
+        pub.publish("WebClient", "rightSensor=" +
+        ss[6].slice(1) + "," +
+        ss[7] + "," +
+        ss[8] + "," +
+        ss[9] + "," +
+        ss[10] + "," +
+        ss[11]);
+    }
 
 
 //    console.log(typeof ss);
@@ -35,5 +43,5 @@ sock.on('message', function(topic, message) {
 //    console.log(ss[0]);
 //    console.log(ss[7])
 
-    pub.publish("WebClient", "rightSensor=10,10,10,10,10,10");
+//    pub.publish("WebClient", "rightSensor=10,10,10,10,10,10");
 });
