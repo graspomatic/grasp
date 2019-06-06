@@ -778,14 +778,14 @@ async def change_address(row, col, shapeid):
 
 
 async def remove_object(shapeid):
+    # user specifies an object id which they have manually pulled off the panel
+    shapeid = int(shapeid[0])  # shape id being placed
     global redisslow
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
     panel = pf.remove_from_panel(panel, shapeid)
     if panel != 0:
         await redisslow.set('panel', json.dumps(panel.tolist()))
-
-
 
 
 async def publish_inventory():
