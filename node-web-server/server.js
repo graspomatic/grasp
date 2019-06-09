@@ -1,11 +1,11 @@
-// set up express
+// pull in express, sqlite
 var express = require("express");
 var app = express();
 app.use(express.static('public'));
 
 const sqlite3 = require('sqlite3').verbose();
 
-// open database in memory
+// open database connection
 let db = new sqlite3.Database('/home/root/grasp/shapes/objects2.db', sqlite3.OPEN_READONLY, (err) => {
   if (err) {
     return console.error(err.message);
@@ -13,30 +13,24 @@ let db = new sqlite3.Database('/home/root/grasp/shapes/objects2.db', sqlite3.OPE
   console.log('Connected to the objects database.');
 });
 
-db.serialize(() => {
-  db.each('SELECT objectID as objectID, blobName as blobName, SVG as SVG FROM objectsTable', (err, row) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log(row.objectID + "\t" + row.blobName + "\t" + row.SVG);
-  });
-});
-
-
-
-
-
-//make way for some custom css, js and images
-//app.use('/css', express.static(__dirname + '/public/css'));
-//app.use('/js', express.static(__dirname + '/public/js'));
-//app.use('../shapes/SVGs', express.static('../shapes/SVGs'));
+//example of retrieving stuff from sqlite
+//db.serialize(() => {
+//  db.each('SELECT objectID as objectID, blobName as blobName, SVG as SVG FROM objectsTable', (err, row) => {
+//    if (err) {
+//      console.error(err.message);
+//    }
+//    console.log(row.objectID + "\t" + row.blobName + "\t" + row.SVG);
+//  });
+//});
 
 app.use('/SVGs', express.static('/home/root/grasp/shapes/SVGs'));
 
+// find my ip address
 var os = require('os');
 var ifaces = os.networkInterfaces();
 hostname = ifaces['eth0'][0]['address'];
 
+//start up server on port 8081
 var server = app.listen(8081, hostname, function(){
     var port = server.address().port;
     console.log('Server running at http://${hostname}:${port}/');
