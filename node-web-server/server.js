@@ -1,5 +1,6 @@
 // pull in express, sqlite, http, socketio
-var app = require("express")();
+var express = require('express');
+var app = express();
 app.use(express.static('public'));
 
 const sqlite3 = require('sqlite3').verbose();
