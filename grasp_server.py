@@ -636,7 +636,7 @@ async def find_bounds(axis = ['a'], direction = [-1]):
         if direction == 1:
             await y.find_bound(direction, current=0.1)
         else:
-            await y.find_bound(direction, current=0.8)
+            await y.find_bound(direction, current=1)
 async def move_xy_distance_mm(axis = ['a'], distance = [0]):
     axis = str(axis[0])
     distance = float(distance[0])
