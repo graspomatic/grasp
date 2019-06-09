@@ -4,12 +4,15 @@
   "description": "A minimalist Web Server with Node.js",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "Pavan Solapure",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0",
+    "sqlite3": "^4.0.8"
   }
 }
