@@ -5,14 +5,12 @@ app.use(express.static('public'));
 
 const sqlite3 = require('sqlite3').verbose();
 
-
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var port = process.env.PORT || 3000;
-
+var port = 3000;
 
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/public/testwebsocket.html');
+  res.sendFile(__dirname + '/public/index.html');
 });
 
 io.on('connection', function(socket){
