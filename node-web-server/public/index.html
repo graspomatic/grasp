@@ -22,7 +22,7 @@
 	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 	<script>
 	  $(function () {
-		var socket = io();
+		var socket = io('128.148.110.89');
 		$('form').submit(function(e){
 		  e.preventDefault(); // prevents page reloading
 		  socket.emit('chat message', $('#m').val());
