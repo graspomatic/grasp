@@ -4,8 +4,8 @@ var pub = redis.createClient();
 var zmq = require('zeromq')
   , sock = zmq.socket('sub');
 
-//sock.connect('tcp://127.0.0.1:5681');
-sock.connect('ipc:///tmp/dserv-pub');
+sock.connect('tcp://127.0.0.1:5681');
+//sock.connect('ipc:///tmp/dserv-pub');
 sock.subscribe('sensor:');
 console.log('Subscriber connected to port 5681');
 
