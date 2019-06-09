@@ -27,11 +27,8 @@ sock.on('message', function(topic, message) {
 
     if (sensor == 0) {
         pub.publish("WebClient", "rightSensor=" +
-        ss[6].slice(1) + "," +
-        ss[7] + "," +
-        ss[8] + "," +
-        ss[9] + "," +
-        ss[10] + "," +
+        ss[6].slice(1) + "," + ss[7] + "," +
+        ss[8] + "," + ss[9] + "," + ss[10] + "," +
         ss[11]);
     }
 
