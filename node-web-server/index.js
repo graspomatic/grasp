@@ -14,3 +14,7 @@ io.on('connection', function (socket) {
       console.log(message);
     });
 });
+
+http.listen(port, function(){
+  console.log('listening on *:' + port);
+});
