@@ -21,7 +21,7 @@ io.on('connection', function(socket){
 
 // this is used for socket.io communication
 http.listen(3000, function(){
-  console.log('listening on *:' + port);
+  console.log('listening on *:3000');
 });
 
 // open database connection
