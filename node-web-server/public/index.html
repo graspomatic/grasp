@@ -23,7 +23,7 @@
 
   <script>
       $(function () {
-        var socket = io('128.148.110.89:3000');
+        var socket = io('128.148.110.89:8081');
         $('form').submit(function(e){
           e.preventDefault(); // prevents page reloading
           socket.emit('chat message', $('#m').val());
