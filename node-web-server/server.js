@@ -9,9 +9,9 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = 3000;
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/public/index.html');
-});
+//app.get('/', function(req, res){
+//  res.sendFile(__dirname + '/public/index.html');
+//});
 
 io.on('connection', function(socket){
   socket.on('chat message', function(msg){
@@ -19,9 +19,9 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(port, function(){
-  console.log('listening on *:' + port);
-});
+//http.listen(port, function(){
+//  console.log('listening on *:' + port);
+//});
 
 // open database connection
 let db = new sqlite3.Database('/home/root/grasp/shapes/objects2.db', sqlite3.OPEN_READONLY, (err) => {
