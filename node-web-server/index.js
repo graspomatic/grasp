@@ -1,21 +1,17 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var port = process.env.PORT || 3000;
 
-app.get('/', function (req, res) {
-
-    res.sendFile(__dirname + '/public/index.html');
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function (socket) {
-    console.log('a user connected');
-    socket.emit('server-message', 'hello socket.io server');
-    socket.on('message', function(message) {
-      console.log(message);
-    });
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    console.log('message: ' + msg);
+  });
 });
 
-http.listen(port, function(){
-  console.log('listening on *:' + port);
+http.listen(3000, function(){
+  console.log('listening on *:3000');
 });
