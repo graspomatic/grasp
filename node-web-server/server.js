@@ -61,7 +61,7 @@ app.get('/dbgetformfills', function(req, res) {
     });
 });
 
-// close the database connection
+// close the sqlite database connection
 db.close((err) => {
   if (err) {
     return console.error(err.message);
