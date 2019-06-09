@@ -45,16 +45,16 @@ http.listen(port, function(){
 //
 //app.use('/SVGs', express.static('/home/root/grasp/shapes/SVGs'));
 //
-//// find my ip address
-//var os = require('os');
-//var ifaces = os.networkInterfaces();
-//hostname = ifaces['eth0'][0]['address'];
-//
-////start up server on port 8081
-//var server = app.listen(8081, hostname, function(){
-//    var port = server.address().port;
-//    console.log('Server running at http://${hostname}:${port}/');
-//});
+// find my ip address
+var os = require('os');
+var ifaces = os.networkInterfaces();
+hostname = ifaces['eth0'][0]['address'];
+
+//start up server on port 8081
+var server = app.listen(8081, hostname, function(){
+    var port = server.address().port;
+    console.log('Server running at http://${hostname}:${port}/');
+});
 //
 //// modify this function to get whatever we need from the database
 //app.get('/dbgetformfills', function(req, res) {
