@@ -19,9 +19,9 @@ io.on('connection', function(socket){
   });
 });
 
-//http.listen(port, function(){
-//  console.log('listening on *:' + port);
-//});
+http.listen(port, function(){
+  console.log('listening on *:' + port);
+});
 
 // open database connection
 let db = new sqlite3.Database('/home/root/grasp/shapes/objects2.db', sqlite3.OPEN_READONLY, (err) => {
