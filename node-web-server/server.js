@@ -24,27 +24,27 @@ io.on('connection', function(socket){
 http.listen(port, function(){
   console.log('listening on *:' + port);
 });
-//
-//// open database connection
-//let db = new sqlite3.Database('/home/root/grasp/shapes/objects2.db', sqlite3.OPEN_READONLY, (err) => {
-//  if (err) {
-//    return console.error(err.message);
-//  }
-//  console.log('Connected to the objects database.');
+
+// open database connection
+let db = new sqlite3.Database('/home/root/grasp/shapes/objects2.db', sqlite3.OPEN_READONLY, (err) => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log('Connected to the objects database.');
+});
+
+//example of retrieving stuff from sqlite
+//db.serialize(() => {
+//  db.each('SELECT objectID as objectID, blobName as blobName, SVG as SVG FROM objectsTable', (err, row) => {
+//    if (err) {
+//      console.error(err.message);
+//    }
+//    console.log(row.objectID + "\t" + row.blobName + "\t" + row.SVG);
+//  });
 //});
-//
-////example of retrieving stuff from sqlite
-////db.serialize(() => {
-////  db.each('SELECT objectID as objectID, blobName as blobName, SVG as SVG FROM objectsTable', (err, row) => {
-////    if (err) {
-////      console.error(err.message);
-////    }
-////    console.log(row.objectID + "\t" + row.blobName + "\t" + row.SVG);
-////  });
-////});
-//
-//app.use('/SVGs', express.static('/home/root/grasp/shapes/SVGs'));
-//
+
+app.use('/SVGs', express.static('/home/root/grasp/shapes/SVGs'));
+
 // find my ip address
 var os = require('os');
 var ifaces = os.networkInterfaces();
@@ -81,10 +81,10 @@ var server = app.listen(8081, hostname, function(){
 //    });
 //});
 //
-//// close the sqlite database connection
-//db.close((err) => {
-//  if (err) {
-//    return console.error(err.message);
-//  }
-//  console.log('Close the database connection.');
-//});
+// close the sqlite database connection
+db.close((err) => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log('Close the database connection.');
+});
