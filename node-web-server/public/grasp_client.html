@@ -668,6 +668,7 @@
     //}
 
     // websocket for handling node.js pubs
+    // currently we're using similar functionality to received messages from redis via webdis
     $(function () {
         var socket = io('128.148.110.89:3000');
         socket.on('chat message', function(msg){

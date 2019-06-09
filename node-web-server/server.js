@@ -1,4 +1,4 @@
-// pull in express, sqlite, http, socketio
+// pull in express, sqlite, http, socketio, zeromq
 var express = require('express');
 var app = express();
 app.use(express.static('public'));
@@ -7,6 +7,13 @@ const sqlite3 = require('sqlite3').verbose();
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
+var zmq = require('zeromq')
+  , sock = zmq.socket('sub');
+
+sock.connect('ipc:///tmp/dserv-pub');
+sock.subscribe('sensor:');
+console.log('receiving "sensor:" messages from zeromq')
 
 
 //app.get('/', function(req, res){
@@ -17,6 +24,35 @@ io.on('connection', function(socket){
   socket.on('chat message', function(msg){
     io.emit('chat message', msg);
   });
+});
+
+sock.on('message', function(topic, message) {
+    full = topic.toString('ascii');
+    console.log(full);
+    io.emit('chat message', full);
+//    var ss = full.split(' ');
+//    var label = ss[0].split(':');
+//    var sensor = label[1];
+//    console.log(label);
+//    console.log(ss[6].slice(1));
+//
+//    if (sensor == 0) {
+//        pub.publish("WebClient", "rightSensor=" +
+//        ss[6].slice(1) + "," + ss[7] + "," +
+//        ss[8] + "," + ss[9] + "," + ss[10] + "," +
+//        ss[11]);
+//    }
+
+
+//    console.log(typeof ss);
+//    console.log(ss);
+////    console.log(Object.keys(ss));
+//
+////
+//    console.log(ss[0]);
+//    console.log(ss[7])
+
+//    pub.publish("WebClient", "rightSensor=10,10,10,10,10,10");
 });
 
 // this is used for socket.io communication
