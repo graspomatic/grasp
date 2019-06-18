@@ -41,7 +41,7 @@ class D2C(object):
             for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
                 self.groupGetPosition.addParam(dxlcx.IDs[i][ii])    # add this motor to list
 
-        self.groupGetGoalPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION,4)
+        self.groupGetGoalPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION, 4)
         for i in range(0, len(dxlcx.IDs)):  # for each arm
             for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
                 self.groupGetGoalPosition.addParam(dxlcx.IDs[i][ii])  # add this motor to list

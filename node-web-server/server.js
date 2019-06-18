@@ -6,7 +6,7 @@ app.use(express.static('public'));
 const sqlite3 = require('sqlite3').verbose();
 
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(http);        // used to simplify websockets
 
 var zmq = require('zeromq')
   , sock = zmq.socket('sub');
@@ -22,6 +22,7 @@ console.log('receiving "sensor:" messages from zeromq')
 
 io.on('connection', function(socket){
   socket.on('chat message', function(msg){
+    console.log('received chat message');
     io.emit('chat message', msg);
   });
 });
