@@ -266,7 +266,7 @@ int main(int argc, char *argv[]) {
                 sensor->update();
                 if (push_updates_to_dataserver) {
                     // Always push current vals
-                    std::string varstr = "sensor:" + std::to_string(i++) + ":vals";
+                    std::string varstr = "sensor:" + std::to_string(i) + ":vals";
                     Datapoint d{varstr.c_str(), (void *) sensor->curvals(), sensor->nchannels(),
                                 TouchSensor::DATATYPE};
 
@@ -274,7 +274,7 @@ int main(int argc, char *argv[]) {
 
                     // Push maxs if set to update
                     if (sensor->updateMaxs()) {
-                        std::string varstr = "sensor:" + std::to_string(i++) + ":maxs";
+                        std::string varstr = "sensor:" + std::to_string(i) + ":maxs";
                         Datapoint d{varstr.c_str(), (void *) sensor->maxvals(), sensor->nchannels(),
                                     TouchSensor::DATATYPE};
 
@@ -283,12 +283,13 @@ int main(int argc, char *argv[]) {
 
                     // Push mins if set to update
                     if (sensor->updateMins()) {
-                        std::string varstr = "sensor:" + std::to_string(i++) + ":mins";
+                        std::string varstr = "sensor:" + std::to_string(i) + ":mins";
                         Datapoint d{varstr.c_str(), (void *) sensor->minvals(), sensor->nchannels(),
                                     TouchSensor::DATATYPE};
 
                         dserv_push_client.push(d);
                     }
+                i++;
                 }
             }
         }
