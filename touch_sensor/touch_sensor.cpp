@@ -20,9 +20,10 @@
 #include "Datapoint.hpp"
 #include "DataserverClient.hpp"
 #include "ZmqServer.hpp"
-#include "TclZMQ.hpp"
+#include "TclInterp.hpp"
 #include "TimerFD.hpp"
 #include "TouchSensor.hpp"
+#include "Daemonizer.hpp"
 
 
 /*****************************************************************************/
@@ -38,33 +39,6 @@ static int shutdownCmd(ClientData clientData, Tcl_Interp *interp,
     Tcl_AppendResult(interp, "OK", NULL);
     return TCL_OK;
 }
-
-static int dservSubscribeCmd(ClientData clientData, Tcl_Interp *interp,
-                             int argc, char *argv[])
-{
-    DataserverClient *client = (DataserverClient *) clientData;
-    if (argc < 2) {
-        Tcl_AppendResult(interp, argv[0], ": no subscription filter specified", NULL);
-        return TCL_ERROR;
-    }
-    Tcl_AppendResult(interp, "OK", NULL);
-    client->subscribe(argv[1]);
-    return TCL_OK;
-}
-
-static int dservUnsubscribeCmd(ClientData clientData, Tcl_Interp *interp,
-                              int argc, char *argv[])
-{
-    DataserverClient *client = (DataserverClient *) clientData;
-    if (argc < 2) {
-        Tcl_AppendResult(interp, argv[0], ": no unsubscribe filter specified", NULL);
-        return TCL_ERROR;
-    }
-    Tcl_AppendResult(interp, "OK", NULL);
-    client->unsubscribe(argv[1]);
-    return TCL_OK;
-}
-
 
 static int sensorValuesCmd(ClientData clientData, Tcl_Interp *interp,
                            int argc, char *argv[])
@@ -180,11 +154,16 @@ void signal_handler(int signal)
 
 /************************* dataserver callback *****************************/
 
-// Called when subscribed datapoint is received
-void process_datapoint(TclZMQ &tclZmq, Datapoint *dpoint)
+// Called when subscribed control command is received
+void process_control_command(TclInterp &tclInterp, Datapoint *dpoint)
 {
-    Tcl_SetVar2(tclZmq.getInterp(), "dsVals", dpoint->varname,
-		dpoint->toString().c_str(), TCL_GLOBAL_ONLY);
+    //Tcl_SetVar2(tclInterp.getInterp(), "dsVals", dpoint->varname,
+	//	dpoint->toString().c_str(), TCL_GLOBAL_ONLY);
+	std::string script{dpoint->varname};
+	script += " ";
+	script += dpoint->data;
+
+	Tcl_EvalEx(tclInterp.getInterp(), script.c_str(), script.size(), 0);
 }
 
 
@@ -200,6 +179,7 @@ int main(int argc, char *argv[]) {
     bool daemonize = false;
     bool verbose = false;
     int nsensors = 2;		// number of sensors connected
+    const char *sensor_control_prefix = "sensor:control:";
 
     // Control main loop
     bool m_bDone = false;
@@ -230,135 +210,87 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
-    if (daemonize) {
-        // Define variables
-        pid_t pid, sid;
-
-        // Fork the current process
-        pid = fork();
-        // The parent process continues with a process ID greater than 0
-        if (pid > 0) {
-            exit(EXIT_SUCCESS);
-        }
-            // A process ID lower than 0 indicates a failure in either process
-        else if (pid < 0) {
-            exit(EXIT_FAILURE);
-        }
-        // The parent process has now terminated
-        //   and the forked child process will continue
-        // (the pid of the child process was 0)
-
-        // Since the child process is a daemon,
-        //  the umask needs to be set so files and logs can be written
-        umask(0);
-
-        // Open system logs for the child process
-        openlog("scheduler", LOG_NOWAIT | LOG_PID, LOG_USER);
-        syslog(LOG_NOTICE, "Successfully started scheduler");
-
-        // Generate a session ID for the child process
-        sid = setsid();
-        // Ensure a valid SID for the child process
-        if (sid < 0) {
-            // Log failure and exit
-            syslog(LOG_ERR, "Could not generate session ID for child process");
-
-            // If a new session ID could not be generated,
-            //   we must terminate the child process or it will be orphaned
-            exit(EXIT_FAILURE);
-        }
-
-        // Change the current working directory to one guaranteed to exist
-        if ((chdir("/")) < 0) {
-            // Log failure and exit
-            syslog(LOG_ERR, "Could not change working directory to /");
-
-            // If our guaranteed directory does not exist,
-            //   terminate the child process to ensure
-            // the daemon has not been hijacked
-            exit(EXIT_FAILURE);
-        }
-
-        // A daemon cannot use the terminal, so close standard
-        //   file descriptors for security reasons
-        close(STDIN_FILENO);
-        close(STDOUT_FILENO);
-        close(STDERR_FILENO);
-    }
-
-    int pid = getpid();
+    Daemonizer daemonizer;
+    if (daemonize) daemonizer.start();
 
     // Install a signal handler to shutdown properly
     std::signal(SIGINT, signal_handler);
 
     // acquire zmq context with 3 polling items
-    ZmqServer server(3);
+    ZmqServer server(2);
 
     /// Dataserver Push Socket
     DataserverClient dserv_push_client(server.getContext(),
 				  DataserverClient::DS_CLIENT_PUSH);
-
-//    DataserverClient dserv_client(server.getContext(),
-//				  DataserverClient::DS_CLIENT);
 
     /// Dataserver Socket
     //  Socket to receive subscriptions from dataserver
     DataserverClient dserv_subscriber(server.getContext(),
 				      DataserverClient::DS_CLIENT_SUB);
     int dserv_msg_id = server.addItem((void *) *dserv_subscriber.getSocket());
+    dserv_subscriber.subscribe(sensor_control_prefix);
 
     /// Timer File Descriptor
     TimerFD timerfd(interval, &server);
     int timer_msg_id = timerfd.getItemId();
 
-    /// Tcl Socket
-    TclZMQ tclZmq(argv[0], &server, servername);
-    int tcl_msg_id = tclZmq.getItemId();
-
-    tclZmq.addCommand("shutdown", (Tcl_CmdProc *) shutdownCmd, &m_bDone);
-    tclZmq.addCommand("dserv_subscribe", (Tcl_CmdProc *) dservSubscribeCmd,
-		      &dserv_subscriber);
-    tclZmq.addCommand("dserv_unsubscribe", (Tcl_CmdProc *) dservUnsubscribeCmd,
-		      &dserv_subscriber);
 
     std::vector<TouchSensor *> sensors;
     for (auto i = 0; i < nsensors; i++) {
-      TouchSensor *sensor = new TouchSensor(i);
+      auto sensor = new TouchSensor(i);
       sensors.push_back(sensor);
     }
-    
-    tclZmq.addCommand("sensor_values", (Tcl_CmdProc *) sensorValuesCmd, &sensors);
-    tclZmq.addCommand("sensor_activate", (Tcl_CmdProc *) sensorActivateCmd, &sensors);
-    tclZmq.addCommand("sensor_deactivate", (Tcl_CmdProc *) sensorDeactivateCmd, &sensors);
-    tclZmq.addCommand("sensor_setEmptyBaseline", (Tcl_CmdProc *) sensorSetEmptyBaselineCmd, &sensors);
-    tclZmq.addCommand("sensor_setObjectBaseline", (Tcl_CmdProc *) sensorSetObjectBaselineCmd, &sensors);
+
+    /// Tcl Interpreter
+    TclInterp tclInterp(argv[0]);
+
+    tclInterp.addCommand("sensor:control:shutdown", (Tcl_CmdProc *) shutdownCmd, &m_bDone);
+    tclInterp.addCommand("sensor:control:activate", (Tcl_CmdProc *) sensorActivateCmd, &sensors);
+    tclInterp.addCommand("sensor:control:deactivate", (Tcl_CmdProc *) sensorDeactivateCmd, &sensors);
+    tclInterp.addCommand("sensor:control:setEmptyBaseline", (Tcl_CmdProc *) sensorSetEmptyBaselineCmd, &sensors);
+    tclInterp.addCommand("sensor:control:setObjectBaseline", (Tcl_CmdProc *) sensorSetObjectBaselineCmd, &sensors);
 
     ///// MAIN LOOP
     while (!m_bDone) {
         server.waitForEvent();
 
         if (server.receivedItem(dserv_msg_id)) {
-            Datapoint *dpoint = dserv_subscriber.receiveDatapoint();
-            process_datapoint(tclZmq, dpoint);
+            Datapoint *controlCmd = dserv_subscriber.receiveDatapoint();
+            process_control_command(tclInterp, controlCmd);
         }
 
         if (server.receivedItem(timer_msg_id)) {
             timerfd.process();
-	    int i = 0;
-	    for (auto sensor : sensors) {
-	      sensor->update();
-	      if (push_updates_to_dataserver) {
-		    std::string varstr = "sensor:" + std::to_string(i++) + ":vals";
-		    Datapoint d{varstr.c_str(), (void *) sensor->vals(), sensor->nchannels(),
-			    TouchSensor::DATATYPE};
+            int i = 0;
+            for (auto sensor : sensors) {
+                sensor->update();
+                if (push_updates_to_dataserver) {
+                    // Always push current vals
+                    std::string varstr = "sensor:" + std::to_string(i++) + ":vals";
+                    Datapoint d{varstr.c_str(), (void *) sensor->curvals(), sensor->nchannels(),
+                                TouchSensor::DATATYPE};
 
-            dserv_push_client.push(d);
-  	      }
-	    }
-	}
+                    dserv_push_client.push(d);
 
-        if (server.receivedItem(tcl_msg_id)) {
-            tclZmq.process();
+                    // Push maxs if set to update
+                    if (sensor->updateMaxs()) {
+                        std::string varstr = "sensor:" + std::to_string(i++) + ":maxs";
+                        Datapoint d{varstr.c_str(), (void *) sensor->maxvals(), sensor->nchannels(),
+                                    TouchSensor::DATATYPE};
+
+                        dserv_push_client.push(d);
+                    }
+
+                    // Push mins if set to update
+                    if (sensor->updateMins()) {
+                        std::string varstr = "sensor:" + std::to_string(i++) + ":mins";
+                        Datapoint d{varstr.c_str(), (void *) sensor->minvals(), sensor->nchannels(),
+                                    TouchSensor::DATATYPE};
+
+                        dserv_push_client.push(d);
+                    }
+                }
+            }
         }
     }
 
@@ -371,11 +303,7 @@ int main(int argc, char *argv[]) {
 
     if (verbose) std::cout << "Shutting down" << std::endl;
 
-    if (daemonize) {
-        // Close system logs for the child process
-        syslog(LOG_NOTICE, "Stopping touch_sensor");
-        closelog();
-    }
-    
+    if (daemonize) daemonizer.end("Closing touch_sensor");
+
     return 0;
 }

@@ -5,12 +5,12 @@
 #ifndef DSERV_TOUCHSENSOR_HPP
 #define DSERV_TOUCHSENSOR_HPP
 
-#include <time.h>
-#include <inttypes.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <ctime>
+#include <cinttypes>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 
 #include <iostream>
@@ -32,14 +32,17 @@ private:
 #endif
   
   enum { ELE0_FILTDATA_REG = 0x04 };
-  
+
   bool active = true;		// is the sensor active
+  int updatecount = 0;      // reset with each activate
   int channels_to_read = 6;
   short current[6] = {0, 0, 0, 0, 0, 0};
   short last[6];			// last values
-  
+  short mins[6];
+  short maxs[6];
+  bool update_maxs, update_mins;
   bool touched[6] = {false, false, false, false, false, false};
-  bool connected = 0;       //keeps track of whether there's a shape attached to left magnet
+  bool connected = false;       //keeps track of whether there's a shape attached to left magnet
   bool connected_changed = false;
   int connected_thresh = 20;    //threshold for determining if shape is attached
   int touched_thresh = 10;
@@ -153,6 +156,7 @@ public:
   void activate()
   {
     active = true;
+    updatecount = 0;
   }
   
   void deactivate()
@@ -163,7 +167,8 @@ public:
   bool update()
   {
     unsigned char filtdata[24];
-    
+    update_maxs = update_mins = false;
+
     if (!active) {
       memset(current, 0, sizeof(current));
       memset(last, 0, sizeof(last));
@@ -183,7 +188,21 @@ public:
       current[i] = i;
 #endif
     
-    
+    // track mins and maxs
+    if (updatecount < 2) {
+        memcpy(maxs, current, sizeof(current));
+        memcpy(mins, current, sizeof(current));
+        update_maxs = update_mins = true;
+    }
+
+    if (updatecount >= 2) {
+        for (auto i = 0; i < channels_to_read; i++)
+            if (current[i] < mins[i]) {
+                mins[i] = current[i];
+                update_mins = true;
+            }
+    }
+
     // keep track of whether there's an object being held or not
     if (connected && (object_baseline[0] - current[0]) < connected_thresh ) {
       connected = false;
@@ -199,13 +218,40 @@ public:
     for (auto j = 0; j < channels_to_read; j++) {
       touched[j] = ((object_baseline[j] - current[j]) > touched_thresh);
     }
-    
+
+    updatecount++;
+
     return true;
   }
 
-  const short *vals()
+    const bool isActive()
+    {
+        return active;
+    }
+
+    const short *curvals()
   {
     return &current[0];
+  }
+
+  const short *minvals()
+  {
+        return &mins[0];
+  }
+
+  const short *maxvals()
+  {
+      return &maxs[0];
+  }
+
+  const bool updateMaxs()
+  {
+      return update_maxs;
+  }
+
+  const bool updateMins()
+  {
+      return update_mins;
   }
 
   const int nchannels()
