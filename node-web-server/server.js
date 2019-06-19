@@ -28,11 +28,11 @@ io.on('connection', function(socket){
 });
 
 sock.on('message', function(topic, message) {
-    full = topic.toString('ascii');
-    console.log(full);
-
-    mes = message.toString('ascii');
-    console.log(mes);
+//    full = topic.toString('ascii');
+//    console.log(full);
+//
+//    mes = message.toString('ascii');
+//    console.log(mes);
 //    io.emit('chat message', full);
 //    var ss = full.split(' ');
 //    var label = ss[0].split(':');
