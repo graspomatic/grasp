@@ -27,6 +27,9 @@ pf = path_find.path_find()
 conn = sqlite3.connect('/home/root/grasp/shapes/objects2.db')
 sqlc = conn.cursor()
 
+import socket
+sock = socket.create_connection(("localhost", 4620))
+
 
 
 async def return_object(side=-1, add=[0,0]):
@@ -699,36 +702,44 @@ async def magnets(left_status = [-1], right_status = [-1]):
     if left_status == 0:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
+        await toggle_touch(0, 0)  # left off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(0))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
+        await toggle_touch(0, 1)  # left on
         await pub.publish_json('WebClient', {"leftmag": "0"})
 
     elif left_status == 1:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
+        await toggle_touch(0, 0)  # left off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(0))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
+        await toggle_touch(0, 1)  # left on
         await pub.publish_json('WebClient', {"leftmag": "1"})
 
     if right_status == 0:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
+        await toggle_touch(1, 0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(1))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
+        await toggle_touch(1, 1)  # right on
         await pub.publish_json('WebClient', {"rightmag": "0"})
     elif right_status == 1:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
+        await toggle_touch(1, 0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(1))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
+        await toggle_touch(1, 1)  # right on
         await pub.publish_json('WebClient', {"rightmag": "1"})
 
 # async def find_address(shapeid=0):
@@ -754,6 +765,12 @@ async def magnets(left_status = [-1], right_status = [-1]):
 #
 #     return x, y
 
+async def toggle_touch(side, status):
+    if status:
+        sock.sendall(b'%set sensor:control:activate {}'.format(side))
+    else:
+        sock.sendall(b'%set sensor:control:deactivate {}'.format(side))
+    b = sock.recv(128)
 
 
 async def change_address(row, col, shapeid):
