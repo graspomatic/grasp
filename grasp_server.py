@@ -771,6 +771,7 @@ async def toggle_touch(side, status):
     else:
         sock.sendall(b'%set sensor:control:deactivate {}'.format(side))
     b = sock.recv(128)
+    print(b)
 
 
 async def change_address(row, col, shapeid):
