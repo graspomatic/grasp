@@ -21,7 +21,10 @@
 
 
 class TouchSensor {
+public:
   
+  static const Datapoint::DataType  DATATYPE = Datapoint::DS_SHORT;
+
 private:
   
 #ifdef __linux__
@@ -32,16 +35,16 @@ private:
   
   bool active = true;		// is the sensor active
   int channels_to_read = 6;
-  int current[6] = {0, 0, 0, 0, 0, 0};
-  int last[6];			// last values
+  short current[6] = {0, 0, 0, 0, 0, 0};
+  short last[6];			// last values
   
   bool touched[6] = {false, false, false, false, false, false};
   bool connected = 0;       //keeps track of whether there's a shape attached to left magnet
   bool connected_changed = false;
   int connected_thresh = 20;    //threshold for determining if shape is attached
   int touched_thresh = 10;
-  int object_baseline[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
-  int empty_baseline[6];      // holds baseline calibration for sensor with no object
+  short object_baseline[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
+  short empty_baseline[6];      // holds baseline calibration for sensor with no object
 
 #ifdef __linux__
     // Local version of the sensor configuration for grasp
@@ -171,14 +174,15 @@ public:
     
 #ifdef __linux__
     dev->readBytes(ELE0_FILTDATA_REG, filtdata, channels_to_read*2);
+    // move new readings to current
+    for (auto i = 0; i < channels_to_read; i++) {
+      current[i] = filtdata[i*2] | (filtdata[i*2+1] << 8);
+    }
 #else
-    memset(filtdata, 0, sizeof(filtdata));
+    for (auto i = 0; i < channels_to_read; i++)
+      current[i] = i;
 #endif
     
-    // move new readings to current
-    for (auto j = 0; j < channels_to_read; j++) {
-      current[j] = filtdata[j*2] | (filtdata[j*2+1] << 8);
-    }
     
     // keep track of whether there's an object being held or not
     if (connected && (object_baseline[0] - current[0]) < connected_thresh ) {
@@ -198,8 +202,18 @@ public:
     
     return true;
   }
+
+  const short *vals()
+  {
+    return &current[0];
+  }
+
+  const int nchannels()
+  {
+    return channels_to_read;
+  }
   
-  std::string curvals()
+  std::string strvals()
   {
     std::string str;
     for (int i: current) {

@@ -17,17 +17,17 @@
 #include <unistd.h>
 
 #include "Msg.hpp"	       
-#include "Datapoint.h"
-#include "DataserverClient.h"
-#include "ZmqServer.h"
+#include "Datapoint.hpp"
+#include "DataserverClient.hpp"
+#include "ZmqServer.hpp"
 #include "TclZMQ.hpp"
 #include "TimerFD.hpp"
 #include "TouchSensor.hpp"
 
 
-/*******************************************************************************/
-/****************************** TCL bound commands *****************************/
-/*******************************************************************************/
+/*****************************************************************************/
+/**************************** TCL bound commands *****************************/
+/*****************************************************************************/
 
 static int shutdownCmd(ClientData clientData, Tcl_Interp *interp,
                        int argc, char *argv[])
@@ -82,7 +82,7 @@ static int sensorValuesCmd(ClientData clientData, Tcl_Interp *interp,
     return TCL_ERROR;
   }
 
-  auto s = (*sensors)[sensor_id]->curvals();
+  auto s = (*sensors)[sensor_id]->strvals();
   Tcl_AppendResult(interp, s.c_str(), NULL);
   return TCL_OK;
 }
@@ -181,17 +181,16 @@ void signal_handler(int signal)
 /************************* dataserver callback *****************************/
 
 // Called when subscribed datapoint is received
-void process_datapoint(TclZMQ &tclZmq, Datapoint &dpoint)
+void process_datapoint(TclZMQ &tclZmq, Datapoint *dpoint)
 {
-    std::stringstream buffer;
-    buffer << dpoint;
-    Tcl_SetVar2(tclZmq.getInterp(), "dsVals", dpoint.varname, buffer.str().c_str(), TCL_GLOBAL_ONLY);
+    Tcl_SetVar2(tclZmq.getInterp(), "dsVals", dpoint->varname,
+		dpoint->toString().c_str(), TCL_GLOBAL_ONLY);
 }
 
 
-/*******************************************************************************/
-/*********************************** Main Line *********************************/
-/*******************************************************************************/
+/******************************************************************************/
+/********************************** Main Line *********************************/
+/******************************************************************************/
 
 int main(int argc, char *argv[]) {
     std::string servername = "tcp://*:5689";
@@ -211,9 +210,12 @@ int main(int argc, char *argv[]) {
         options.add_options()
                 ("h,help", "Print help", cxxopts::value<bool>(help))
                 ("d,daemon", "Daemonize", cxxopts::value<bool>(daemonize))
-                ("s,server", "Server name", cxxopts::value<std::string>(servername))
-                ("i,interval", "Interval between alarms (ms)", cxxopts::value<int>(interval))
-                ("n,nsensors", "Number of sensors", cxxopts::value<int>(nsensors))
+                ("s,server", "Server name",
+		 cxxopts::value<std::string>(servername))
+                ("i,interval", "Interval between alarms (ms)",
+		 cxxopts::value<int>(interval))
+                ("n,nsensors", "Number of sensors",
+		 cxxopts::value<int>(nsensors))
                 ("v,verbose", "Verbose", cxxopts::value<bool>(verbose));
 
         auto result = options.parse(argc, argv);
@@ -266,7 +268,7 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        // Change the current working directory to a directory guaranteed to exist
+        // Change the current working directory to one guaranteed to exist
         if ((chdir("/")) < 0) {
             // Log failure and exit
             syslog(LOG_ERR, "Could not change working directory to /");
@@ -293,11 +295,16 @@ int main(int argc, char *argv[]) {
     ZmqServer server(3);
 
     /// Dataserver Push Socket
-    DataserverClient dserv_client(server.getContext(), DataserverClient::DS_CLIENT_PUSH);
+    DataserverClient dserv_push_client(server.getContext(),
+				  DataserverClient::DS_CLIENT_PUSH);
+
+//    DataserverClient dserv_client(server.getContext(),
+//				  DataserverClient::DS_CLIENT);
 
     /// Dataserver Socket
     //  Socket to receive subscriptions from dataserver
-    DataserverClient dserv_subscriber(server.getContext(), DataserverClient::DS_CLIENT_SUB);
+    DataserverClient dserv_subscriber(server.getContext(),
+				      DataserverClient::DS_CLIENT_SUB);
     int dserv_msg_id = server.addItem((void *) *dserv_subscriber.getSocket());
 
     /// Timer File Descriptor
@@ -309,9 +316,10 @@ int main(int argc, char *argv[]) {
     int tcl_msg_id = tclZmq.getItemId();
 
     tclZmq.addCommand("shutdown", (Tcl_CmdProc *) shutdownCmd, &m_bDone);
-    tclZmq.addCommand("dserv_subscribe", (Tcl_CmdProc *) dservSubscribeCmd, &dserv_subscriber);
-    tclZmq.addCommand("dserv_unsubscribe", (Tcl_CmdProc *) dservUnsubscribeCmd, &dserv_subscriber);
-
+    tclZmq.addCommand("dserv_subscribe", (Tcl_CmdProc *) dservSubscribeCmd,
+		      &dserv_subscriber);
+    tclZmq.addCommand("dserv_unsubscribe", (Tcl_CmdProc *) dservUnsubscribeCmd,
+		      &dserv_subscriber);
 
     std::vector<TouchSensor *> sensors;
     for (auto i = 0; i < nsensors; i++) {
@@ -330,7 +338,7 @@ int main(int argc, char *argv[]) {
         server.waitForEvent();
 
         if (server.receivedItem(dserv_msg_id)) {
-            Datapoint dpoint = dserv_subscriber.receiveDatapoint();
+            Datapoint *dpoint = dserv_subscriber.receiveDatapoint();
             process_datapoint(tclZmq, dpoint);
         }
 
@@ -340,11 +348,12 @@ int main(int argc, char *argv[]) {
 	    for (auto sensor : sensors) {
 	      sensor->update();
 	      if (push_updates_to_dataserver) {
-                std::string valstr = sensor->curvals();
-		std::string varstr = "sensor:" + std::to_string(i++) + ":vals";
-                Datapoint d{varstr.c_str(), valstr};
-                dserv_client.push(d);
-	      }
+		    std::string varstr = "sensor:" + std::to_string(i++) + ":vals";
+		    Datapoint d{varstr.c_str(), (void *) sensor->vals(), sensor->nchannels(),
+			    TouchSensor::DATATYPE};
+
+            dserv_push_client.push(d);
+  	      }
 	    }
 	}
 
