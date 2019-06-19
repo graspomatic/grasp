@@ -766,7 +766,7 @@ async def magnets(left_status = [-1], right_status = [-1]):
 #     return x, y
 
 async def toggle_touch(side, status):
-    sock.sendall(b'%set sensor:control:deactivate 0')
+    sock.sendall(b'%set sensor:control:deactivate=0')
 
 
     # if status:
