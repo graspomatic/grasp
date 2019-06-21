@@ -824,7 +824,7 @@ async def return_inventory():
     holding = np.array(json.loads(holding))
 
     print(panel)
-    print(panel[:][:][0])
+    print(panel[:,:,0])
 
 
 async def publish_inventory():
