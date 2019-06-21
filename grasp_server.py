@@ -779,8 +779,8 @@ async def toggle_touch(side, status):
             sock.sendall(b'%set sensor:control:deactivate=1')
         else:
             sock.sendall(b'%set sensor:control:deactivate=0')
-    b = sock.recv(128)
-    # print(b)
+    b = sock.recv(8192)
+    print(b.decode().strip())
 
 
 async def change_address(row, col, shapeid):
@@ -816,6 +816,15 @@ async def remove_object(shapeid):
     if type(panel) is np.ndarray:       # should either return a numpy array of the panel or a zero
         await redisslow.set('panel', json.dumps(panel.tolist()))
 
+async def return_inventory():
+    global redisslow
+    panel = await redisslow.get('panel')
+    panel = np.array(json.loads(panel))
+    holding = await redisslow.get('holding')
+    holding = np.array(json.loads(holding))
+
+    print(panel)
+
 
 async def publish_inventory():
     global redisslow
@@ -823,13 +832,6 @@ async def publish_inventory():
     panel = np.array(json.loads(panel))
     holding = await redisslow.get('holding')
     holding = np.array(json.loads(holding))
-
-    # shapeData = await redisslow.get('shapeData')
-    # print(shapeData)
-    # shapeData = json.loads(shapeData)
-    # print(shapeData)
-    # shapeData = np.chararray(shapeData)
-    # print(shapeData)
 
     pshape = panel.shape
     pstring = panel.astype('U256')
@@ -904,6 +906,7 @@ fx_list = {
 
     'change_address': change_address,
     'remove_object': remove_object,
+    'return_inventory': return_inventory,
     'publish_inventory': publish_inventory,
     # 'publish_object_database': publish_object_database,
     # 'update_object_database': update_object_database,
