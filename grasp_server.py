@@ -825,7 +825,9 @@ async def return_inventory():
 
     # grab shape ids, convert to linear array, convert to integer
     ids = np.reshape(panel[:, :, 0], -1).astype(int)
+    # remove zeros and 99999
     ids = ids[np.nonzero(ids)]
+    ids = ids[ids < 99999]
 
 
     print(ids)
