@@ -817,6 +817,7 @@ async def remove_object(shapeid):
         await redisslow.set('panel', json.dumps(panel.tolist()))
 
 async def return_inventory():
+    # returns current inventory of shapes as reply to socket request
     global redisslow
     panel = await redisslow.get('panel')
     panel = np.array(json.loads(panel))
@@ -830,9 +831,11 @@ async def return_inventory():
     # remove zeros and 99999
     ids = ids[np.nonzero(ids)]
     ids = ids[ids < 99999]
+    # convert to string
 
 
     print(ids)
+    print(np.array2string(ids, separator=','))
 
 
 async def publish_inventory():
