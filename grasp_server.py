@@ -823,10 +823,12 @@ async def return_inventory():
     holding = await redisslow.get('holding')
     holding = np.array(json.loads(holding))
 
-    ids = np.reshape(panel[:, :, 0], -1)
+    # grab shape ids, convert to linear array, convert to integer
+    ids = np.reshape(panel[:, :, 0], -1).astype(int)
+    ids = ids[np.nonzero(ids)]
 
 
-    print(ids.astype(int))
+    print(ids)
 
 
 async def publish_inventory():
