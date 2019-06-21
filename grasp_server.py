@@ -823,8 +823,10 @@ async def return_inventory():
     holding = await redisslow.get('holding')
     holding = np.array(json.loads(holding))
 
-    # grab shape ids, convert to linear array, convert to integer
-    ids = np.reshape(panel[:, :, 0], -1).astype(int)
+    # grab shape ids, convert to linear array, append holding, convert to integer
+    ids = np.reshape(panel[:, :, 0], -1)
+    ids = np.append(ids, holding)
+    ids = ids.astype(int)
     # remove zeros and 99999
     ids = ids[np.nonzero(ids)]
     ids = ids[ids < 99999]
