@@ -833,7 +833,7 @@ async def return_inventory():
     ids = ids[ids < 99999]
 
     # return string
-    return np.array2string(ids, separator=',')
+    return np.array2string(ids, separator=' ')
 
 
 async def publish_inventory():
@@ -952,7 +952,6 @@ async def handle_request(reader, writer):
                 elif fx == 'return_inventory':
                     active_task = loop.create_task(fx_list[fx](**req))  # call function with requested arguments
                     result = await active_task
-                    print(result)
                 else:
                     active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
                     result = 'accepted'  # 200 ok
