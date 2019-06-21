@@ -831,11 +831,9 @@ async def return_inventory():
     # remove zeros and 99999
     ids = ids[np.nonzero(ids)]
     ids = ids[ids < 99999]
-    # convert to string
 
-
-    print(ids)
-    print(np.array2string(ids, separator=','))
+    # return string
+    return np.array2string(ids, separator=',')
 
 
 async def publish_inventory():
@@ -920,8 +918,6 @@ fx_list = {
     'remove_object': remove_object,
     'return_inventory': return_inventory,
     'publish_inventory': publish_inventory,
-    # 'publish_object_database': publish_object_database,
-    # 'update_object_database': update_object_database,
 
     'ping': ping,
     'abort': abort
@@ -953,6 +949,9 @@ async def handle_request(reader, writer):
                     result = 'busy'   # 504 timeout
                 elif fx == 'ping':
                     result = 'pong'  # 100 continue
+                elif fx == 'return_inventory':
+                    active_task = loop.create_task(fx_list[fx](**req))  # call function with requested arguments
+                    result = await active_task
                 else:
                     active_task = loop.create_task(fx_list[fx](**req))    # call function with requested arguments
                     result = 'accepted'  # 200 ok
