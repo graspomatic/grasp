@@ -305,27 +305,27 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     ## determine arms that will be used for returning objects
     # get information from sensors
-    fut1 = redisfast.get('left_sensor_last_update')
-    fut2 = redisfast.get('left_connected')
-    fut3 = redisfast.get('right_sensor_last_update')
-    fut4 = redisfast.get('right_connected')
-    left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
+    # fut1 = redisfast.get('left_sensor_last_update')
+    # fut2 = redisfast.get('left_connected')
+    # fut3 = redisfast.get('right_sensor_last_update')
+    # fut4 = redisfast.get('right_connected')
+    # left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
+    #
+    # left_updated = (int(time.time()) - int(left_last_update)) < 3
+    # right_updated = (int(time.time()) - int(right_last_update)) < 3
+    # left_connected = int(left_connected)
+    # right_connected = int(right_connected)
 
-    left_updated = (int(time.time()) - int(left_last_update)) < 3
-    right_updated = (int(time.time()) - int(right_last_update)) < 3
-    left_connected = int(left_connected)
-    right_connected = int(right_connected)
-
-    if not left_updated:
-        print('not updating left')
-        return
-    if not right_updated:
-        print('not updating right')
-        return
-    if not left_connected:
-        print('nothing on left')
-    if not right_connected:
-        print('nothing on right')
+    # if not left_updated:
+    #     print('not updating left')
+    #     return
+    # if not right_updated:
+    #     print('not updating right')
+    #     return
+    # if not left_connected:
+    #     print('nothing on left')
+    # if not right_connected:
+    #     print('nothing on right')
 
     # get information from panels database
     fut1 = redisslow.get('panel')
