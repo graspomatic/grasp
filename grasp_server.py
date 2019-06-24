@@ -11,22 +11,28 @@ import sqlite3
 
 active_task = 0
 
+# XY motors
 import AppliedMotionControl
 x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649, belt='standard')
 y = AppliedMotionControl.AMC(motor_ip="10.10.10.11", local_port=60648, belt='steel')
 
+# servos
 import Dynamixel2Control
 dxl = Dynamixel2Control.D2C()
 
+# magnets
 import MagControl
 mags = MagControl.MAGS()
 
+# algorithm for determining order of pickup and dropoff of objects
 import path_find
 pf = path_find.path_find()
 
+# stores information about the shapes
 conn = sqlite3.connect('/home/root/grasp/shapes/objects2.db')
 sqlc = conn.cursor()
 
+# connects to
 import socket
 sock = socket.create_connection(("localhost", 4620))
 
@@ -313,8 +319,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     #
     # left_updated = (int(time.time()) - int(left_last_update)) < 3
     # right_updated = (int(time.time()) - int(right_last_update)) < 3
-    # left_connected = int(left_connected)
-    # right_connected = int(right_connected)
+    left_connected = int(left_connected)
+    right_connected = int(right_connected)
 
     # if not left_updated:
     #     print('not updating left')
