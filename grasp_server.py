@@ -708,44 +708,44 @@ async def magnets(left_status = [-1], right_status = [-1]):
     if left_status == 0:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
-        await toggle_touch(0, 0)  # left off
+        await toggle_touch(0)  # off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(0))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
-        await toggle_touch(0, 1)  # left on
+        await toggle_touch(1)  # left on
         await pub.publish_json('WebClient', {"leftmag": "0"})
 
     elif left_status == 1:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
-        await toggle_touch(0, 0)  # left off
+        await toggle_touch(0)  # left off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(0))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
-        await toggle_touch(0, 1)  # left on
+        await toggle_touch(1)  # left on
         await pub.publish_json('WebClient', {"leftmag": "1"})
 
     if right_status == 0:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
-        await toggle_touch(1, 0)  # right off
+        await toggle_touch(0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(1))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
-        await toggle_touch(1, 1)  # right on
+        await toggle_touch(1)  # right on
         await pub.publish_json('WebClient', {"rightmag": "0"})
     elif right_status == 1:
         await redisfast.set('get_left', '0')
         await redisfast.set('get_right', '0')
-        await toggle_touch(1, 0)  # right off
+        await toggle_touch(0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(1))
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
-        await toggle_touch(1, 1)  # right on
+        await toggle_touch(1)  # right on
         await pub.publish_json('WebClient', {"rightmag": "1"})
 
 # async def find_address(shapeid=0):
@@ -771,20 +771,17 @@ async def magnets(left_status = [-1], right_status = [-1]):
 #
 #     return x, y
 
-async def toggle_touch(side, status):
+async def toggle_touch(status):
     # sock.sendall(b'%set sensor:control:deactivate=0')
 
 
     if status:
-        if side:
-            sock.sendall(b'%set sensor:control:activate=1')
-        else:
-            sock.sendall(b'%set sensor:control:activate=0')
+        sock.sendall(b'%set sensor:control:activate=0')
+        sock.sendall(b'%set sensor:control:activate=1')
     else:
-        if side:
-            sock.sendall(b'%set sensor:control:deactivate=1')
-        else:
-            sock.sendall(b'%set sensor:control:deactivate=0')
+        sock.sendall(b'%set sensor:control:deactivate=0')
+        sock.sendall(b'%set sensor:control:deactivate=1')
+
     b = sock.recv(8192)
     print(b.decode().strip())
 
