@@ -42,7 +42,7 @@ async def return_object(side=-1, add=[0,0]):
     # Put away the object currently held on specified side in
     print("put away " + str(side) + " at " + str(add))
     global redisfast
-    xy_accel = 75
+    xy_accel = 60
 
     # error checking
     if side != 0 and side != 1:
@@ -92,7 +92,7 @@ async def return_object(side=-1, add=[0,0]):
 
 async def retrieve(side=-1, objid=0, add=[0,0]):
     global redisslow, redisfast
-    xy_accel = 75
+    xy_accel = 60
     # Get the specified object ID on the specified arm
     print('retrieving side ' + str(side) + ' object ID ' + str(objid) + ' at ' + str(add))
 
@@ -144,7 +144,7 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180):
     # present objects on specified arms to specified hand
     print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
     global redisslow
-    xy_accel = 75
+    xy_accel = 60
 
     # input variables"
     # arms (list of ints) 'left', 'right', 'both', or 'neither'
