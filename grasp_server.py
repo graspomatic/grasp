@@ -356,8 +356,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         # return
 
     # tell sensors to stop reading so we dont crash mpr121
-    await redisfast.set('get_left', '0')
-    await redisfast.set('get_right', '0')
+    # await redisfast.set('get_left', '0')
+    # await redisfast.set('get_right', '0')
+    await toggle_touch(0)
 
     # arms that will be used for retrieving objects
     if left_id > -1 and right_id == -1:
@@ -397,8 +398,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
 
     # restart sensor readings
-    await redisfast.set('get_left', '1')
-    await redisfast.set('get_right', '1')
+    # await redisfast.set('get_left', '1')
+    # await redisfast.set('get_right', '1')
+    await toggle_touch(0)
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
@@ -648,7 +650,7 @@ async def find_bounds(axis = ['a'], direction = [-1]):
             await y.find_bound(direction, current=1.0)
 
 
-async def move_xy_distance_mm(axis = ['a'], distance = [0]):
+async def move_xy_distance_mm(axis=['a'], distance=[0]):
     axis = str(axis[0])
     distance = float(distance[0])
     print('moving ' + axis + ' distance ' + str(distance))
@@ -706,45 +708,45 @@ async def magnets(left_status = [-1], right_status = [-1]):
     right_status = int(right_status[0])
 
     if left_status == 0:
-        await redisfast.set('get_left', '0')
-        await redisfast.set('get_right', '0')
+        # await redisfast.set('get_left', '0')
+        # await redisfast.set('get_right', '0')
         await toggle_touch(0)  # off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(0))
-        await redisfast.set('get_left', '1')
-        await redisfast.set('get_right', '1')
+        # await redisfast.set('get_left', '1')
+        # await redisfast.set('get_right', '1')
         await toggle_touch(1)  # left on
         await pub.publish_json('WebClient', {"leftmag": "0"})
 
     elif left_status == 1:
-        await redisfast.set('get_left', '0')
-        await redisfast.set('get_right', '0')
+        # await redisfast.set('get_left', '0')
+        # await redisfast.set('get_right', '0')
         await toggle_touch(0)  # left off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(0))
-        await redisfast.set('get_left', '1')
-        await redisfast.set('get_right', '1')
+        # await redisfast.set('get_left', '1')
+        # await redisfast.set('get_right', '1')
         await toggle_touch(1)  # left on
         await pub.publish_json('WebClient', {"leftmag": "1"})
 
     if right_status == 0:
-        await redisfast.set('get_left', '0')
-        await redisfast.set('get_right', '0')
+        # await redisfast.set('get_left', '0')
+        # await redisfast.set('get_right', '0')
         await toggle_touch(0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(1))
-        await redisfast.set('get_left', '1')
-        await redisfast.set('get_right', '1')
+        # await redisfast.set('get_left', '1')
+        # await redisfast.set('get_right', '1')
         await toggle_touch(1)  # right on
         await pub.publish_json('WebClient', {"rightmag": "0"})
     elif right_status == 1:
-        await redisfast.set('get_left', '0')
-        await redisfast.set('get_right', '0')
+        # await redisfast.set('get_left', '0')
+        # await redisfast.set('get_right', '0')
         await toggle_touch(0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(1))
-        await redisfast.set('get_left', '1')
-        await redisfast.set('get_right', '1')
+        # await redisfast.set('get_left', '1')
+        # await redisfast.set('get_right', '1')
         await toggle_touch(1)  # right on
         await pub.publish_json('WebClient', {"rightmag": "1"})
 
