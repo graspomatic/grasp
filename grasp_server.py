@@ -400,7 +400,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # restart sensor readings
     # await redisfast.set('get_left', '1')
     # await redisfast.set('get_right', '1')
-    await toggle_touch(0)
+    await toggle_touch(1)
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
