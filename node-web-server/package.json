@@ -11,8 +11,8 @@
   "author": "Pavan Solapure",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.17.1",
     "socket.io": "^2.2.0",
-    "sqlite3": "^4.0.8"
+    "sqlite3": "^4.0.9"
   }
 }

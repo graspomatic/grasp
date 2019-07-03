@@ -8,12 +8,12 @@ const sqlite3 = require('sqlite3').verbose();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);        // used to simplify websockets
 
-var zmq = require('zeromq')
-  , sock = zmq.socket('sub');
+//var zmq = require('zeromq')
+//  , sock = zmq.socket('sub');
 
-sock.connect('ipc:///tmp/dserv-pub');
-sock.subscribe('sensor:');
-console.log('receiving "sensor:" messages from zeromq')
+//sock.connect('ipc:///tmp/dserv-pub');
+//sock.subscribe('sensor:');
+//console.log('receiving "sensor:" messages from zeromq')
 
 
 //app.get('/', function(req, res){
@@ -27,7 +27,7 @@ io.on('connection', function(socket){
   });
 });
 
-sock.on('message', function(topic, message) {
+//sock.on('message', function(topic, message) {
 //    full = topic.toString('ascii');
 //    console.log(full);
 //
@@ -57,7 +57,7 @@ sock.on('message', function(topic, message) {
 //    console.log(ss[7])
 
 //    pub.publish("WebClient", "rightSensor=10,10,10,10,10,10");
-});
+//});
 
 // this is used for socket.io communication
 http.listen(3000, function(){
@@ -65,7 +65,7 @@ http.listen(3000, function(){
 });
 
 // open database connection
-let db = new sqlite3.Database('/home/root/grasp/shapes/objects2.db', sqlite3.OPEN_READONLY, (err) => {
+let db = new sqlite3.Database('/shared/lab/stimuli/grasp/objects2.db', sqlite3.OPEN_READONLY, (err) => {
   if (err) {
     return console.error(err.message);
   }
