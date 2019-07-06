@@ -13,8 +13,8 @@ active_task = 0
 
 # XY motors
 import AppliedMotionControl
-x = AppliedMotionControl.AMC(motor_ip="10.10.10.10", local_port=60649, belt='standard')
-y = AppliedMotionControl.AMC(motor_ip="10.10.10.11", local_port=60648, belt='steel')
+x = AppliedMotionControl.AMC(motor_ip="100.0.0.110", local_port=60649, belt='standard')
+y = AppliedMotionControl.AMC(motor_ip="100.0.0.111", local_port=60648, belt='steel')
 
 # servos
 import Dynamixel2Control
@@ -457,8 +457,8 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         print('nothing on right')
 
     # tell sensors to stop reading so we dont crash mpr121
-    await redisfast.set('get_left', '0')
-    await redisfast.set('get_right', '0')
+    # await redisfast.set('get_left', '0')
+    # await redisfast.set('get_right', '0')
 
     # get information from panels database
     fut1 = redisslow.get('panel')
