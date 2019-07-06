@@ -378,9 +378,9 @@
               });
 
 
-            //$.get("http://128.148.110.89:7379/SET/foo/whawha"); // works
+            //$.get("http://100.0.0.84:7379/SET/foo/whawha"); // works
 
-            //var jqxhr = $.get( "http://128.148.110.89:7379/GET/foo", function(data) {
+            //var jqxhr = $.get( "http://100.0.0.84:7379/GET/foo", function(data) {
            // })
             //  .done(function(data) {
             //    console.log(data.GET);
@@ -670,7 +670,7 @@
     // websocket for handling node.js pubs
     // currently we're using similar functionality to received messages from redis via webdis
     $(function () {
-        var socket = io('128.148.110.89:3000');
+        var socket = io('100.0.0.84:3000');
         socket.on('chat message', function(msg){
             console.log(msg);
         });
@@ -680,7 +680,7 @@
 
         // websocket for handling redis pubsub
 
-            var socket = new WebSocket("ws://128.148.110.89:7379/.json");
+            var socket = new WebSocket("ws://100.0.0.84:7379/.json");
                 socket.onopen = function() {
                     socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
                 };
@@ -839,7 +839,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">Grasp Server IP</span>
             </div>
-            <input type="text" class="form-control col-4" value="128.148.110.89:8888" id="GraspIP">
+            <input type="text" class="form-control col-4" value="100.0.0.84:8888" id="GraspIP">
             <div class="input-group-append">
                 <button class="btn btn-outline-dark disabled" id="graspServerConnected">Connecting...</button>
             </div>
@@ -848,7 +848,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">webdis Server IP</span>
             </div>
-            <input type="text" class="form-control col-4" value="128.148.110.89:7379" id="RedisIP">
+            <input type="text" class="form-control col-4" value="100.0.0.84:7379" id="RedisIP">
             <div class="input-group-append">
                 <button class="btn btn-outline-dark disabled" id="redisServerConnected">Connecting...</button>
             </div>
