@@ -30,7 +30,7 @@ pf = path_find.path_find()
 
 # stores information about the shapes
 #conn = sqlite3.connect('/home/root/grasp/shapes/objects2.db')
-conn = sqlite3.connect('/shared/lab/stimuli/grasp/shapes/objects2.db')
+conn = sqlite3.connect('/shared/lab/stimuli/grasp/objects2.db')
 sqlc = conn.cursor()
 
 # connects to
