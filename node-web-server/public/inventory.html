@@ -64,7 +64,7 @@
 
 
         // websocket for handling redis pubsub
-        var socket = new WebSocket("ws://128.148.110.89:7379/.json");
+        var socket = new WebSocket("ws://100.0.0.84:7379/.json");
         socket.onopen = function() {
             socket.send(JSON.stringify(["SUBSCRIBE", "WebClientInventory"]));
         };
@@ -82,7 +82,7 @@
                     document.getElementById("redisServerConnected").style.color = "green";
                     document.getElementById("redisServerConnected").innerHTML = "Connected";
 
-                    var ip = '128.148.110.89:8888';
+                    var ip = '100.0.0.84:8888';
                     var query = 'function=publish_inventory';
                     var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
                     $.get("http://" + ip, js, function() {
@@ -301,7 +301,7 @@
             //var tab = JSON.stringify(tableData);
             //,"file":JSON.stringify(tableData.fileCol),"channelMap":JSON.stringify(tableData.channelMapCol)
             //console.log(tab);
-            var ip = '128.148.110.89:8888';
+            var ip = '100.0.0.84:8888';
             var cmd = { "function":"update_object_database","ID":JSON.stringify(tableData.IDCol) };
             console.log(cmd);
             $.get("http://" + ip, cmd, function() {
@@ -326,7 +326,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">webdis Server IP</span>
             </div>
-            <input type="text" class="form-control col-4" value="128.148.110.89:7379" id="RedisIP">
+            <input type="text" class="form-control col-4" value="100.0.0.84:7379" id="RedisIP">
             <div class="input-group-append">
                 <button class="btn btn-outline-dark disabled" id="redisServerConnected">Connecting...</button>
             </div>
