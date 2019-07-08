@@ -8,3 +8,5 @@ webdis /home/root/grasp/webdis_conf_files/webdis.json
 dserv -d
 dserv_tcp -d
 dserv_send -d
+
+mount diddy.neuro.brown.edu:/mnt/SharedDrives/Labfiles /shared/lab
