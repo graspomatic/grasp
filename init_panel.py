@@ -11,11 +11,17 @@ spacing_y = 43.5            # spacing between ports in y direction
 # DO NOT USE LIST -- spaces that cant be used
 DNU = np.array([[5, 3], [5, 4], [9, 3], [9, 4]])
 
-# measured values
-tl = np.array([268, 9])     # top left x,y position using left arm
-tr = np.array([6.5, 7])     # top right x,y position using left arm
-bl = np.array([267, 487])   # bottom left x,y position using left arm
-br = np.array([4, 486])     # bottom right x,y position using left arm
+# measured values when in office
+# tl = np.array([268, 9])     # top left x,y position using left arm
+# tr = np.array([6.5, 7])     # top right x,y position using left arm
+# bl = np.array([267, 487])   # bottom left x,y position using left arm
+# br = np.array([4, 486])     # bottom right x,y position using left arm
+
+# measured values when in psycho room
+tl = np.array([267, 12])     # top left x,y position using left arm
+tr = np.array([6, 9.5])     # top right x,y position using left arm
+bl = np.array([266.5, 489.5])   # bottom left x,y position using left arm
+br = np.array([5, 487.5])     # bottom right x,y position using left arm
 
 # tlr = np.array([325, 9])     # top left x,y position using right arm
 # trr = np.array([64, 7])     # top right x,y position using right arm
