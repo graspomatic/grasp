@@ -525,6 +525,8 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
 
     # if we need to get another object from the user, extend the arm
     if get_next:
+        #at this point, the arm is probably not even started to move out from pick position. wait a bit.
+        await loop.create_task(wait_for_dxl(100))  #
         await present(arms='left', hand=1)
         await loop.create_task(mags.energize(0))
         if left_id > 0:
