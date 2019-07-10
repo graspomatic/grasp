@@ -448,10 +448,10 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
 
     if not left_updated:
         print('not updating left')
-        return
+        # return
     if not right_updated:
         print('not updating right')
-        return
+        # return
     if not left_connected:
         print('nothing on left')
     if not right_connected:
@@ -476,6 +476,8 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     if right_id > -1:
         holding[1] = right_id
 
+    await toggle_touch(0) # stop reading from touch sensors
+
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
     if left_connected and holding[0]:
         if side == 0 or side == 2:
@@ -489,7 +491,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         remaining = [holding[0]]
     else:
         print('incompatibility between what the database says and what sensors say for left')
-        return
+        # return
 
     if right_connected and holding[1]:
         if side == 1 or side == 2:
@@ -503,12 +505,12 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         remaining.append(holding[1])
     else:
         print('incompatibility between what the database says and what sensors say for right')
-        return
+        # return
 
     if not returning[0] and not returning[1]:  # nothing to return, then we have nothing to do
         await redisfast.set('get_left', '1')
         await redisfast.set('get_right', '1')
-        return
+        # return
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
     panel, orders = pf.plan_path(returning, [0, 0], panel, arm_offset)
@@ -521,6 +523,8 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         if order == 'd':
             print('dropping off with arm ' + str(side) + ' at location ' + str(location))
             await return_object(side=side, add=location)
+
+    await toggle_touch(1)  # resume reading from touch sensors
 
 
     # if we need to get another object from the user, extend the arm
