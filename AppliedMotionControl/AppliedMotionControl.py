@@ -71,6 +71,10 @@ class AMC(object):
         # self.send_command("EP")         # request position
         self.send_command("IP")  # request position
         position = self.read_udp_once()  # get response
+        if len(position) == 0:
+            print('didnt receive a position from the motor! trying again...')
+            time.sleep(0.003)
+            position = self.read_udp_once()  # get response
         return int(position[3:len(position)])
 
     def move_distance_count(self, distance, accel=25.0, decel=25.0, vel=3.0):
