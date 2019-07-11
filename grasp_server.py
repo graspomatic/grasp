@@ -492,6 +492,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         remaining = [holding[0]]
     else:
         returning = [0]
+        remaining = [0]
         print('incompatibility between what the database says and what sensors say for left')
         # return
 
