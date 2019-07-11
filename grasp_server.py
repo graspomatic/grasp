@@ -347,6 +347,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     if (left_connected and holding[0]) or (not left_connected and not holding[0]):
         returning = [holding[0]]
     else:
+        returning = [0]
         print('incompatibility between what the database says and what sensors say for left')
         # return
 
@@ -490,6 +491,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         returning = [0]
         remaining = [holding[0]]
     else:
+        returning = [0]
         print('incompatibility between what the database says and what sensors say for left')
         # return
 
@@ -504,6 +506,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         returning.append(0)
         remaining.append(holding[1])
     else:
+        returning.append(0)
         print('incompatibility between what the database says and what sensors say for right')
         # return
 
