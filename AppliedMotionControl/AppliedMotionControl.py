@@ -183,8 +183,10 @@ class AMC(object):
     def check_bounds(self):
         self.read_udp_all()
         self.send_command('LM')
+        time.sleep(0.003)
         first = self.read_udp_once()
         self.send_command('LP')
+        time.sleep(0.003)
         second = self.read_udp_once()
 
         ok = 1
