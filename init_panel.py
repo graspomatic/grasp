@@ -23,10 +23,15 @@ DNU = np.array([[5, 3], [5, 4], [9, 3], [9, 4]])
 # bl = np.array([266.5, 489.5])   # bottom left x,y position using left arm
 # br = np.array([5, 487.5])     # bottom right x,y position using left arm
 
-tl = np.array([266.5, 11])     # top left x,y position using left arm
-tr = np.array([6.25, 8.5])     # top right x,y position using left arm
-bl = np.array([265.5, 488.5])   # bottom left x,y position using left arm
-br = np.array([4.5, 487])     # bottom right x,y position using left arm
+# tl = np.array([266.5, 11])     # top left x,y position using left arm
+# tr = np.array([6.25, 8.5])     # top right x,y position using left arm
+# bl = np.array([265.5, 488.5])   # bottom left x,y position using left arm
+# br = np.array([4.5, 487])     # bottom right x,y position using left arm
+
+tl = np.array([266.5, 10.7])     # top left x,y position using left arm
+tr = np.array([6.25, 9])     # top right x,y position using left arm
+bl = np.array([265.8, 488.7])   # bottom left x,y position using left arm
+br = np.array([4.6, 486.7])     # bottom right x,y position using left arm
 
 # tlr = np.array([325, 9])     # top left x,y position using right arm
 # trr = np.array([64, 7])     # top right x,y position using right arm
