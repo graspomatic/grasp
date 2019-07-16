@@ -141,7 +141,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
         await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": str(objid)})
 
 
-async def present(arms='neither', hand=-1, left_angle=180, right_angle=180):
+async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide_panel='no'):
     # present objects on specified arms to specified hand
     print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
     global redisslow
@@ -174,6 +174,8 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180):
     hand_xs = np.array(json.loads(hand_xs))
 
     xtarg = x.move_location(location=float(hand_xs[hand]), accel=xy_accel, vel=20)
+    if hide_panel == 'yes':
+        ytarg = y.move_location(location=100, accel=30, vel=20)
     await loop.create_task(wait_for_xy(xtarg=xtarg, distance_thresh=(100 + xy_accel * 200)))
 
     # once xy is in position, move specified arms to present
@@ -396,14 +398,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
             else:
                 await retrieve(side=side, objid=right_id, add=location)
 
-    # move panel down out of the way
-    ytarg = y.move_location(location=100, accel=30, vel=20)
-
     # move arms to present
-    await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
-
-    # make sure its down
-    await loop.create_task(wait_for_xy(ytarg=100))
+    await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle, hide_panel='yes')
 
     # restart sensor readings
     # await redisfast.set('get_left', '1')
