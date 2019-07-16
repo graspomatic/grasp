@@ -101,7 +101,9 @@ for i in range(ports_y):          # for each row
         panel[i, ii, 2] = round(new_tl[1] + rotated[1], 1)
 
 #panel[11,6,:] returns [  0.    4.8 486.1] for the bottom right
-panelJSON = json.dumps(panel.tolist())
+
+print(panel)
+
 r = redis.Redis(host='localhost', port=6380, db=0)
 
 
@@ -109,5 +111,5 @@ p_old = np.array(json.loads(r.get('panel')))
 
 print(p_old)
 
-
+panelJSON = json.dumps(panel.tolist())
 #r.set('panel', panelJSON)
