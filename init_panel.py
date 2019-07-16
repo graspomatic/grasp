@@ -104,7 +104,9 @@ for i in range(ports_y):          # for each row
 panelJSON = json.dumps(panel.tolist())
 r = redis.Redis(host='localhost', port=6380, db=0)
 
-p_old = r.get('panel')
+
+p_old = np.array(json.loads(r.get('panel')))
+
 print(p_old)
 
 
