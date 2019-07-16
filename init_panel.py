@@ -103,4 +103,9 @@ for i in range(ports_y):          # for each row
 #panel[11,6,:] returns [  0.    4.8 486.1] for the bottom right
 panelJSON = json.dumps(panel.tolist())
 r = redis.Redis(host='localhost', port=6380, db=0)
-r.set('panel', panelJSON)
+
+p_old = r.get('panel')
+print(p_old)
+
+
+#r.set('panel', panelJSON)
