@@ -396,8 +396,14 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
             else:
                 await retrieve(side=side, objid=right_id, add=location)
 
+    # move panel down out of the way
+    ytarg = y.move_location(location=100, accel=30, vel=20)
+
     # move arms to present
     await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle)
+
+    # make sure its down
+    await loop.create_task(wait_for_xy(ytarg=100))
 
     # restart sensor readings
     # await redisfast.set('get_left', '1')
@@ -477,7 +483,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     if right_id > -1:
         holding[1] = right_id
 
-    await toggle_touch(0) # stop reading from touch sensors
+    await toggle_touch(0)  # stop reading from touch sensors
 
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
     if left_connected and holding[0]:
