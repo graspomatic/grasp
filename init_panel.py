@@ -101,7 +101,7 @@ print(panel)
 
 r = redis.Redis(host='localhost', port=6380, db=0)
 try:
-    p_old = np.array(json.loads(r.get('panelsdf')))
+    p_old = np.array(json.loads(r.get('panel')))
     print(p_old.size)
 except:
     print('panel not found')
