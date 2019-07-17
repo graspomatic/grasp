@@ -113,13 +113,29 @@ class AMC(object):
         #get cw bound
         self.read_udp_all()
         self.send_command('LP') #cw bound
-        time.sleep(0.01) 
+        time.sleep(0.003) 
         cw_bound = self.read_udp_once()
+        
+        while len(cw_bound) == 0:
+            print('didnt receive a cw bound from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+             self.send_command('LP') #cw bound
+            time.sleep(0.003)
+            cw_bound = self.read_udp_once()  # get response
+        
         cw_bound = int(cw_bound[3:len(cw_bound)])
 
         self.send_command('LM')  # ccw bound
-        time.sleep(0.01) 
+        time.sleep(0.003) 
         ccw_bound = self.read_udp_once()
+        while len(ccw_bound) == 0:
+            print('didnt receive a ccw bound from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+             self.send_command('LM') #cw bound
+            time.sleep(0.003)
+            ccw_bound = self.read_udp_once()  # get response
         ccw_bound = int(ccw_bound[3:len(ccw_bound)])
 
         target = cw_bound - self.mm_to_count(location) + self.mm_to_count(self.bound_buff)
