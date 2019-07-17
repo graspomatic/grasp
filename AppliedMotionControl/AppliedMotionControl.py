@@ -120,7 +120,7 @@ class AMC(object):
             print('didnt receive a cw bound from the motor! trying again...')
             self.read_udp_all()  # clear buffer
             time.sleep(0.003)
-             self.send_command('LP') #cw bound
+            self.send_command('LP') #cw bound
             time.sleep(0.003)
             cw_bound = self.read_udp_once()  # get response
         
@@ -133,7 +133,7 @@ class AMC(object):
             print('didnt receive a ccw bound from the motor! trying again...')
             self.read_udp_all()  # clear buffer
             time.sleep(0.003)
-             self.send_command('LM') #cw bound
+            self.send_command('LM') #cw bound
             time.sleep(0.003)
             ccw_bound = self.read_udp_once()  # get response
         ccw_bound = int(ccw_bound[3:len(ccw_bound)])
