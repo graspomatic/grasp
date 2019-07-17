@@ -118,10 +118,5 @@ except:
 
 print(p_new)
 
-
-
-
-
-
-panelJSON = json.dumps(panel.tolist())
-#r.set('panel', panelJSON)
+panelJSON = json.dumps(p_new.tolist())
+r.set('panel', panelJSON)
