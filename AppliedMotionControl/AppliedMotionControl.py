@@ -203,9 +203,26 @@ class AMC(object):
         self.send_command('LM')
         time.sleep(0.003)
         first = self.read_udp_once()
+        
+        while len(first) == 0:
+            print('didnt receive a bound from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+            self.send_command('LM')
+            time.sleep(0.003)
+            first = self.read_udp_once()  # get response
+            
         self.send_command('LP')
         time.sleep(0.003)
         second = self.read_udp_once()
+        
+        while len(second) == 0:
+            print('didnt receive a bound from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+            self.send_command('LP')
+            time.sleep(0.003)
+            second = self.read_udp_once()  # get response
 
         ok = 1
 
