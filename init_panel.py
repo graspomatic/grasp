@@ -103,7 +103,7 @@ r = redis.Redis(host='localhost', port=6380, db=0)
 
 p_old = np.array(json.loads(r.get('panelsdf')))
 
-print(p_old)
+print(p_old.size)
 
 
 
