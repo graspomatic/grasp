@@ -102,9 +102,21 @@ print(panel)
 r = redis.Redis(host='localhost', port=6380, db=0)
 try:
     p_old = np.array(json.loads(r.get('panel')))
-    print(p_old.size)
+    if p_old.size == ports_x * ports_y * 3:
+        # at this point, we know we found an old panel in the database that is the same size
+        for i in range(ports_y):  # for each row
+            for ii in range(ports_x):  # for each column
+                p_old[i, ii, 1] = panel[i, ii, 1]
+                p_old[i, ii, 2] = panel[i, ii, 2]
+        p_new = p_old
+    else:
+        p_new = panel
+
 except:
-    print('panel not found')
+    print('old panel not found, overwriting new panel')
+    p_new = panel
+
+print(p_new)
 
 
 
