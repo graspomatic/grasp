@@ -15,38 +15,38 @@ if (process.argv.length < 3) {
     process.exit(0);
 }
 
-//var varname = process.argv[2];
-//var op = 'get';
-//var val = '';
-//
-//if (process.argv.length > 3) {
-//    val = process.argv[3];
-//    op = 'set';
-//}
+var varname = process.argv[2];
+var op = 'get';
+var val = '';
 
-//var client = new net.Socket();
-//var varname = process.argv[2];
-//var host = '127.0.0.1';
-//var port = 4620;
-//
-//client.connect(port, host, function() {
-////    console.log('Connected');
-//    if (op == 'get') {
-//        client.write('%get ' + varname);
-//    }
-//    else {
-//        client.write('%set ' + varname + '=' + val);
-//    }
-//});
-//
-//client.on('data', function(data) {
-//    if (op == 'get') {
-//        var result = Buffer.from(data);
-//        console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
-//    }
-//    client.destroy(); // kill client after server's response
-//});
-//
-//client.on('close', function() {
-////    console.log('Connection closed');
-//});
+if (process.argv.length > 3) {
+    val = process.argv[3];
+    op = 'set';
+}
+
+var client = new net.Socket();
+var varname = process.argv[2];
+var host = '127.0.0.1';
+var port = 4620;
+
+client.connect(port, host, function() {
+//    console.log('Connected');
+    if (op == 'get') {
+        client.write('%get ' + varname);
+    }
+    else {
+        client.write('%set ' + varname + '=' + val);
+    }
+});
+
+client.on('data', function(data) {
+    if (op == 'get') {
+        var result = Buffer.from(data);
+        console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
+    }
+    client.destroy(); // kill client after server's response
+});
+
+client.on('close', function() {
+//    console.log('Connection closed');
+});
