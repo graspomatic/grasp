@@ -9,20 +9,20 @@ http://www.hacksparrow.com/tcp-socket-programming-in-node-js.html.) */
 var path = require('path');
 var net = require('net');
 
-if (process.argv.length < 3) {
-    console.log('usage: ' +  path.basename(process.argv[0]) + ' ' +
-        path.basename(process.argv[1]) + ' varname [value]');
-    process.exit(0);
-}
-
-var varname = process.argv[2];
-var op = 'get';
-var val = '';
-
-if (process.argv.length > 3) {
-    val = process.argv[3];
-    op = 'set';
-}
+//if (process.argv.length < 3) {
+//    console.log('usage: ' +  path.basename(process.argv[0]) + ' ' +
+//        path.basename(process.argv[1]) + ' varname [value]');
+//    process.exit(0);
+//}
+//
+//var varname = process.argv[2];
+//var op = 'get';
+//var val = '';
+//
+//if (process.argv.length > 3) {
+//    val = process.argv[3];
+//    op = 'set';
+//}
 
 //var client = new net.Socket();
 //var varname = process.argv[2];
