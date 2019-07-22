@@ -2,6 +2,13 @@
  * subscribe to dserv events from node
  */
 
+var express = require('express');
+var app = express();
+app.use(express.static('public'));
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);        // used to simplify websockets
+
 'use strict';
 var path = require('path');
 var net = require('net');
@@ -25,6 +32,7 @@ var server = net.createServer(function (socket) {
     socket.on('data', function (data) {
         var result = Buffer.from(data);
         console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
+        io.emit('chat message', result.toString('utf8',0,Buffer.byteLength(result)-1));
     });
 }).listen(0);
 
