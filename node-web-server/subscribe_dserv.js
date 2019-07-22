@@ -2,12 +2,9 @@
  * subscribe to dserv events from node
  */
 
-var express = require('express');
-var app = express();
-app.use(express.static('public'));
-
-var http = require('http').Server(app);
-var io = require('socket.io')(http);        // used to simplify websockets
+var app = require('express')();
+var serverhttp = require('http').Server(app);
+var io = require('socket.io')(serverhttp);
 
 'use strict';
 var path = require('path');
@@ -22,6 +19,13 @@ if (process.argv.length < 3) {
 // Specifiy a pattern to subscribe to as the second argument
 var pattern = process.argv[2];
 
+io.on('connection', function (socket) {
+  socket.emit('chat message', { hello: 'world' });
+  socket.on('chat message', function (data) {
+    console.log(data);
+  });
+});
+
 // Create a "server" to receive updates from dserv_send
 var server = net.createServer(function (socket) {
     // Identify this client
@@ -32,7 +36,7 @@ var server = net.createServer(function (socket) {
     socket.on('data', function (data) {
         var result = Buffer.from(data);
         console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
-        io.emit('chat message', result.toString('utf8',0,Buffer.byteLength(result)-1));
+        //io.emit('chat message', result.toString('utf8',0,Buffer.byteLength(result)-1));
     });
 }).listen(0);
 
