@@ -60,6 +60,7 @@ dserv_rx.on('listening', function() {
     // Register with the server
     client.on('register', function() {
         client.write('%reg ' + dserv_rx_addr + ' ' + dserv_rx_port);
+        console.log('requested registration');
     });
 
     // tell the server what patterns we're interested in
@@ -67,6 +68,7 @@ dserv_rx.on('listening', function() {
         var every = 1
         client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:0:vals ' + every);
         client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:1:vals ' + every);
+        console.log('requested addmatch');
         registered = true;
     });
 
@@ -76,6 +78,7 @@ dserv_rx.on('listening', function() {
             client.emit('addmatch');
         } else {
             client.destroy(); // kill client after server's response
+            console.log('we should be all set, killing client');
         }
     });
 });
