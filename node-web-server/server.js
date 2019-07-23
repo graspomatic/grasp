@@ -10,7 +10,7 @@ var io = require('socket.io')(http);        // used to simplify websockets
 
 var path = require('path');
 var net = require('net');
-var pattern = 'sensor:0:vals';
+//var pattern = 'sensor:0:vals';
 
 // Create a "server" to receive updates from dserv_send
 var dserv_rx = net.createServer(function (socket) {
@@ -53,7 +53,8 @@ dserv_rx.on('listening', function() {
     client.on('addmatch', function() {
     //        console.log('Adding match for pattern ' + pattern);
         var every = 1
-        client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' ' + pattern + ' ' + every);
+        client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:0:vals ' + every);
+        client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:1:vals ' + every);
         registered = true;
     });
 
