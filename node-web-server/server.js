@@ -23,14 +23,19 @@ var dserv_rx = net.createServer(function (socket) {
         var result = Buffer.from(data);
         var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1);
         var words = resultString.split('{');
-        var myArray = resultString.match(/[^{}]+/g)
+
+
+        var numberOfLineBreaks = (resultString.match(/\n/g)||[]).length;
+
+
         //console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
         console.log(resultString);
         console.log(resultString.length);
-        console.log(myArray);
+
 
 
         console.log(words.length);
+        console.log('Number of breaks: ' + numberOfLineBreaks);
 
 
         //var utf8encoded = Buffer.from(result, 'base64').toString('utf8');
