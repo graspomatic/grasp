@@ -12,6 +12,8 @@ var path = require('path');
 var net = require('net');
 //var pattern = 'sensor:0:vals';
 
+global.atob = require("atob"); // only necessary if im using atob to convert the utf16 base64 to a string
+
 // Create a "server" to receive updates from dserv_send
 var dserv_rx = net.createServer(function (socket) {
     // Identify this client
