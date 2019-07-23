@@ -26,7 +26,24 @@ var dserv_rx = net.createServer(function (socket) {
         io.emit('chat message', resultString);
 
 
+        var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
 
+        for (var i=0; i<linesSeparated.length; i++) {
+            var singleLine = linesSeparated[i].split(' '); // split it up by spaces
+            var touchVals = singleLine[4];  // vals array with {}
+            var touchVals = touchVals.substr(1,touchVals.length - 2);   // this is the vals array without {}, base64 encoded
+            //var utf16encoded = Buffer.from(touchVals, 'base64').toString('utf16le'); // string utf16le encoded
+
+            var sBinaryString = atob(touchVals), aBinaryView = new Uint8Array(sBinaryString.length);
+	        Array.prototype.forEach.call(aBinaryView, function (el, idx, arr) { arr[idx] = sBinaryString.charCodeAt(idx); });
+	        var utf16encoded = String.fromCharCode.apply(null, new Uint16Array(aBinaryView.buffer));
+
+	        console.log(utf16encoded);
+
+            console.log(utf16encoded.charCodeAt(0))
+
+
+        }
 
 
         //console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
