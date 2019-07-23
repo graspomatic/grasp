@@ -5,7 +5,7 @@ app.use(express.static('public'));
 
 const sqlite3 = require('sqlite3').verbose();
 
-var http = require('http').Server(app);
+var http = require('http').createServer(app);
 var io = require('socket.io')(http);        // used to simplify websockets
 
 var path = require('path');
