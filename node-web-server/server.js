@@ -51,6 +51,7 @@ dserv_rx.on('listening', function() {
 
     // Get the port and address of the server
     var dserv_rx_port = dserv_rx.address().port;
+    var dserv_rx_addr;
     client.connect(port, host, function() {
         var dserv_rx_addr = client.localAddress;
         client.emit('register');
