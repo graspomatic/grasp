@@ -28,7 +28,7 @@ var dserv_rx = net.createServer(function (socket) {
         console.log(resultString.length);
 
 
-        console.log(resultString.length);
+        console.log(words.length);
 
 
         //var utf8encoded = Buffer.from(result, 'base64').toString('utf8');
