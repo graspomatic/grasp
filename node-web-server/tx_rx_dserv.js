@@ -14,8 +14,8 @@ var varname = process.argv[2];
 var host = '127.0.0.1';
 var port = 4620;
 
-client.connect(port, host, function() {
-});
+//client.connect(port, host, function() {
+//});
 
 client.on('data', function(data) {
     var result = Buffer.from(data);
