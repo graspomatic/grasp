@@ -24,6 +24,7 @@ var dserv_rx = net.createServer(function (socket) {
         var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1);
         var linesSeparated = resultString.split(/\n/g);
 
+        console.log(result);
         console.log(resultString);
 
         for (var i=0; i<linesSeparated.length; i++) {
