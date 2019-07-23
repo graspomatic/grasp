@@ -52,8 +52,13 @@ client.on('close', function() {
 });
 
 
-function myFunc() {
+function getFunc() {
     client.write('%get boom');
 }
 
-setInterval(myFunc, 1500);
+function setFunc() {
+    client.write('%set boom ' + Math.random());
+}
+
+setInterval(setFunc, 1500);
+setInterval(getFunc, 1500);
