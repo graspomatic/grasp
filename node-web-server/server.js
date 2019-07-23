@@ -21,9 +21,18 @@ var dserv_rx = net.createServer(function (socket) {
     // Handle incoming messages from clients - this just prints but would likely dispatch
     socket.on('data', function (data) {
         var result = Buffer.from(data);
+        var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1);
         //console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
-        console.log(result);
-        io.emit('chat message', result.toString('utf8',0,Buffer.byteLength(result)-1));
+        console.log(resultString);
+
+        console.log(resultString.length);
+
+
+        //var utf8encoded = Buffer.from(result, 'base64').toString('utf8');
+
+
+
+        //io.emit('chat message', result.toString('utf8',0,Buffer.byteLength(result)-1));
     });
 }).listen(0);
 
