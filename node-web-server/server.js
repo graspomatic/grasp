@@ -22,7 +22,7 @@ var dserv_rx = net.createServer(function (socket) {
     socket.on('data', function (data) {
         var result = Buffer.from(data);
         console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
-        io.emit('chat message', 'blahblah');
+        io.emit('chat message', result.toString('utf8',0,Buffer.byteLength(result)-1));
     });
 }).listen(0);
 
