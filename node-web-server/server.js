@@ -60,12 +60,12 @@ dserv_rx.on('listening', function() {
 
 
 // socket.io
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
+//io.on('connection', function(socket){
+  //socket.on('chat message', function(msg){
     //console.log('received chat message');
     //io.emit('chat message', msg);
-  });
-});
+  //});
+//});
 
 // this is used for socket.io communication
 http.listen(3000, function(){
