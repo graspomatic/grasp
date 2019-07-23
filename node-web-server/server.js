@@ -20,18 +20,18 @@ var dserv_rx = net.createServer(function (socket) {
 
     // Handle incoming messages from clients - this just prints but would likely dispatch
     socket.on('data', function (data) {
-        //var result = Buffer.from(data);
-        var resultString = data.toString('utf8',0,Buffer.byteLength(data)-1);
-        var linesSeparated = resultString.split(/\n/g);
+        var result = Buffer.from(data); // this is hex
+        var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1); // this is a string
+        var linesSeparated = resultString.split(/\n/g);  //this is an array of one or more strings, one for each line
 
-        console.log(data);
+        console.log(result);
         console.log(resultString);
 
         for (var i=0; i<linesSeparated.length; i++) {
             var singleLine = linesSeparated[i].split(' ');
             var touchVals = singleLine[4];
             var touchVals = touchVals.substr(1,touchVals.length - 2)
-            var utf8encoded = Buffer.from(touchVals, 'base64').toString('utf8');
+            var utf8encoded = Buffer.from(touchVals, 'base64').toString('utf16');
 
             console.log(utf8encoded)
 
