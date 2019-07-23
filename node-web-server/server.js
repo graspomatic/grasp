@@ -60,9 +60,9 @@ dserv_rx.on('listening', function() {
 
 
 // this is used for socket.io communication
-//http.listen(3000, function(){
- // console.log('listening on *:3000');
-//});
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
 
 app.use('/SVGs', express.static('/home/root/grasp/shapes/SVGs'));
 
