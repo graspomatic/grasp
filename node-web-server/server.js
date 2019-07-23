@@ -20,6 +20,20 @@ var dserv_rx = net.createServer(function (socket) {
         var result = Buffer.from(data); // this is hex
         var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1); // this is a string
 
+
+        var spaceSplit = resultString.split(' ');
+
+        var colonSplit = spaceSplit[0].split(':');
+
+        if colonSplit[0] == 'sensor' && colonSplit[1] == '0' && colonSplit[2] == 'vals' {
+            console.log('left ' + resultString);
+        } else if (colonSplit[0] == 'sensor' && colonSplit[1] == '1' && colonSplit[2] == 'vals') {
+            console.log('right ' + resultString);
+        }
+
+
+
+
         io.emit('chat message', resultString);
 
 
