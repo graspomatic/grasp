@@ -29,9 +29,10 @@ var dserv_rx = net.createServer(function (socket) {
         for (var i=0; i<linesSeparated.length; i++) {
             var singleLine = linesSeparated[i].split(' ');
             var touchVals = singleLine[4];
-            console.log(singleLine);
-            console.log(touchVals);
-            console.log(touchVals.substr(1,touchVals.length - 2));
+            var touchVals = touchVals.substr(1,touchVals.length - 2)
+            var utf8encoded = Buffer.from(touchVals, 'base64').toString('utf8');
+
+            console.log(utf8encoded)
 
 
         }
