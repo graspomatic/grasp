@@ -59,7 +59,7 @@ dserv_rx.on('listening', function() {
 });
 
 
-// this is used for socket.io communication
+// this is necessary for socket.io communication
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
