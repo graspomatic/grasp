@@ -81,6 +81,10 @@ dserv_rx.on('listening', function() {
             console.log('we should be all set, killing client');
         }
     });
+
+    client.on('close', function() {
+//    console.log('Connection to dserv_tcp closed');
+    });
 });
 
 
