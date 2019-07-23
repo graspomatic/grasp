@@ -42,8 +42,7 @@ var dserv_rx = net.createServer(function (socket) {
     });
 }).listen(0);
 
-// When the server is ready, this callback is run
-//  It gets the address information, registers, and adds the match for the pattern
+// Tell the dserv server what we're interested in
 dserv_rx.on('listening', function() {
     var client = new net.Socket();
     var host = '127.0.0.1';
@@ -58,10 +57,12 @@ dserv_rx.on('listening', function() {
         client.emit('register');
     });
 
+    // register with dserv
     client.on('register', function() {
         client.write('%reg ' + dserv_rx_addr + ' ' + dserv_rx_port);
     });
 
+    // tell dserv what patterns we're interested in
     client.on('addmatch', function() {
         var every = 1
         client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:0:vals ' + every);
@@ -69,6 +70,7 @@ dserv_rx.on('listening', function() {
         registered = true;
     });
 
+    // run the addmatch function if we haven't done it. if so, we're done. kill the client.
     client.on('data', function(data) {
         if (!registered) {
             client.emit('addmatch');
