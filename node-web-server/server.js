@@ -2,7 +2,6 @@
 var express = require('express');
 var app = express();
 app.use(express.static('public'));
-
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);        // used to simplify websockets
 
@@ -22,7 +21,7 @@ var dserv_rx = net.createServer(function (socket) {
 
 // Tell the dserv server what we're interested in
 dserv_rx.on('listening', function() {
-    var client = new net.Socket();
+    dservclient = new net.Socket();
     var host = '127.0.0.1';
     var port = 4620;
     var registered = false;
@@ -30,28 +29,28 @@ dserv_rx.on('listening', function() {
     // Get the port and address of the server
     var dserv_rx_port = dserv_rx.address().port;
     var dserv_rx_addr;
-    client.connect(port, host, function() {
-        dserv_rx_addr = client.localAddress;
-        client.emit('register');
+    dservclient.connect(port, host, function() {
+        dserv_rx_addr = dservclient.localAddress;
+        dservclient.emit('register');
     });
 
     // register with dserv
-    client.on('register', function() {
-        client.write('%reg ' + dserv_rx_addr + ' ' + dserv_rx_port);
+    dservclient.on('register', function() {
+        dservclient.write('%reg ' + dserv_rx_addr + ' ' + dserv_rx_port);
     });
 
     // tell dserv what patterns we're interested in
-    client.on('addmatch', function() {
+    dservclient.on('addmatch', function() {
         var every = 1
-        client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:0:vals ' + every);
-        client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:1:vals ' + every);
+        dservclient.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:0:vals ' + every);
+        dservclient.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:1:vals ' + every);
         registered = true;
     });
 
     // run the addmatch function if we haven't done it. if so, we're done. kill the client.
-    client.on('data', function(data) {
+    dservclient.on('data', function(data) {
         if (!registered) {
-            client.emit('addmatch');
+            dservclient.emit('addmatch');
         } else {
             var result = Buffer.from(data);
             console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
@@ -73,12 +72,12 @@ dserv_rx.on('listening', function() {
 
 
 function getFunc() {
-    dserv_rx.write('%get boom');
+    dservclient.write('%get boom');
 }
 
 function setFunc() {
     var thisInt = Math.floor(Math.random() * 100);
-    dserv_rx.write('%set boom=' + thisInt.toString());
+    dservclient.write('%set boom=' + thisInt.toString());
 }
 
 setInterval(setFunc, 1500);
