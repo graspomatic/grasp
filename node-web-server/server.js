@@ -31,7 +31,7 @@ var dserv_rx = net.createServer(function (socket) {
             var touchVals = singleLine[4];
             console.log(singleLine);
             console.log(touchVals);
-            console.log(touchVals[1:touchVals.length - 1]);
+            console.log(touchVals.substr(1,touchVals.length - 2));
 
 
         }
