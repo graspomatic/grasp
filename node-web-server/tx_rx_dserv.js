@@ -56,4 +56,4 @@ function myFunc() {
     client.write('%get boom');
 }
 
-setTimeout(myFunc, 1500);
+setInterval(myFunc, 1500);
