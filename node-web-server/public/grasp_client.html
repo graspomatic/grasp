@@ -673,6 +673,18 @@
         var socketio = io('100.0.0.84:3000');
         socketio.on('chat message', function(msg){
             console.log(msg);
+            var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
+
+            for (var i=0; i<linesSeparated.length; i++) {
+                var singleLine = linesSeparated[i].split(' '); // split it up by spaces
+                var touchVals = singleLine[4];  // vals array with {}
+                var touchVals = touchVals.substr(1,touchVals.length - 2);   // this is the vals array without {}, base64 encoded
+                var utf16encoded = Buffer.from(touchVals, 'base64').toString('utf16le'); // string utf16le encoded
+
+                console.log(utf16encoded.charCodeAt(0))
+
+
+            }
         });
     });
 

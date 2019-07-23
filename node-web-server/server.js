@@ -22,21 +22,11 @@ var dserv_rx = net.createServer(function (socket) {
     socket.on('data', function (data) {
         var result = Buffer.from(data); // this is hex
         var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1); // this is a string
-        var linesSeparated = resultString.split(/\n/g);  //this is an array of one or more strings, one for each line
 
-        console.log(result);
-        console.log(resultString);
-
-        for (var i=0; i<linesSeparated.length; i++) {
-            var singleLine = linesSeparated[i].split(' '); // split it up by spaces
-            var touchVals = singleLine[4];  // vals array with {}
-            var touchVals = touchVals.substr(1,touchVals.length - 2);   // this is the vals array without {}, base64 encoded
-            var utf16encoded = Buffer.from(touchVals, 'base64').toString('utf16le'); // string utf16le encoded
-
-            console.log(utf16encoded.charCodeAt(0))
+        io.emit('chat message', resultString);
 
 
-        }
+
 
 
         //console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
