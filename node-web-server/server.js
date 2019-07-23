@@ -6,7 +6,7 @@ app.use(express.static('public'));
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);        // used to simplify websockets
 
-var path = require('path');
+
 var net = require('net');
 
 global.atob = require("atob"); // only necessary if im using atob to convert the utf16 base64 to a string
@@ -83,9 +83,7 @@ dserv_rx.on('listening', function() {
         }
     });
 
-    client.on('close', function() {
-//    console.log('Connection to dserv_tcp closed');
-    });
+
 });
 
 
