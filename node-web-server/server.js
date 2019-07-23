@@ -53,9 +53,30 @@ dserv_rx.on('listening', function() {
         if (!registered) {
             client.emit('addmatch');
         } else {
-            client.destroy(); // kill client after server's response
+            //client.destroy(); // kill client after server's response
         }
     });
+
+
+
+    function getFunc() {
+        client.write('%get boom');
+    }
+
+    function setFunc() {
+        var thisInt = Math.floor(Math.random() * 100);
+        client.write('%set boom=' + thisInt.toString());
+    }
+
+    setInterval(setFunc, 1500);
+    setInterval(getFunc, 1500);
+
+
+
+
+
+
+
 });
 
 
