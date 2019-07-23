@@ -22,10 +22,12 @@ var dserv_rx = net.createServer(function (socket) {
     socket.on('data', function (data) {
         var result = Buffer.from(data);
         var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1);
-        var words = resultString.split(' ');
+        var words = resultString.split('{');
+        var myArray = resultString.match(/[^{}]+/g)
         //console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
         console.log(resultString);
         console.log(resultString.length);
+        console.log(myArray);
 
 
         console.log(words.length);
