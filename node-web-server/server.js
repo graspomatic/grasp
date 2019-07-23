@@ -26,7 +26,7 @@ var dserv_rx = net.createServer(function (socket) {
         io.emit('chat message', resultString);
 
 
-        var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
+        var linesSeparated = resultString.split(/\n/g);  //this is an array of one or more strings, one for each line
 
         for (var i=0; i<linesSeparated.length; i++) {
             var singleLine = linesSeparated[i].split(' '); // split it up by spaces
