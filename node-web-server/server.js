@@ -28,12 +28,9 @@ var dserv_rx = net.createServer(function (socket) {
 
         for (var i=0; i<linesSeparated.length; i++) {
             var singleLine = linesSeparated[i].split(' ');
+            var touchVals = singleLine[4];
             console.log(singleLine);
-            //console.log(singleLine[singleLine.length-1]);
-
-            var matches = singleLine[4].match(/\{(.*?)\}/);
-
-            console.log(matches);
+            console.log(touchVals);
 
 
         }
