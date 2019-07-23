@@ -23,3 +23,9 @@ io.on('connection', function(socket){
     io.emit('chat message', { for: 'everyone' });
   });
 });
+
+function myFunc(arg) {
+  console.log(`arg was => ${arg}`);
+}
+
+setTimeout(myFunc, 1500, 'funky');
