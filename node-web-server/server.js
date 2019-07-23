@@ -36,23 +36,23 @@ dserv_rx.on('listening', function() {
 
     // Get the port and address of the server
     //  For the address, we wait until the client socket is opened and get localAddress from it
-    var server_port = server.address().port;
-    var server_addr;
+    var dserv_rx_port = dserv_rx.address().port;
+    var dserv_rx_addr;
 
     client.connect(port, host, function() {
-        server_addr = client.localAddress;
+        dserv_rx_addr = client.localAddress;
         client.emit('register');
     });
 
     client.on('register', function() {
     //    console.log('Registering with dserv_send (' + server_addr + ":" + server_port + ")");
-        client.write('%reg ' + server_addr + ' ' + server_port);
+        client.write('%reg ' + dserv_rx_addr + ' ' + dserv_rx_port);
     });
 
     client.on('addmatch', function() {
     //        console.log('Adding match for pattern ' + pattern);
         var every = 1
-        client.write("%match " + server_addr + ' ' + server_port + ' ' + pattern + ' ' + every);
+        client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' ' + pattern + ' ' + every);
         registered = true;
     });
 
