@@ -22,15 +22,20 @@ var dserv_rx = net.createServer(function (socket) {
     socket.on('data', function (data) {
         var result = Buffer.from(data);
         var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1);
-        var words = resultString.split('{');
-
-
         var linesSeparated = resultString.split(/\n/g);
+
+        for (var i=0; i<linesSeparated.length; i++) {
+            var singleLine = linesSeparated[i].split(' ');
+            console.log(singleLine);
+            console.log(singleLine[singleLine.Length - 1]);
+
+
+        }
 
 
         //console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
-        console.log(linesSeparated);
-        console.log(linesSeparated.length);
+        //console.log(linesSeparated);
+        //console.log(linesSeparated.length);
 
 
 
