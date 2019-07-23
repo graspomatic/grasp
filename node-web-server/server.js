@@ -73,12 +73,12 @@ dserv_rx.on('listening', function() {
 
 
 function getFunc() {
-    client.write('%get boom');
+    dserv_rx.write('%get boom');
 }
 
 function setFunc() {
     var thisInt = Math.floor(Math.random() * 100);
-    client.write('%set boom=' + thisInt.toString());
+    dserv_rx.write('%set boom=' + thisInt.toString());
 }
 
 setInterval(setFunc, 1500);
