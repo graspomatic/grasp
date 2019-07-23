@@ -20,12 +20,11 @@ var dserv_rx = net.createServer(function (socket) {
 
     // Handle incoming messages from clients - this just prints but would likely dispatch
     socket.on('data', function (data) {
-        var result = Buffer.from(data);
+        //var result = Buffer.from(data);
         var resultString = data.toString('utf8',0,Buffer.byteLength(data)-1);
         var linesSeparated = resultString.split(/\n/g);
 
         console.log(data);
-        console.log(result);
         console.log(resultString);
 
         for (var i=0; i<linesSeparated.length; i++) {
