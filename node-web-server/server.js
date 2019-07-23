@@ -31,7 +31,7 @@ var dserv_rx = net.createServer(function (socket) {
             var singleLine = linesSeparated[i].split(' ');
             var touchVals = singleLine[4];
             var touchVals = touchVals.substr(1,touchVals.length - 2)
-            var utf8encoded = Buffer.from(touchVals, 'base64').toString('utf16');
+            var utf8encoded = Buffer.from(touchVals, 'base64').toString('utf16le');
 
             console.log(utf8encoded)
 
