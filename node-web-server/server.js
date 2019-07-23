@@ -60,17 +60,7 @@ dserv_rx.on('listening', function() {
 
 
 
-    function getFunc() {
-        client.write('%get boom');
-    }
 
-    function setFunc() {
-        var thisInt = Math.floor(Math.random() * 100);
-        client.write('%set boom=' + thisInt.toString());
-    }
-
-    setInterval(setFunc, 1500);
-    setInterval(getFunc, 1500);
 
 
 
@@ -80,6 +70,19 @@ dserv_rx.on('listening', function() {
 
 });
 
+
+
+function getFunc() {
+    client.write('%get boom');
+}
+
+function setFunc() {
+    var thisInt = Math.floor(Math.random() * 100);
+    client.write('%set boom=' + thisInt.toString());
+}
+
+setInterval(setFunc, 1500);
+setInterval(getFunc, 1500);
 
 // this is necessary for socket.io communication
 http.listen(3000, function(){
