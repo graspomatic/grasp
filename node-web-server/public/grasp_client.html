@@ -684,14 +684,10 @@
                 var colonSplit = singleLine[0].split(':');
                 if (colonSplit[0] == 'sensor' && colonSplit[1] == '0' && colonSplit[2] == 'vals') {
                     // if we're here, we know this line is for values for the left touch sensor
-
                     var vals = [ue.charCodeAt(0), ue.charCodeAt(1), ue.charCodeAt(2), ue.charCodeAt(3), ue.charCodeAt(4), ue.charCodeAt(5)];
                     updateChartLeft(vals);
-
-                    console.log('left ' + singleLine + ' ' + ue.charCodeAt(0));
                 } else if (colonSplit[0] == 'sensor' && colonSplit[1] == '1' && colonSplit[2] == 'vals') {
                     // if we're here, we know this line is for values for the right touch sensor
-                    console.log('right ' + singleLine + ' ' + ue.charCodeAt(0));
                     var vals = [ue.charCodeAt(0), ue.charCodeAt(1), ue.charCodeAt(2), ue.charCodeAt(3), ue.charCodeAt(4), ue.charCodeAt(5)];
                     updateChartRight(vals);
                 }
