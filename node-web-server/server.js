@@ -1,4 +1,4 @@
-// pull in express, sqlite, http, socketio, zeromq
+// pull in express, http, socketio
 var express = require('express');
 var app = express();
 app.use(express.static('public'));
@@ -6,7 +6,6 @@ app.use(express.static('public'));
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);        // used to simplify websockets
 
-var path = require('path');
 var net = require('net');
 
 global.atob = require("atob"); // only necessary if im using atob to convert the utf16 base64 to a string
@@ -51,40 +50,32 @@ dserv_rx.on('listening', function() {
     var registered = false;
 
     // Get the port and address of the server
-    //  For the address, we wait until the client socket is opened and get localAddress from it
     var dserv_rx_port = dserv_rx.address().port;
-    var dserv_rx_addr;
-
     client.connect(port, host, function() {
-        dserv_rx_addr = client.localAddress;
+        var dserv_rx_addr = client.localAddress;
         client.emit('register');
     });
 
+    // Register with the server
     client.on('register', function() {
-    //    console.log('Registering with dserv_send (' + server_addr + ":" + server_port + ")");
         client.write('%reg ' + dserv_rx_addr + ' ' + dserv_rx_port);
     });
 
+    // tell the server what patterns we're interested in
     client.on('addmatch', function() {
-    //        console.log('Adding match for pattern ' + pattern);
         var every = 1
         client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:0:vals ' + every);
         client.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:1:vals ' + every);
         registered = true;
     });
 
+    // when we get data, make sure we've done the addmatch and kill this client if so
     client.on('data', function(data) {
         if (!registered) {
             client.emit('addmatch');
-        }
-        else {
-    //        console.log('Match added');
+        } else {
             client.destroy(); // kill client after server's response
         }
-    });
-
-    client.on('close', function() {
-//    console.log('Connection to dserv_tcp closed');
     });
 });
 
