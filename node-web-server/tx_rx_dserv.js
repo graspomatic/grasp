@@ -18,10 +18,8 @@ client.connect(port, host, function() {
 });
 
 client.on('data', function(data) {
-    if (op == 'get') {
-        var result = Buffer.from(data);
-        console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
-    }
+    var result = Buffer.from(data);
+    console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
 });
 
 
