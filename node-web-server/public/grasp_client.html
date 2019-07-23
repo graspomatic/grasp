@@ -673,7 +673,7 @@
         var socketio = io('100.0.0.84:3000');
         socketio.on('chat message', function(msg){
             console.log(msg);
-            var linesSeparated = resultString.split(/\n/g);  //this is an array of one or more strings, one for each line
+            var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
 
             for (var i=0; i<linesSeparated.length; i++) {
                 var singleLine = linesSeparated[i].split(' '); // split it up by spaces
