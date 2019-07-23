@@ -57,7 +57,8 @@ function getFunc() {
 }
 
 function setFunc() {
-    client.write('%set boom ' + Math.random());
+    var thisInt = Math.floor(Math.random() * 100);
+    client.write('%set boom=' + thisInt.toString());
 }
 
 setInterval(setFunc, 1500);
