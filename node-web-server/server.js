@@ -31,7 +31,7 @@ var dserv_rx = net.createServer(function (socket) {
             console.log(singleLine);
             //console.log(singleLine[singleLine.length-1]);
 
-            var matches = singleLine.match(/\{(.*?)\}/);
+            var matches = singleLine[4].match(/\{(.*?)\}/);
 
             console.log(matches);
 
