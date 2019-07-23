@@ -74,8 +74,7 @@ dserv_rx.on('listening', function() {
     client.on('data', function(data) {
         if (!registered) {
             client.emit('addmatch');
-        }
-        else {
+        } else {
             client.destroy(); // kill client after server's response
         }
     });
