@@ -6,31 +6,17 @@ app.use(express.static('public'));
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);        // used to simplify websockets
 
-
 var net = require('net');
-
-global.atob = require("atob"); // only necessary if im using atob to convert the utf16 base64 to a string
 
 // Create a "server" to receive updates from dserv_send
 var dserv_rx = net.createServer(function (socket) {
     socket.name = socket.remoteAddress + ":" + socket.remotePort;   // Identify this client
 
-    // Handle incoming messages from clients - this just prints but would likely dispatch
+    // Forward incoming messages to the web client
     socket.on('data', function (data) {
         var result = Buffer.from(data); // this is hex
         var resultString = result.toString('utf8',0,Buffer.byteLength(result)-1); // this is a string
-
-
-        var spaceSplit = resultString.split(' ');
-
-
-
-
-
         io.emit('chat message', resultString);
-
-
-
     });
 }).listen(0);
 
@@ -76,8 +62,8 @@ dserv_rx.on('listening', function() {
 // socket.io
 io.on('connection', function(socket){
   socket.on('chat message', function(msg){
-    console.log('received chat message');
-    io.emit('chat message', msg);
+    //console.log('received chat message');
+    //io.emit('chat message', msg);
   });
 });
 
