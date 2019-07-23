@@ -23,13 +23,6 @@ var dserv_rx = net.createServer(function (socket) {
 
         var spaceSplit = resultString.split(' ');
 
-        var colonSplit = spaceSplit[0].split(':');
-
-        if (colonSplit[0] == 'sensor' && colonSplit[1] == '0' && colonSplit[2] == 'vals') {
-            console.log('left ' + resultString);
-        } else if (colonSplit[0] == 'sensor' && colonSplit[1] == '1' && colonSplit[2] == 'vals') {
-            console.log('right ' + resultString);
-        }
 
 
 
