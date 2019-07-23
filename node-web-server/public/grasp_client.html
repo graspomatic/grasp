@@ -672,21 +672,28 @@
     $(function () {
         var socketio = io('100.0.0.84:3000');
         socketio.on('chat message', function(msg){
-            console.log(msg);
             var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
-
+            // step through each line of data from the server
             for (var i=0; i<linesSeparated.length; i++) {
                 var singleLine = linesSeparated[i].split(' '); // split it up by spaces
                 var touchVals = singleLine[4];  // vals array with {}
                 var touchVals = touchVals.substr(1,touchVals.length - 2);   // this is the vals array without {}, base64 encoded
                 var sBinaryString = atob(touchVals), aBinaryView = new Uint8Array(sBinaryString.length);
                 Array.prototype.forEach.call(aBinaryView, function (el, idx, arr) { arr[idx] = sBinaryString.charCodeAt(idx); });
-                var utf16encoded = String.fromCharCode.apply(null, new Uint16Array(aBinaryView.buffer));
+                var ue = String.fromCharCode.apply(null, new Uint16Array(aBinaryView.buffer));
                 var colonSplit = singleLine[0].split(':');
                 if (colonSplit[0] == 'sensor' && colonSplit[1] == '0' && colonSplit[2] == 'vals') {
+                    // if we're here, we know this line is for values for the left touch sensor
+
+                    var vals = [ue.charCodeAt(0), ue.charCodeAt(1), ue.charCodeAt(2), ue.charCodeAt(3), ue.charCodeAt(4), ue.charCodeAt(5)];
+                    updateChartLeft(vals);
+
                     console.log('left ' + singleLine + ' ' + utf16encoded.charCodeAt(0));
                 } else if (colonSplit[0] == 'sensor' && colonSplit[1] == '1' && colonSplit[2] == 'vals') {
+                    // if we're here, we know this line is for values for the right touch sensor
                     console.log('right ' + singleLine + ' ' + utf16encoded.charCodeAt(0));
+                    var vals = [ue.charCodeAt(0), ue.charCodeAt(1), ue.charCodeAt(2), ue.charCodeAt(3), ue.charCodeAt(4), ue.charCodeAt(5)];
+                    updateChartRight(vals);
                 }
             }
         });
