@@ -905,6 +905,11 @@ async def get_touch_status():
     b = sock.recv(8192)
     print(b.decode().strip())
 
+    sock.sendall(b'%get sensor:0:vals')
+
+    b = sock.recv(8192)
+    print(b.decode().strip())
+
     sock.sendall(b'%get boom')
 
     b = sock.recv(8192)
