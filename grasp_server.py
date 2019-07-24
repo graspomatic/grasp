@@ -900,20 +900,19 @@ async def publish_inventory():
 
 async def get_touch_status():
     # one shot retrieve all relevant information from dserv about the touch sensor status
+    sock.sendall(b'%set sensor:0:id=2012')
+    sock.sendall(b'%set sensor:1:id=2013')
+    sock.sendall(b'%get sensor:0:id')
+    sock.sendall(b'%get sensor:1:id')
+    sock.sendall(b'%get sensor:control:activate')
     sock.sendall(b'%get sensor:control:deactivate')
-
-    b = sock.recv(8192)
-    print(b.decode().strip())
-
     sock.sendall(b'%get sensor:0:vals')
+    sock.sendall(b'%get sensor:1:vals')
+
 
     b = sock.recv(8192)
     print(b.decode().strip())
 
-    sock.sendall(b'%get boom')
-
-    b = sock.recv(8192)
-    print(b.decode().strip())
 
 
 
