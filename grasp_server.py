@@ -900,47 +900,56 @@ async def publish_inventory():
 
 async def get_touch_status():
     # one shot retrieve all relevant information from dserv about the touch sensor status
-    sock.sendall(b'%set sensor:0:id=2012')
-    sock.sendall(b'%set sensor:1:id=2013')
-    sock.sendall(b'%get sensor:0:id')
-    sock.sendall(b'%get sensor:1:id')
-    sock.sendall(b'%get sensor:control:activate')
-    sock.sendall(b'%get sensor:control:deactivate')
-    sock.sendall(b'%get sensor:0:vals')
-    sock.sendall(b'%get sensor:1:vals')
-
-
     sock.settimeout(0.2)
+
+
+
+
+
+
+
+
+
+    sock.sendall(b'%set sensor:0:id=2012')
     b = sock.recv(4096)
     print(b.decode().strip())
     print('that was the first')
+
+    sock.sendall(b'%set sensor:1:id=2013')
     b = sock.recv(4096)
     print(b.decode().strip())
     print('that was the second')
+
+    sock.sendall(b'%get sensor:0:id')
     b = sock.recv(4096)
     print(b.decode().strip())
     print('that was the third')
+
+    sock.sendall(b'%get sensor:1:id')
     b = sock.recv(4096)
     print(b.decode().strip())
     print('that was the fourth')
+
+    sock.sendall(b'%get sensor:control:activate')
     b = sock.recv(4096)
     print(b.decode().strip())
     print('that was the fifth')
+
+    sock.sendall(b'%get sensor:control:deactivate')
     b = sock.recv(4096)
     print(b.decode().strip())
     print('that was the sixth')
+
+    sock.sendall(b'%get sensor:0:vals')
     b = sock.recv(4096)
     print(b.decode().strip())
     print('that was the seventh')
+
+    sock.sendall(b'%get sensor:1:vals')
     b = sock.recv(4096)
     print(b.decode().strip())
     print('that was the eighth')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the ninth')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the tenth')
+
     
 
 
