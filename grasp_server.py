@@ -898,6 +898,20 @@ async def publish_inventory():
 #     print(table)
 
 
+async def get_touch_status():
+    # one shot retrieve all relevant information from dserv about the touch sensor status
+    sock.sendall(b'%get sensor:control:deactivate')
+
+    b = sock.recv(8192)
+    print(b.decode().strip())
+
+    sock.sendall(b'%get boom')
+
+    b = sock.recv(8192)
+    print(b.decode().strip())
+
+
+
 async def ping():
     return 'pong'
 
@@ -936,6 +950,8 @@ fx_list = {
     'remove_object': remove_object,
     'return_inventory': return_inventory,
     'publish_inventory': publish_inventory,
+
+    'get_touch_status': get_touch_status,
 
     'ping': ping,
     'abort': abort

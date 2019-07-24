@@ -56,17 +56,6 @@ dserv_rx.on('listening', function() {
             console.log(result.toString('utf8',0,Buffer.byteLength(result)-1));
         }
     });
-
-
-
-
-
-
-
-
-
-
-
 });
 
 
