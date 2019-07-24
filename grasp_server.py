@@ -912,6 +912,11 @@ async def get_touch_status():
 
     b = sock.recv(8192)
     print(b.decode().strip())
+    print('that was the first')
+    b = sock.recv(8192)
+    print(b.decode().strip())
+    print('that was the second')
+    
 
 
 
