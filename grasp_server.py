@@ -912,20 +912,6 @@ async def get_touch_status():
 
     b = sock.recv(8192)
     print(b.decode().strip())
-    b = sock.recv(8192)
-    print(b.decode().strip())
-    b = sock.recv(8192)
-    print(b.decode().strip())
-    b = sock.recv(8192)
-    print(b.decode().strip())
-    b = sock.recv(8192)
-    print(b.decode().strip())
-    b = sock.recv(8192)
-    print(b.decode().strip())
-    b = sock.recv(8192)
-    print(b.decode().strip())
-    b = sock.recv(8192)
-    print(b.decode().strip())
 
 
 
