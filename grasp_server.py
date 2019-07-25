@@ -36,7 +36,7 @@ sqlc = conn.cursor()
 # connects to
 import socket
 sock = socket.create_connection(("localhost", 4620))
-
+sock.settimeout(0.2)
 
 
 async def return_object(side=-1, add=[0,0]):
@@ -137,8 +137,13 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     await loop.create_task(wait_for_dxl(120))  # at 180, sometimes rips off
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": str(objid)})
+        sendString = '%set sensor:0:objectid=' + str(objid)
     else:
         await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": str(objid)})
+        sendString = '%set sensor:1:objectid=' + str(objid)
+
+    sock.sendall(bytes(sendString, 'utf-8'))
+    sock.recv(4096)
 
 
 async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide_panel='no'):
@@ -900,13 +905,6 @@ async def publish_inventory():
 
 async def get_touch_status():
     # one shot retrieve all relevant information from dserv about the touch sensor status
-    sock.settimeout(0.2)
-
-
-
-
-
-
 
 
 
