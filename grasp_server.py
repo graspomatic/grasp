@@ -166,6 +166,20 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
         print('Specify which hand to present to, 0 (left) or 1 (right)')
         return
 
+
+    left_angle = left_angle - 180       # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
+    right_angle = right_angle - 180  # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
+    if left_angle > 360 or left_angle < 0:
+        print('left_angle is out of bounds!')
+        return
+    if right_angle > 360 or right_angle < 0:
+        print('left_angle is out of bounds!')
+        return
+    if left_angle > 180:
+        left_angle = 360 - left_angle
+    if right_angle > 180:
+        right_angle = 360 - right_angle
+
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
         dxl.set_profile_accel(motor=11, accel=130)
