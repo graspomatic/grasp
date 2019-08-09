@@ -385,6 +385,9 @@ class D2C(object):
         if rotation > 180 or rotation < -180:
             print('please give rotation in degrees in range -180 to 180')
             return 0
+        
+        print('temp: angle requested is: ' + str(rotation))
+        print('temp: number requested is: ' + str(dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)))
 
         armmult = arm * 2 - 1   # produces -1 for left and 1 for right
 
