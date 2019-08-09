@@ -175,9 +175,9 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
         print('right_angle is out of bounds!')
         return
     if left_angle > 180:
-        left_angle = 360 - left_angle
+        left_angle = left_angle - 360
     if right_angle > 180:
-        right_angle = 360 - right_angle
+        right_angle = right_angle - 360
 
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
