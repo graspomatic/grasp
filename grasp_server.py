@@ -179,6 +179,9 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     if right_angle > 180:
         right_angle = right_angle - 360
 
+    left_angle *= -1
+    right_angle *= -1
+
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
         dxl.set_profile_accel(motor=11, accel=130)
