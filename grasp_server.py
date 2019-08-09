@@ -308,8 +308,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
-    left_angle = int(left_angle[0])
-    right_angle = int(right_angle[0])
+    left_angle = float(left_angle[0])
+    right_angle = float(right_angle[0])
 
 
 
