@@ -148,7 +148,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
 async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide_panel='no'):
     # present objects on specified arms to specified hand
-    print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand) + ' left angle ' + str(left_angle))
+    print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
     global redisslow
     xy_accel = 60
 
@@ -166,14 +166,13 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
         print('Specify which hand to present to, 0 (left) or 1 (right)')
         return
 
-
-    left_angle = left_angle - 180       # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
-    right_angle = right_angle - 180  # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
+    left_angle = left_angle - 180      # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
+    right_angle = right_angle - 180    # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
     if left_angle > 360 or left_angle < 0:
         print('left_angle is out of bounds!')
         return
     if right_angle > 360 or right_angle < 0:
-        print('left_angle is out of bounds!')
+        print('right_angle is out of bounds!')
         return
     if left_angle > 180:
         left_angle = 360 - left_angle
@@ -183,10 +182,10 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
         dxl.set_profile_accel(motor=11, accel=130)
-        dxl.move_arm_to_pos(arm=0, pos='prep_present', rotation=left_angle-180)
+        dxl.move_arm_to_pos(arm=0, pos='prep_present', rotation=left_angle)
     if arms == 'both' or arms == 'right':
         dxl.set_profile_accel(motor=21, accel=130)
-        dxl.move_arm_to_pos(arm=1, pos='prep_present', rotation=right_angle-180)
+        dxl.move_arm_to_pos(arm=1, pos='prep_present', rotation=right_angle)
 
     # move xy to present to specified hand
     hand_xs = await redisslow.get('hand_xs')
@@ -199,10 +198,10 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
 
     # once xy is in position, move specified arms to present
     if arms == 'both' or arms == 'left':
-        dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle-180)          # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
+        dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle)
         await pub.publish_json('WebClient', {"leftarm": "prep_present"})
     if arms == 'both' or arms == 'right':
-        dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle-180)         # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
+        dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle)
         await pub.publish_json('WebClient', {"rightarm": "prep_present"})
 
     await wait_for_dxl(300)
@@ -322,8 +321,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
-    left_angle = float(left_angle[0])
-    right_angle = float(right_angle[0])
+    left_angle = int(left_angle[0])
+    right_angle = int(right_angle[0])
 
 
 
