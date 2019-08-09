@@ -58,87 +58,6 @@ class D2C(object):
             print("Failed to connect to servos, 12v power missing?")
 
 
-    #
-    #
-    # def move_present_to_neutral(self, side):
-    #     # side=0 for left, side=1 for right
-    #     # sleeptimes = [0.2, 0.1, 0.2, 0.1]
-    #     init_time = datetime.now()
-    #     for i in range(1, len(dxlcx.P2N[side])):  # if length=4, counts 1 2 3
-    #         self.sync_set_position(dxlcx.IDs[side], dxlcx.P2N[side][i].tolist())
-    #         a = datetime.now()
-    #         time.sleep(.05)
-    #         lets_wait = 1
-    #         while lets_wait:
-    #             moving = self.sync_get_moving()
-    #             if moving[3] == 0 & moving[4] == 0:
-    #                 b = datetime.now()
-    #                 lets_wait = 0
-    #
-    #         print(b - a)
-    #
-    #     print(datetime.now() - init_time)
-    #
-    #
-    #
-    # def move_neutral_to_present(self, side):
-    #     # sleeptimes = [0.2, 0.1, 0.2, 0.1]
-    #     init_time = datetime.now()
-    #     for i in range(len(dxlcx.P2N[side])-2, -1, -1):  # if length=4, counts 2 1 0
-    #         self.sync_set_position(dxlcx.IDs[side], dxlcx.P2N[side][i].tolist())
-    #         a = datetime.now()
-    #         time.sleep(.05)
-    #         lets_wait = 1
-    #         while lets_wait:
-    #             moving = self.sync_get_moving()
-    #             if moving[0] == 0 & moving[1] == 0:
-    #                 b = datetime.now()
-    #                 lets_wait = 0
-    #
-    #         print(b - a)
-    #
-    #     print(datetime.now() - init_time)
-    #
-    #
-    # def move_neutral_to_change(self, side):
-    #     # side=0 for left, side=1 for right
-    #     # sleeptimes = [0.2, 0.1, 0.2, 0.1]
-    #     init_time = datetime.now()
-    #     for i in range(1, len(dxlcx.N2C[side])):  # if length=4, counts 1 2 3
-    #         self.sync_set_position(dxlcx.IDs[side], dxlcx.N2C[side][i].tolist())
-    #         a = datetime.now()
-    #         time.sleep(.05)
-    #         lets_wait = 1
-    #         while lets_wait:
-    #             moving = self.sync_get_moving()
-    #             if moving[3] == 0 & moving[4] == 0:
-    #                 b = datetime.now()
-    #                 lets_wait = 0
-    #
-    #         print(b - a)
-    #
-    #     print(datetime.now() - init_time)
-    #
-    # def move_change_to_neutral(self, side):
-    #     # sleeptimes = [0.2, 0.1, 0.2, 0.1]
-    #     init_time = datetime.now()
-    #     for i in range(len(dxlcx.N2C[side]) - 2, -1, -1):  # if length=4, counts 2 1 0
-    #         self.sync_set_position(dxlcx.IDs[side], dxlcx.N2C[side][i].tolist())
-    #         a = datetime.now()
-    #         time.sleep(.05)
-    #         lets_wait = 1
-    #         while lets_wait:
-    #             moving = self.sync_get_moving()
-    #             if moving[0] == 0 & moving[1] == 0:
-    #                 b = datetime.now()
-    #                 lets_wait = 0
-    #
-    #         print(b - a)
-    #
-    #     print(datetime.now() - init_time)
-    #
-
-
     ###################################################
     ## Simple reads/writes
     ###################################################
@@ -385,6 +304,9 @@ class D2C(object):
         if rotation > 180 or rotation < -180:
             print('please give rotation in degrees in range -180 to 180')
             return 0
+        
+        print('temp: angle requested is: ' + str(rotation))
+        print('temp: number requested is: ' + str(dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)))
 
         armmult = arm * 2 - 1   # produces -1 for left and 1 for right
 
