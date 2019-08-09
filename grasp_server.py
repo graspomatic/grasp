@@ -148,7 +148,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
 async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide_panel='no'):
     # present objects on specified arms to specified hand
-    print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
+    print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand) + ' left angle ' + str(left_angle))
     global redisslow
     xy_accel = 60
 
