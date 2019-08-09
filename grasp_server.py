@@ -179,7 +179,7 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     if right_angle > 180:
         right_angle = right_angle - 360
 
-    left_angle *= -1
+    left_angle *= -1  # FLIP IT TO GET CLOCKWISE=POSITIVE ROTATION
     right_angle *= -1
 
     # move specified arms to prep_present
