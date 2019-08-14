@@ -188,6 +188,8 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     left_angle *= -1  # FLIP IT TO GET CLOCKWISE=POSITIVE ROTATION
     right_angle *= -1
 
+
+
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
         dxl.set_profile_accel(motor=11, accel=130)
@@ -212,6 +214,9 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     if arms == 'both' or arms == 'right':
         dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle)
         await pub.publish_json('WebClient', {"rightarm": "prep_present"})
+
+    # restart sensor readings (make sure this isnt too early)
+    await toggle_touch(1)
 
     await wait_for_dxl(300)
 
