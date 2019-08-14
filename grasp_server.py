@@ -435,7 +435,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     # send message to qnx to store this time as the "stimulus onset time"
     # note two spaces at end necessary for this particular QNX server
-    qnxsock.sendall('%set stim_request=target_on  ')
+    qnxsock.sendall(b'%set stim_request=target_on  ')
 
     endtime = time.time()
     print(endtime-starttime)
