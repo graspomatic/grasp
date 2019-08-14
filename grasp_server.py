@@ -189,7 +189,7 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     right_angle *= -1
 
     # restart sensor readings (make sure this isnt too early)
-    await toggle_touch(1)
+   # await toggle_touch(1)  #doesnt work here
 
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
@@ -207,6 +207,10 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     if hide_panel == 'yes':
         ytarg = y.move_location(location=150, accel=40, vel=40)
     await loop.create_task(wait_for_xy(xtarg=xtarg, distance_thresh=(100 + xy_accel * 200)))
+
+    # restart sensor readings (make sure this isnt too early)
+    await toggle_touch(1)
+
 
     # once xy is in position, move specified arms to present
     if arms == 'both' or arms == 'left':
