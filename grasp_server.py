@@ -38,6 +38,9 @@ import socket
 sock = socket.create_connection(("localhost", 4620))
 sock.settimeout(0.2)
 
+qnxsock = socket.create_connection(("100.0.0.2", 4620))
+qnxsock.settimeout(0.2)
+
 
 async def return_object(side=-1, add=[0,0]):
     # Put away the object currently held on specified side in
@@ -439,8 +442,15 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     fut2 = redisslow.set('holding', json.dumps(picking))
     await asyncio.gather(fut1, fut2)
 
+    sendString = '%set stim_request=target_on'
+    qnxsock.sendall(bytes(sendString, 'utf-8'))
+
     endtime = time.time()
     print(endtime-starttime)
+
+
+
+
 
 
 async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
