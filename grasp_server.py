@@ -188,7 +188,8 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     left_angle *= -1  # FLIP IT TO GET CLOCKWISE=POSITIVE ROTATION
     right_angle *= -1
 
-
+    # restart sensor readings (make sure this isnt too early)
+    await toggle_touch(1)
 
     # move specified arms to prep_present
     if arms == 'both' or arms == 'left':
@@ -216,7 +217,7 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
         await pub.publish_json('WebClient', {"rightarm": "prep_present"})
 
     # restart sensor readings (make sure this isnt too early)
-    await toggle_touch(1)
+    # await toggle_touch(1)  works here
 
     await wait_for_dxl(300)
 
@@ -357,17 +358,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     left_connected = int(left_connected)
     right_connected = int(right_connected)
 
-    # if not left_updated:
-    #     print('not updating left')
-    #     return
-    # if not right_updated:
-    #     print('not updating right')
-    #     return
-    # if not left_connected:
-    #     print('nothing on left')
-    # if not right_connected:
-    #     print('nothing on right')
-
     # get information from panels database
     fut1 = redisslow.get('panel')
     fut2 = redisslow.get('holding')
@@ -392,8 +382,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         # return
 
     # tell sensors to stop reading so we dont crash mpr121
-    # await redisfast.set('get_left', '0')
-    # await redisfast.set('get_right', '0')
     await toggle_touch(0)
 
     # arms that will be used for retrieving objects
