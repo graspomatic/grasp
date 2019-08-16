@@ -345,16 +345,16 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     ## determine arms that will be used for returning objects
     # get information from sensors
-    fut1 = redisfast.get('left_sensor_last_update')
-    fut2 = redisfast.get('left_connected')
-    fut3 = redisfast.get('right_sensor_last_update')
-    fut4 = redisfast.get('right_connected')
-    left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
+    #fut1 = redisfast.get('left_sensor_last_update')
+    #fut2 = redisfast.get('left_connected')
+    #fut3 = redisfast.get('right_sensor_last_update')
+    #fut4 = redisfast.get('right_connected')
+    #left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
 
-    left_updated = (int(time.time()) - int(left_last_update)) < 3
-    right_updated = (int(time.time()) - int(right_last_update)) < 3
-    left_connected = int(left_connected)
-    right_connected = int(right_connected)
+    #left_updated = (int(time.time()) - int(left_last_update)) < 3
+    #right_updated = (int(time.time()) - int(right_last_update)) < 3
+    #left_connected = int(left_connected)
+    #right_connected = int(right_connected)
 
     # get information from panels database
     fut1 = redisslow.get('panel')
@@ -366,17 +366,17 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     arm_offset = np.array(json.loads(arm_offset))
 
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
-    if (left_connected and holding[0]) or (not left_connected and not holding[0]):
-        returning = [holding[0]]
-    else:
-        returning = [0]
-        print('incompatibility between what the database says and what sensors say for left')
+    #if (left_connected and holding[0]) or (not left_connected and not holding[0]):
+    returning = [holding[0]]
+    #else:
+     #   returning = [0]
+     #   print('incompatibility between what the database says and what sensors say for left')
         # return
 
-    if (right_connected and holding[1]) or (not right_connected and not holding[1]):
-        returning.append(holding[1])
-    else:
-        print('incompatibility between what the database says and what sensors say for right')
+    #if (right_connected and holding[1]) or (not right_connected and not holding[1]):
+    returning.append(holding[1])
+    #else:
+    #    print('incompatibility between what the database says and what sensors say for right')
         # return
 
     # tell sensors to stop reading so we dont crash mpr121
@@ -417,7 +417,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
                 await retrieve(side=side, objid=right_id, add=location)
 
 
-    # restart sensor readings (make sure this isnt too early)
+    # restart sensor readings (i think this one doesnt actually work because something in present undoes it
     await toggle_touch(1)
 
     # move arms to present
@@ -468,11 +468,11 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
 
     ## determine arms that will be used for returning objects
     # get information from sensors
-    fut1 = redisfast.get('left_sensor_last_update')
-    fut2 = redisfast.get('left_connected')
-    fut3 = redisfast.get('right_sensor_last_update')
-    fut4 = redisfast.get('right_connected')
-    left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
+    #fut1 = redisfast.get('left_sensor_last_update')
+    #fut2 = redisfast.get('left_connected')
+    #fut3 = redisfast.get('right_sensor_last_update')
+    #fut4 = redisfast.get('right_connected')
+    #left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
 
     left_updated = (int(time.time()) - int(left_last_update)) < 3
     right_updated = (int(time.time()) - int(right_last_update)) < 3
@@ -544,8 +544,8 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         # return
 
     if not returning[0] and not returning[1]:  # nothing to return, then we have nothing to do
-        await redisfast.set('get_left', '1')
-        await redisfast.set('get_right', '1')
+        #await redisfast.set('get_left', '1')
+        #await redisfast.set('get_right', '1')
         # return
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
@@ -580,8 +580,8 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     await asyncio.gather(fut1, fut2)
 
     # restart sensor readings
-    await redisfast.set('get_left', '1')
-    await redisfast.set('get_right', '1')
+    #await redisfast.set('get_left', '1')
+    #await redisfast.set('get_right', '1')
 
     endtime = time.time()
     print(endtime - starttime)
@@ -1085,19 +1085,19 @@ async def reader(ch):
 
 async def connect_redis():
     global redisfast, redisslow, pub
-    redisfast = await aioredis.create_redis(('localhost', 6379), loop=loop)
+    #redisfast = await aioredis.create_redis(('localhost', 6379), loop=loop)
     redisslow = await aioredis.create_redis(('localhost', 6380), loop=loop)
     pub = await aioredis.create_redis(('localhost', 6379), loop=loop)
-    await redisfast.set('get_left', '1')
-    await redisfast.set('get_right', '1')
+    #await redisfast.set('get_left', '1')
+    #await redisfast.set('get_right', '1')
     await pub.publish_json('WebClient', {"leftmag": "0", "rightmag": "0"})
 
 
 
 async def disconnect_redis():
     global redisfast, redisslow, pub
-    redisfast.close()
-    await redisfast.wait_closed()
+    #redisfast.close()
+    #await redisfast.wait_closed()
 
     redisslow.close()
     await redisslow.wait_closed()
