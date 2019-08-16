@@ -1,6 +1,6 @@
 ifdown eth0
 ifup eth0
-/usr/bin/redis-server /etc/redis/redis_6379.conf
+#/usr/bin/redis-server /etc/redis/redis_6379.conf
 /usr/bin/redis-server /etc/redis/redis_6380.conf
 
 /usr/bin/dserv -d
