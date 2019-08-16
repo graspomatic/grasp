@@ -33,11 +33,12 @@ pf = path_find.path_find()
 conn = sqlite3.connect('/shared/lab/stimuli/grasp/objects2.db')
 sqlc = conn.cursor()
 
-# connects to
+# connection to dserv on minnowboard
 import socket
 sock = socket.create_connection(("localhost", 4620))
 sock.settimeout(0.2)
 
+# connection to qnx machine running the experiment
 qnxsock = socket.create_connection(("100.0.0.2", 4620))
 qnxsock.settimeout(0.2)
 
@@ -45,7 +46,7 @@ qnxsock.settimeout(0.2)
 async def return_object(side=-1, add=[0,0]):
     # Put away the object currently held on specified side in
     print("put away " + str(side) + " at " + str(add))
-    global redisfast
+    #global redisfast
     xy_accel = 60
 
     # error checking
@@ -98,7 +99,7 @@ async def return_object(side=-1, add=[0,0]):
 
 
 async def retrieve(side=-1, objid=0, add=[0,0]):
-    global redisslow, redisfast
+    global redisslow
     xy_accel = 60
     # Get the specified object ID on the specified arm
     print('retrieving side ' + str(side) + ' object ID ' + str(objid) + ' at ' + str(add))
@@ -327,7 +328,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # right_id (integer) object id to present using right arm
     # left_angle (integer) rotation in degrees for left object. positive angle is counter-clockwise rotation
 
-    global redisslow, redisfast
+    global redisslow
 
     starttime = time.time()
 
@@ -454,7 +455,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     # get_next (binary). if 1, that means we need to extend the arm to prepare to put another object away
 
 
-    global redisslow, redisfast
+    global redisslow
 
     starttime = time.time()
 
@@ -745,7 +746,7 @@ async def move_xy_to_location(axis = ['a'], location = [-1], accel = [25], vel =
 
 async def magnets(left_status = [-1], right_status = [-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
-    global redisfast
+    #global redisfast
 
     left_status = int(left_status[0])
     right_status = int(right_status[0])
@@ -1084,7 +1085,7 @@ async def reader(ch):
         print("Got Message:", msg)
 
 async def connect_redis():
-    global redisfast, redisslow, pub
+    global redisslow, pub
     #redisfast = await aioredis.create_redis(('localhost', 6379), loop=loop)
     redisslow = await aioredis.create_redis(('localhost', 6380), loop=loop)
     pub = await aioredis.create_redis(('localhost', 6379), loop=loop)
@@ -1095,7 +1096,7 @@ async def connect_redis():
 
 
 async def disconnect_redis():
-    global redisfast, redisslow, pub
+    global redisslow, pub
     #redisfast.close()
     #await redisfast.wait_closed()
 
