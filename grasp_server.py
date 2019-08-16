@@ -543,7 +543,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         print('incompatibility between what the database says and what sensors say for right')
         # return
 
-    if not returning[0] and not returning[1]:  # nothing to return, then we have nothing to do
+    #if not returning[0] and not returning[1]:  # nothing to return, then we have nothing to do
         #await redisfast.set('get_left', '1')
         #await redisfast.set('get_right', '1')
         # return
