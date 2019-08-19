@@ -377,7 +377,14 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     panel, orders = pf.plan_path(holding.tolist(), picking, panel, arm_offset)
 
     # make sure we're still communicating with the dynamixel arms. sometimes the USB craps out and the XY motors still move, causing havoc
-    print(dxl.sync_error_status())
+    stats = dxl.sync_error_status()
+    try:
+        if sum(stats) != 0:
+            print('motors either in error state or incommunicado')
+            return
+    except:
+        print('motors incommunicado? try reresetting USB connection and restarting grasp_server.py')
+
 
     # step through the plan
     for i in range(len(orders)):
