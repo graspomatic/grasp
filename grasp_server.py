@@ -344,19 +344,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         print('specify which hand to present to, 0 or 1 for left or right')
         return
 
-    ## determine arms that will be used for returning objects
-    # get information from sensors
-    #fut1 = redisfast.get('left_sensor_last_update')
-    #fut2 = redisfast.get('left_connected')
-    #fut3 = redisfast.get('right_sensor_last_update')
-    #fut4 = redisfast.get('right_connected')
-    #left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
-
-    #left_updated = (int(time.time()) - int(left_last_update)) < 3
-    #right_updated = (int(time.time()) - int(right_last_update)) < 3
-    #left_connected = int(left_connected)
-    #right_connected = int(right_connected)
-
     # get information from panels database
     fut1 = redisslow.get('panel')
     fut2 = redisslow.get('holding')
@@ -367,20 +354,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     arm_offset = np.array(json.loads(arm_offset))
 
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
-    #if (left_connected and holding[0]) or (not left_connected and not holding[0]):
     returning = [holding[0]]
-    #else:
-     #   returning = [0]
-     #   print('incompatibility between what the database says and what sensors say for left')
-        # return
-
-    #if (right_connected and holding[1]) or (not right_connected and not holding[1]):
     returning.append(holding[1])
-    #else:
-    #    print('incompatibility between what the database says and what sensors say for right')
-        # return
 
-    # tell sensors to stop reading so we dont crash mpr121
     await toggle_touch(0)
 
     # arms that will be used for retrieving objects
@@ -399,6 +375,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
     panel, orders = pf.plan_path(holding.tolist(), picking, panel, arm_offset)
+
+    # make sure we're still communicating with the dynamixel arms. sometimes the USB craps out and the XY motors still move, causing havoc
+    print(await dxl.sync_error_status())
 
     # step through the plan
     for i in range(len(orders)):
