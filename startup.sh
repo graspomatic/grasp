@@ -1,11 +1,13 @@
 ifdown eth0
 ifup eth0
-#/usr/bin/redis-server /etc/redis/redis_6379.conf
 /usr/bin/redis-server /etc/redis/redis_6380.conf
 
-/usr/bin/dserv -d
-/usr/bin/dserv_tcp -d
-/usr/bin/dserv_send -d
+dserv -d
+dserv_tcp -d
+dserv_send -d
+dserv_log -d
+obssync -d
+
 
 /bin/mount diddy.neuro.brown.edu:/mnt/SharedDrives/Labfiles /shared/lab
 
