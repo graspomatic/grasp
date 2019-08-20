@@ -452,35 +452,6 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         print('specify which sides to put away. 0 (left), 1 (right), 2 (both)')
         return
 
-
-    ## determine arms that will be used for returning objects
-    # get information from sensors
-    #fut1 = redisfast.get('left_sensor_last_update')
-    #fut2 = redisfast.get('left_connected')
-    #fut3 = redisfast.get('right_sensor_last_update')
-    #fut4 = redisfast.get('right_connected')
-    #left_last_update, left_connected, right_last_update, right_connected = await asyncio.gather(fut1, fut2, fut3, fut4)
-
-    left_updated = (int(time.time()) - int(left_last_update)) < 3
-    right_updated = (int(time.time()) - int(right_last_update)) < 3
-    left_connected = int(left_connected)
-    right_connected = int(right_connected)
-
-    if not left_updated:
-        print('not updating left')
-        # return
-    if not right_updated:
-        print('not updating right')
-        # return
-    if not left_connected:
-        print('nothing on left')
-    if not right_connected:
-        print('nothing on right')
-
-    # tell sensors to stop reading so we dont crash mpr121
-    # await redisfast.set('get_left', '0')
-    # await redisfast.set('get_right', '0')
-
     # get information from panels database
     fut1 = redisslow.get('panel')
     fut2 = redisslow.get('holding')
@@ -499,14 +470,14 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     await toggle_touch(0)  # stop reading from touch sensors
 
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
-    if left_connected and holding[0]:
+    if holding[0]:
         if side == 0 or side == 2:
             returning = [holding[0]]
             remaining = [0]
         else:
             returning = [0]
             remaining = [holding[0]]
-    elif not left_connected and not holding[0]:
+    elif not holding[0]:
         returning = [0]
         remaining = [holding[0]]
     else:
@@ -515,14 +486,14 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         print('incompatibility between what the database says and what sensors say for left')
         # return
 
-    if right_connected and holding[1]:
+    if holding[1]:
         if side == 1 or side == 2:
             returning.append(holding[1])
             remaining.append(0)
         else:
             returning.append(0)
             remaining.append(holding[1])
-    elif not right_connected and not holding[1]:
+    elif not holding[1]:
         returning.append(0)
         remaining.append(holding[1])
     else:
