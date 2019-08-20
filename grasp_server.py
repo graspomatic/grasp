@@ -440,14 +440,13 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     # right_id (integer). if specified, overrules whatever the redis database says we're holding
     # get_next (binary). if 1, that means we need to extend the arm to prepare to put another object away
 
-
     global redisslow
 
-    starttime = time.time()
-
+    side = int(side[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
-    side = int(side[0])
+    get_next = int(get_next[0])
+
     if side == -1:
         print('specify which sides to put away. 0 (left), 1 (right), 2 (both)')
         return
@@ -501,11 +500,6 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         print('incompatibility between what the database says and what sensors say for right')
         # return
 
-    #if not returning[0] and not returning[1]:  # nothing to return, then we have nothing to do
-        #await redisfast.set('get_left', '1')
-        #await redisfast.set('get_right', '1')
-        # return
-
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
     panel, orders = pf.plan_path(returning, [0, 0], panel, arm_offset)
 
@@ -536,20 +530,6 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
     fut2 = redisslow.set('holding', str(remaining))
     await asyncio.gather(fut1, fut2)
-
-    # restart sensor readings
-    #await redisfast.set('get_left', '1')
-    #await redisfast.set('get_right', '1')
-
-    endtime = time.time()
-    print(endtime - starttime)
-
-
-
-# async def put_away_all(left_id=[-1], right_id=[-1]):
-#     # This is mainly intended to be used when manually putting away objects
-#     global redisslow, redisfast
-#
 
 
 
