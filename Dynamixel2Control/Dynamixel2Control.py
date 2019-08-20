@@ -320,13 +320,23 @@ class D2C(object):
                         dxlcx.pick_pos[arm][1],
                         dxlcx.pick_pos[arm][2]]
         elif pos == 'prep_present':
+            ang = dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)
+            if ang < 0:
+                ang += 4096
+            elif ang > 4096:
+                ang -= 4096
             position = [dxlcx.pick_pos[arm][0] + 250 * armmult,
                         dxlcx.pick_pos[arm][1] + 2048 * armmult,
-                        dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)]
+                        ang]
         elif pos == 'present':
+            ang = dxlcx.pick_pos[arm][2] + round(rotation * 4096 / 360)
+            if ang < 0:
+                ang += 4096
+            elif ang > 4096:
+                ang -= 4096
             position = [dxlcx.pick_pos[arm][0] + 750 * armmult,
                         dxlcx.pick_pos[arm][1] + 2048 * armmult,
-                        dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)]
+                        ang]
         else:
             print('invalid position specified')
             return 0
