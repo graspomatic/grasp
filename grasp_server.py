@@ -335,8 +335,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
-    left_angle = int(round(left_angle[0]))
-    right_angle = int(round(right_angle[0]))
+    left_angle = int(round(float(left_angle[0])))     # convert from string to float, round it, convert to int
+    right_angle = int(round(float(right_angle[0])))
 
 
 
