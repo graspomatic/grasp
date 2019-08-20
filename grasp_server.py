@@ -335,8 +335,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     hand = int(hand[0])
     left_id = int(left_id[0])
     right_id = int(right_id[0])
-    left_angle = int(left_angle[0])
-    right_angle = int(right_angle[0])
+    left_angle = int(round(left_angle[0]))
+    right_angle = int(round(right_angle[0]))
 
 
 
@@ -380,10 +380,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     try:
         stats = dxl.sync_error_status()
         if sum(stats) != 0:
-            print('motors in error state')
+            print('dynamixel motors in error state')
             return
     except:
-        print('motors incommunicado? try resetting USB connection and restarting grasp_server.py')
+        print('dynamixel motors incommunicado? try resetting USB connection and restarting grasp_server.py')
 
 
     # step through the plan
