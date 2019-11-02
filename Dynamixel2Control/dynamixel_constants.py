@@ -1,4 +1,4 @@
-BAUDRATE        = 1000000
+BAUDRATE        = 4000000
 
 # DEVICENAME      = "COM6".encode('utf-8')    # Check which port is being used on your controller
 # DEVICENAME      = "COM6"    # Check which port is being used on your controller
@@ -10,6 +10,7 @@ ADDR_OPERATING_MODE     = 11        # operating mode, writeable only when torque
 ADDR_MOVING_THRESH      = 24        # 4 bytes, writeable only when torque disabled
 ADDR_PWM_LIMIT          = 36        # 2 bytes, writeable only when torque disabled
 ADDR_CURRENT_LIMIT      = 38        # 2 bytes, writeable only when torque disabled
+ADDR_ACCELERATION_LIMIT = 40        # 4 bytes, writeable only when torque disabled
 ADDR_VELOCITY_LIMIT     = 44        # 4 bytes, writeable only when torque disabled
 ADDR_MAX_POSITION       = 48        # 4 bytes, writeable only when torque disabled, must be >= min
 ADDR_MIN_POSITION       = 52        # 4 bytes, writeable only when torque disabled
@@ -38,12 +39,29 @@ IDs = [[11, 12, 13],                # left
 threshs = [[2, 2, 2],
            [2, 2, 2]]
 
-# power to be used for movement
-moving_pwms = [[880, 880, 300],
-               [880, 880, 300]]
+# power to be used for movement, also how hard to resist pushing by subject
+moving_pwms = [[880, 880, 880],
+               [880, 880, 880]]
+
+# top speed
+profile_vels = [[400, 0, 0],
+                [400, 0, 0]]
+
+# top accel for slow movement
+profile_accels_low = [[130, 0, 0],
+                      [130, 0, 0]]
+
+# top accel for fast movement
+profile_accels_high = [[400, 0, 0],
+                       [400, 0, 0]]
 
 # position of all motors when in the 'pick' arm position
-pick_pos = [[2064, 3264, 2044],
-            [1535, 1035, 1980]]
+# 2044 to 2024
+#1980 to 2010
+#1027 to 1017
+#motor 11, larger numbers means closer to panel
+#motor 21, smaller numbers means closer to panel
+pick_pos = [[2065, 3264, 2024],
+            [1515, 1040, 2010]]
 
 

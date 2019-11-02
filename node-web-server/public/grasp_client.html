@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Graspomatic 2 Manual control</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+    <style>
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 300px;
+          height: 45px;
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+          border-radius: 4px;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 35px;
+          width: 26px;
+          left: 4px;
+          bottom: 5px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+          border-radius: 2px;
+        }
+
+        .magnetleft:after
+        {
+         content:'Left Magnet';
+         color: white;
+         display: block;
+         position: absolute;
+         transform: translate(-50%,-50%);
+         top: 50%;
+         left: 50%;
+         font-size: 20px;
+         font-family: Verdana, sans-serif;
+        }
+
+        .magnetright:after
+        {
+         content:'Right Magnet';
+         color: white;
+         display: block;
+         position: absolute;
+         transform: translate(-50%,-50%);
+         top: 50%;
+         left: 50%;
+         font-size: 20px;
+         font-family: Verdana, sans-serif;
+        }
+
+
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(266px);
+          -ms-transform: translateX(266px);
+          transform: translateX(266px);
+        }
+
+        /* arms */
+        .leftcustom{
+           display:none;
+        }
+        .rightcustom{
+           display:none;
+        }
+
+        #block_container {
+            text-align: center;
+        }
+        #block_container > div {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+
+    </style>
+
+    <script>
+
+    $(document).ready(function() {
+
+        // check for connection to grasp_server
+        var ip = document.getElementById("GraspIP").value;
+        var query = "function=ping";
+        var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+        $.get("http://" + ip, js, function() {
+        })
+          .done(function(data, textStatus, jqXHR) {
+            console.log(jqXHR.statusText);
+            if (jqXHR.statusText == "pong") {
+                document.getElementById("graspServerConnected").style.color = "green";
+                document.getElementById("graspServerConnected").innerHTML = "Connected";
+            } else {
+                document.getElementById("graspServerConnected").style.color = "red";
+                document.getElementById("graspServerConnected").innerHTML = "Not Connected";
+            }
+          })
+          .fail(function(data) {
+            alert( "ping failed" );
+            document.getElementById("graspServerConnected").style.color = "red";
+            document.getElementById("graspServerConnected").innerHTML = "Not Connected";
+          });
+
+
+
+
+        // ------------- arms ---------------
+        // Change options shown to user
+        $('select[name="leftarmsettingtype"]').on('change',function(){
+           if($(this).val()=="Prescribed") {
+                $('.leftcustom').hide();
+                $('.leftprescribed').show();
+           } else {
+                $('.leftprescribed').hide();
+                $('.leftcustom').show();
+           }
+        });
+
+        $('select[name="rightarmsettingtype"]').on('change',function(){
+           if($(this).val()=="Prescribed") {
+                $('.rightcustom').hide();
+                $('.rightprescribed').show();
+           } else {
+                $('.rightprescribed').hide();
+                $('.rightcustom').show();
+           }
+        });
+
+
+
+        // Handle button press
+
+        $('#moveleftarm').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var choice = document.getElementById("leftarmsettingtype").value;
+            if (choice == 'Prescribed') {
+                var prescribedchoice = document.getElementById("leftPrescribedSetting").value;
+
+                $.get("http://" + ip, { "function":"set_dxl_positions", "side":"0", "position": prescribedchoice}, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "moveleftarm failed" );
+                  });
+
+            } else {
+                var m1 = document.getElementById("leftMotor1").value;
+                var m2 = document.getElementById("leftMotor2").value;
+                var m3 = document.getElementById("leftMotor3").value;
+            }
+        });
+
+        $('#moverightarm').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var choice = document.getElementById("rightarmsettingtype").value;
+            if (choice == 'Prescribed') {
+                var prescribedchoice = document.getElementById("rightPrescribedSetting").value;
+
+                $.get("http://" + ip, { "function":"set_dxl_positions", "side":"1", "position": prescribedchoice}, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "moverightarm failed" );
+                  });
+
+            } else {
+                var m1 = document.getElementById("leftMotor1").value;
+                var m2 = document.getElementById("leftMotor2").value;
+                var m3 = document.getElementById("leftMotor3").value;
+            }
+        });
+
+        // ------------- magnets ---------------
+        $('#magLeft').change(function() {
+            var ip = document.getElementById("GraspIP").value;
+            if(this.checked) {
+                $.get("http://" + ip, { "function":"magnets", "left_status":"1" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magLeft failed" );
+                  });
+            } else {
+               $.get("http://" + ip, { "function":"magnets", "left_status":"0" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magLeft failed" );
+                  });
+            }
+        });
+
+        $('#magRight').change(function() {
+            var ip = document.getElementById("GraspIP").value;
+            if(this.checked) {
+                $.get("http://" + ip, { "function":"magnets", "right_status":"1" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magRight failed" );
+                  });
+            } else {
+               $.get("http://" + ip, { "function":"magnets", "right_status":"0" }, function() {
+                })
+                  .done(function(data, textStatus, jqXHR) {
+                    console.log(jqXHR.statusText);
+                  })
+                  .fail(function(data) {
+                    alert( "magRight failed" );
+                  });
+            }
+        });
+
+        // ------------- abort button  ---------------
+        // Handle special key presses
+        document.addEventListener ("keydown", function (zEvent) {
+            if (zEvent.altKey  &&  zEvent.key === "a") {  // case sensitive
+                $("#abort_button").click();
+            }
+        } );
+
+        $(document.getElementById("abort_button")).click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"abort" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "abort failed" );
+              });
+        });
+
+
+
+        // ------------- x-y motors  ---------------
+        var xlocationchange = document.getElementById("xlocation");
+        xlocationchange.addEventListener("keyup", function(event) {
+              if (event.keyCode === 13) {
+                   event.preventDefault();
+                   document.getElementById("movexaxis").click();
+              }
+        });
+
+        var ylocationchange = document.getElementById("ylocation");
+        ylocationchange.addEventListener("keyup", function(event) {
+              if (event.keyCode === 13) {
+                   event.preventDefault();
+                   document.getElementById("moveyaxis").click();
+              }
+        });
+
+        $('#movexaxis').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var xloc = document.getElementById("xlocation").value;
+            var cmd = { "function":"move_xy_to_location", "axis":"x", "location":xloc };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "movexaxis failed" );
+              });
+        });
+
+        $('#findxmin').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"find_bounds", "axis":"x", "direction":"0" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "findxmin failed" );
+              });
+        });
+
+        $('#findxmax').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"find_bounds", "axis":"x", "direction":"1" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "findxmax failed" );
+              });
+        });
+
+        $('#findymin').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"find_bounds", "axis":"y", "direction":"0" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "findymin failed" );
+              });
+        });
+
+        $('#findymax').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"find_bounds", "axis":"y", "direction":"1" };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "findymax failed" );
+              });
+        });
+
+        $('#moveyaxis').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var yloc = document.getElementById("ylocation").value;
+            var cmd = { "function":"move_xy_to_location", "axis":"y", "location":yloc };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "moveyaxis failed" );
+              });
+
+
+            //$.get("http://100.0.0.84:7379/SET/foo/whawha"); // works
+
+            //var jqxhr = $.get( "http://100.0.0.84:7379/GET/foo", function(data) {
+           // })
+            //  .done(function(data) {
+            //    console.log(data.GET);
+            //  })
+            //  .fail(function() {
+            //    alert( "error" );
+            //  })
+           //   .always(function() {
+           //   });
+
+
+        });
+
+
+        // ----------------- init options -------------------------------------
+        var init_arms_box = document.getElementById("init_arms");
+        init_arms_box.addEventListener("keyup", function(event) {
+              if (event.keyCode === 13) {
+                   event.preventDefault();
+                   document.getElementById("send_init_arms").click();
+              }
+        });
+
+        $('#send_init_arms').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var init_val = document.getElementById("init_arms").value;
+            var cmd = { "function":"initialize_dxl","level":init_val };
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "send_init_arms failed" );
+              });
+        });
+
+
+        // ----------------- put away objects -------------------------------------
+
+        var put_away = document.getElementById("form3");
+        put_away.addEventListener("keyup", function(event) {
+              if (event.keyCode === 13) {
+                   event.preventDefault();
+                   document.getElementById("put_away_new").click();
+              }
+        });
+
+        $('#put_away_current').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var cmd = { "function":"put_away", "side":"2", "get_next":"1"};
+            $.get("http://" + ip, cmd, function() {
+            })
+            .done(function(data, textStatus, jqXHR) {
+              console.log(jqXHR.statusText);
+            })
+            .fail(function(data) {
+              alert( "put_away_current failed" );
+            });
+        });
+
+        $('#put_away_new').click(function() {
+            var ip = document.getElementById("GraspIP").value;
+            var id = document.getElementById("form3").value;
+            var cmd = { "function":"put_away", "side":"0", "get_next":"1", "left_id":id};
+            $.get("http://" + ip, cmd, function() {
+            })
+            .done(function(data, textStatus, jqXHR) {
+              console.log(jqXHR.statusText);
+            })
+            .fail(function(data) {
+              alert( "put_away_new failed" );
+            });
+        });
+
+
+
+
+
+
+        // ------------------ manual command entry ----------------------------
+
+        var manualcontrol = document.getElementById("manualcontrol");
+        manualcontrol.addEventListener("keyup", function(event) {
+              if (event.keyCode === 13) {
+                    var ip = document.getElementById("GraspIP").value;
+                    var query = document.getElementById("manualcontrol").value;
+                    var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+                    $.get("http://" + ip, js, function() {
+                    })
+                      .done(function(data, textStatus, jqXHR) {
+                        console.log(jqXHR.statusText);
+                      })
+                      .fail(function(data) {
+                        alert( "manualcontrol failed" );
+                      });
+              }
+        });
+
+
+
+
+
+        // ------------------ graphs of grasp data ----------------------------
+        //window.onload = function () {
+        var dps1 = [], dps2 = [], dps3 = [], dps4 = [], dps5 = [], dps6 = []; // dataPoints for left
+        var dps7 = [], dps8 = [], dps9 = [], dps10 = [], dps11 = [], dps12 = []; // dataPoints for right
+
+        chartLeft = new CanvasJS.Chart("chartContainerLeft", {
+            title :{
+                text: "Left Sensors"
+            },
+            axisY: {
+                includeZero: true
+            },
+            axisX:{
+                gridThickness: 0,
+                tickLength: 0,
+                lineThickness: 0,
+                labelFormatter: function(){
+                  return " ";
+                }
+            },
+            data: [{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps1
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps2
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps3
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps4
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps5
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps6
+            }]
+        });
+
+        chartRight = new CanvasJS.Chart("chartContainerRight", {
+            title :{
+                text: "Right Sensors"
+            },
+            axisY: {
+                includeZero: true
+            },
+            axisX:{
+                gridThickness: 0,
+                tickLength: 0,
+                lineThickness: 0,
+                labelFormatter: function(){
+                  return " ";
+                }
+            },
+            data: [{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps7
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps8
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps9
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps10
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps11
+            },{
+                type: "line",
+                markerType: "none",
+                dataPoints: dps12
+            }]
+        });
+
+        var leftCounter = 0;
+        var rightCounter = 0;
+        var xValLeft = 0;
+        var xValRight = 0;
+        var updateInterval = 4; //number of updates received before redrawing graph
+        var dataLength = 500; // number of dataPoints visible at any point
+
+        chartLeft.render();
+        chartRight.render();
+
+
+        updateChartLeft = function (vals) {
+            if (vals == 'clear') {
+                console.log('clearing left vals');
+                for (var i = 0; i < 6; i++) {
+                    for (var j = 0; j < dps1.length; j++) {
+                        dps1.shift();
+                        dps2.shift();
+                        dps3.shift();
+                        dps4.shift();
+                        dps5.shift();
+                        dps6.shift();
+                    }
+                }
+
+            } else {
+                dps1.push({x: xValLeft, y: parseInt(vals[0],10)});
+                dps2.push({x: xValLeft, y: parseInt(vals[1],10)});
+                dps3.push({x: xValLeft, y: parseInt(vals[2],10)});
+                dps4.push({x: xValLeft, y: parseInt(vals[3],10)});
+                dps5.push({x: xValLeft, y: parseInt(vals[4],10)});
+                dps6.push({x: xValLeft, y: parseInt(vals[5],10)});
+
+                if (dps1.length > dataLength) {
+                    dps1.shift();
+                    dps2.shift();
+                    dps3.shift();
+                    dps4.shift();
+                    dps5.shift();
+                    dps6.shift();
+                }
+
+                xValLeft++;
+            }
+            if (leftCounter > updateInterval) {
+                chartLeft.render();
+                leftCounter = 0;
+            }
+            leftCounter++;
+        };
+
+        updateChartRight = function (vals) {
+            if (vals == 'clear') {
+                console.log('clearing right vals');
+                for (var i = 0; i < 6; i++) {
+                    for (var j = 0; j < dps7.length; j++) {
+                        dps7.shift();
+                        dps8.shift();
+                        dps9.shift();
+                        dps10.shift();
+                        dps11.shift();
+                        dps12.shift();
+                    }
+                }
+
+            } else {
+                dps7.push({x: xValRight, y: parseInt(vals[0],10)});
+                dps8.push({x: xValRight, y: parseInt(vals[1],10)});
+                dps9.push({x: xValRight, y: parseInt(vals[2],10)});
+                dps10.push({x: xValRight, y: parseInt(vals[3],10)});
+                dps11.push({x: xValRight, y: parseInt(vals[4],10)});
+                dps12.push({x: xValRight, y: parseInt(vals[5],10)});
+
+                if (dps7.length > dataLength) {
+                    dps7.shift();
+                    dps8.shift();
+                    dps9.shift();
+                    dps10.shift();
+                    dps11.shift();
+                    dps12.shift();
+                }
+
+                xValRight++;
+            }
+
+            if (rightCounter > updateInterval) {
+                chartRight.render();
+                rightCounter = 0;
+            }
+            rightCounter++;
+        };
+
+    //}
+
+    // websocket for handling node.js pubs
+    // currently we're using similar functionality to received messages from redis via webdis
+    $(function () {
+        var socketio = io('100.0.0.84:3000');
+        socketio.on('chat message', function(msg){
+            var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
+            // step through each line of data from the server
+            for (var i=0; i<linesSeparated.length; i++) {
+                var singleLine = linesSeparated[i].split(' '); // split it up by spaces
+                var touchVals = singleLine[4];  // vals array with {}
+                var touchVals = touchVals.substr(1,touchVals.length - 2);   // this is the vals array without {}, base64 encoded
+                var sBinaryString = atob(touchVals), aBinaryView = new Uint8Array(sBinaryString.length);
+                Array.prototype.forEach.call(aBinaryView, function (el, idx, arr) { arr[idx] = sBinaryString.charCodeAt(idx); });
+                var ue = String.fromCharCode.apply(null, new Uint16Array(aBinaryView.buffer));
+                var colonSplit = singleLine[0].split(':');
+                if (colonSplit[0] == 'sensor' && colonSplit[1] == '0' && colonSplit[2] == 'vals') {
+                    // if we're here, we know this line is for values for the left touch sensor
+                    var vals = [ue.charCodeAt(0), ue.charCodeAt(1), ue.charCodeAt(2), ue.charCodeAt(3), ue.charCodeAt(4), ue.charCodeAt(5)];
+                    updateChartLeft(vals);
+                } else if (colonSplit[0] == 'sensor' && colonSplit[1] == '1' && colonSplit[2] == 'vals') {
+                    // if we're here, we know this line is for values for the right touch sensor
+                    var vals = [ue.charCodeAt(0), ue.charCodeAt(1), ue.charCodeAt(2), ue.charCodeAt(3), ue.charCodeAt(4), ue.charCodeAt(5)];
+                    updateChartRight(vals);
+                }
+            }
+        });
+    });
+
+
+
+        // websocket for handling redis pubsub
+
+            var socket = new WebSocket("ws://100.0.0.84:7379/.json");
+                socket.onopen = function() {
+                    socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
+                };
+                socket.onerror=function(event){
+                    document.getElementById("redisServerConnected").style.color = "red";
+                    document.getElementById("redisServerConnected").innerHTML = "No Connection";
+                }
+                socket.onmessage = function(evt)
+                {
+                    //console.log(evt.data);
+                    try {
+                        var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
+                        console.log('message is from grasp_server');
+                        if (parsed == '1') {
+                            document.getElementById("redisServerConnected").style.color = "green";
+                            document.getElementById("redisServerConnected").innerHTML = "Connected";
+                        } else {
+                            handlePub(parsed);
+                        }
+                    }
+                    catch(err) {
+                        //console.log('message is from mpr121.c');
+                        //console.log(JSON.parse(evt.data).SUBSCRIBE[2]);
+                        message = JSON.parse(evt.data).SUBSCRIBE[2];
+                        handleMPR121(message);
+
+                    }
+
+
+                };
+
+            // Handle published messages from redis
+
+            armPos = ['pick', 'prep_pick', 'prep_present', 'present'];
+
+            function handleMPR121(message) {
+
+                var splitMessage = message.split("=");
+                var side = splitMessage[0];
+                if (splitMessage[1] == 'clear') {
+                    var vals = 'clear';
+                } else {
+                    var vals = splitMessage[1].split(",");
+                }
+
+
+                if (side == 'leftSensor') {
+                    updateChartLeft(vals);
+                } else if (side == 'rightSensor') {
+                    updateChartRight(vals);
+                }
+
+            }
+
+            function handlePub(message) {
+                console.log(message);
+                for (key in message) {
+                    if (key == 'xpos') {
+                        document.getElementById("xlocation").value = message[key];
+                    } else if (key == 'ypos') {
+                        document.getElementById("ylocation").value = message[key];
+                    } else if (key == 'leftmag') {
+                        document.getElementById("magLeft").checked = parseInt(message[key]);
+                    } else if (key == 'rightmag') {
+                        document.getElementById("magRight").checked = parseInt(message[key]);
+                    } else if (key == 'leftsensor') {
+                        if (message[key] == 'dc') {
+                            document.getElementById("leftObjectAttached").value = '';
+                            document.getElementById("leftObjectUpdating").style.color = "red";
+                            document.getElementById("leftObjectUpdating").innerHTML = "Stale";
+                        } else {
+                            document.getElementById("leftObjectAttached").value = message[key];
+                            document.getElementById("leftObjectUpdating").style.color = "green";
+                            document.getElementById("leftObjectUpdating").innerHTML = "Live";
+                        }
+                    } else if (key == 'rightsensor') {
+                        if (message[key] == 'dc') {
+                            document.getElementById("rightObjectAttached").value = '';
+                            document.getElementById("rightObjectUpdating").style.color = "red";
+                            document.getElementById("rightObjectUpdating").innerHTML = "Stale";
+                        } else {
+                            document.getElementById("rightObjectAttached").value = message[key];
+                            document.getElementById("rightObjectUpdating").style.color = "green";
+                            document.getElementById("rightObjectUpdating").innerHTML = "Live";
+                        }
+                    } else if (key == 'leftarm') {
+                        //decide if they're sending a prescribed position or triplet
+                        if (armPos.includes(message[key])) {
+                            document.getElementById("leftarmsettingtype").selectedIndex = 0;
+                            $('select[name="leftarmsettingtype"]').change();
+                            document.getElementById("leftPrescribedSetting").value = message[key];
+                        } else {
+                            document.getElementById("leftarmsettingtype").selectedIndex = 1;
+                            $('select[name="leftarmsettingtype"]').change();
+                            var vals = message[key].split(',');
+                            if (vals.length == 3) {
+                                document.getElementById("leftMotor1").value = vals[0];
+                                document.getElementById("leftMotor2").value = vals[1];
+                                document.getElementById("leftMotor3").value = vals[2];
+                            } else {
+                                console.log('sent wrong number of values. should be leftarm=12,34,56');
+                            }
+                        }
+
+                    } else if (key == 'rightarm') {
+                        //decide if they're sending a prescribed position or triplet
+                        if (armPos.includes(message[key])) {
+                            document.getElementById("rightarmsettingtype").selectedIndex = 0;
+                            document.getElementById("rightPrescribedSetting").value = message[key];
+                            $('select[name="rightarmsettingtype"]').change();
+                        } else {
+                            document.getElementById("rightarmsettingtype").selectedIndex = 1;
+                            $('select[name="rightarmsettingtype"]').change();
+                            var vals = message[key].split(',');
+                            if (vals.length == 3) {
+                                document.getElementById("rightMotor1").value = vals[0];
+                                document.getElementById("rightMotor2").value = vals[1];
+                                document.getElementById("rightMotor3").value = vals[2];
+                            } else {
+                                console.log('sent wrong number of values. should be rightarm=12,34,56');
+                            }
+                        }
+                    } //end if
+                } // end for loop
+            } // end handlePub
+
+            // Unsubscribe when you close the window. otherwise it will crash the server.
+            window.onbeforeunload = function() {
+                socket.send(JSON.stringify(["UNSUBSCRIBE", "WebClient"]));
+                return null;
+            };
+
+
+
+
+
+    });
+
+
+
+
+
+
+    </script>
+
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="form-group row mt-10">
+        <div class="input-group mb-1 col-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Grasp Server IP</span>
+            </div>
+            <input type="text" class="form-control col-4" value="100.0.0.84:8888" id="GraspIP">
+            <div class="input-group-append">
+                <button class="btn btn-outline-dark disabled" id="graspServerConnected">Connecting...</button>
+            </div>
+        </div>
+        <div class="input-group mb-1 col-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">webdis Server IP</span>
+            </div>
+            <input type="text" class="form-control col-4" value="100.0.0.84:7379" id="RedisIP">
+            <div class="input-group-append">
+                <button class="btn btn-outline-dark disabled" id="redisServerConnected">Connecting...</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!--Sensor feedback-->
+    <div class="form-group row mb-0">
+        <div class="input-group mb-1 col-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Left Sensor</span>
+            </div>
+            <input type="text" id="leftObjectAttached" class="form-control" placeholder="ObjectID">
+            <div class="input-group-append">
+                <button class="btn btn-outline-dark disabled" id="leftObjectUpdating">no pub</button>
+            </div>
+
+        </div>
+        <div class="input-group mb-1 col-6">
+             <div class="input-group-prepend">
+                <span class="input-group-text">Right Sensor</span>
+            </div>
+            <input type="text" id="rightObjectAttached" class="form-control" placeholder="ObjectID">
+            <div class="input-group-append">
+                <button class="btn btn-outline-dark disabled" id="rightObjectUpdating">no pub</button>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!--Arm control-->
+    <div class="form-group row mb-0">
+        <div class="input-group mb-1 col-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">Left Arm</span>
+            </div>
+            <select class="form-control" name="leftarmsettingtype" id="leftarmsettingtype">
+                  <option>Prescribed</option>
+                  <option>Custom</option>
+            </select>
+            <select class="form-control leftprescribed" id="leftPrescribedSetting">
+                  <option>present</option>
+                  <option>prep_present</option>
+                  <option>prep_pick</option>
+                  <option>pick</option>
+            </select>
+            <input type="text" id="leftMotor1" class="form-control leftcustom" placeholder="motor1 setting">
+            <input type="text" id="leftMotor2" class="form-control leftcustom" placeholder="motor2 setting">
+            <input type="text" id="leftMotor3" class="form-control leftcustom" placeholder="motor3 setting">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="moveleftarm">Move</button>
+            </div>
+        </div>
+
+        <div class="input-group mb-1 col-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="">Right Arm</span>
+            </div>
+            <select class="form-control" name="rightarmsettingtype" id="rightarmsettingtype">
+                  <option>Prescribed</option>
+                  <option>Custom</option>
+            </select>
+            <select class="form-control rightprescribed" id="rightPrescribedSetting">
+                  <option>present</option>
+                  <option>prep_present</option>
+                  <option>prep_pick</option>
+                  <option>pick</option>
+            </select>
+            <input type="text" id="rightMotor1" class="form-control rightcustom" placeholder="motor1 setting">
+            <input type="text" id="rightMotor2" class="form-control rightcustom" placeholder="motor2 setting">
+            <input type="text" id="rightMotor3" class="form-control rightcustom" placeholder="motor3 setting">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="moverightarm">Move</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--Magnets-->
+    <div class="form-group row mb-2">
+        <div class="input-group col-6 mb-2">
+            <label class="switch mx-auto">
+              <input type="checkbox" id="magLeft">
+              <span class="slider"></span>
+              <span class="magnetleft"></span>
+            </label>
+        </div>
+        <div class="input-group col-6 mb-2">
+            <label class="switch mx-auto">
+              <input type="checkbox" id="magRight">
+              <span class="slider"></span>
+              <span class="magnetright"></span>
+            </label>
+        </div>
+    </div>
+
+
+
+
+
+    <!--X/Y control-->
+    <div class="input-group col-8 mb-2">
+        <div class="input-group-prepend">
+            <span class="input-group-text">X-Axis Position</span>
+        </div>
+        <input type="text" id="xlocation" class="form-control" placeholder="0">
+        <div class="input-group-append">
+            <button class="btn btn-primary" id="movexaxis" data-id='{ "function":"move_xy_to_location", "axis":"x" }'>Move</button>
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-light" id="findxmin">Find Left Bound</button>
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-light" id="findxmax">Find Right Bound</button>
+        </div>
+    </div>
+    <div class="input-group col-8 mb-2">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Y-Axis Position</span>
+        </div>
+        <input type="text" id="ylocation" class="form-control" placeholder="0">
+        <div class="input-group-append">
+            <button class="btn btn-primary" id="moveyaxis">Move</button>
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-light" id="findymin">Find Upper Bound</button>
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-light" id="findymax">Find Lower Bound</button>
+        </div>
+    </div>
+
+
+    <!--Initialization options-->
+    <div class="input-group col-4 mt-5">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Initialize Arms</span>
+        </div>
+        <input type="text" id="init_arms" class="form-control" value="0.5">
+        <div class="input-group-append">
+            <button class="btn btn-primary" id="send_init_arms">Initialize</button>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalSubscriptionForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h4 class="modal-title w-100 font-weight-bold">Put away an object</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body mx-3">
+            <div class="md-form mb-2">
+              <input type="text" id="form3" class="form-control validate">
+              <label data-error="wrong" data-success="right" for="form3">Object ID</label>
+            </div>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button id="put_away_current" class="btn btn-secondary">Put away current </button>
+            <button id="put_away_new" class="btn btn-primary">Put away new</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group col-6 mt-3 mb-3">
+      <a href="" class="btn btn-primary btn-rounded mb-4" data-toggle="modal" data-target="#modalSubscriptionForm">Put away an object</a>
+    </div>
+
+
+
+
+    <!--Manual control-->
+    <div class="input-group col-16 mt-5 mb-3">
+        <input type="text" id="manualcontrol" class="form-control" placeholder="function=a&prop=b">
+    </div>
+
+    <!--Abort-->
+    <div class="input-group col-12 mb-5">
+        <button type="button" class="btn btn-danger btn-lg btn-block" id="abort_button">Abort (Alt + a)</button>
+    </div>
+
+
+    <!--Graphs of grasp data-->
+    <div id="block_container">
+        <div id="chartContainerLeft" style="height: 370px; width:45%;"></div>
+        <div id="chartContainerRight" style="height: 370px; width:45%;"></div>
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+

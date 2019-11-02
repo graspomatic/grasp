@@ -1,5 +1,7 @@
 mpr121:	mpr121.o
-	$(CC) -o $@ $< -lupmc-mpr121
+	$(CC) -g -o $@ $< -lhiredis -lupmc-mpr121
 
 mpr121.o:	mpr121.c
-	$(CC) -I/usr/include/upm -c $<
+	$(CC) -g -I/usr/include/upm -I/usr/include/hiredis -c $<
+
+

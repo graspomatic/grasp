@@ -41,7 +41,7 @@ class D2C(object):
             for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
                 self.groupGetPosition.addParam(dxlcx.IDs[i][ii])    # add this motor to list
 
-        self.groupGetGoalPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION,4)
+        self.groupGetGoalPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION, 4)
         for i in range(0, len(dxlcx.IDs)):  # for each arm
             for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
                 self.groupGetGoalPosition.addParam(dxlcx.IDs[i][ii])  # add this motor to list
@@ -56,87 +56,6 @@ class D2C(object):
             print("Communicating with servos")
         else:
             print("Failed to connect to servos, 12v power missing?")
-
-
-    #
-    #
-    # def move_present_to_neutral(self, side):
-    #     # side=0 for left, side=1 for right
-    #     # sleeptimes = [0.2, 0.1, 0.2, 0.1]
-    #     init_time = datetime.now()
-    #     for i in range(1, len(dxlcx.P2N[side])):  # if length=4, counts 1 2 3
-    #         self.sync_set_position(dxlcx.IDs[side], dxlcx.P2N[side][i].tolist())
-    #         a = datetime.now()
-    #         time.sleep(.05)
-    #         lets_wait = 1
-    #         while lets_wait:
-    #             moving = self.sync_get_moving()
-    #             if moving[3] == 0 & moving[4] == 0:
-    #                 b = datetime.now()
-    #                 lets_wait = 0
-    #
-    #         print(b - a)
-    #
-    #     print(datetime.now() - init_time)
-    #
-    #
-    #
-    # def move_neutral_to_present(self, side):
-    #     # sleeptimes = [0.2, 0.1, 0.2, 0.1]
-    #     init_time = datetime.now()
-    #     for i in range(len(dxlcx.P2N[side])-2, -1, -1):  # if length=4, counts 2 1 0
-    #         self.sync_set_position(dxlcx.IDs[side], dxlcx.P2N[side][i].tolist())
-    #         a = datetime.now()
-    #         time.sleep(.05)
-    #         lets_wait = 1
-    #         while lets_wait:
-    #             moving = self.sync_get_moving()
-    #             if moving[0] == 0 & moving[1] == 0:
-    #                 b = datetime.now()
-    #                 lets_wait = 0
-    #
-    #         print(b - a)
-    #
-    #     print(datetime.now() - init_time)
-    #
-    #
-    # def move_neutral_to_change(self, side):
-    #     # side=0 for left, side=1 for right
-    #     # sleeptimes = [0.2, 0.1, 0.2, 0.1]
-    #     init_time = datetime.now()
-    #     for i in range(1, len(dxlcx.N2C[side])):  # if length=4, counts 1 2 3
-    #         self.sync_set_position(dxlcx.IDs[side], dxlcx.N2C[side][i].tolist())
-    #         a = datetime.now()
-    #         time.sleep(.05)
-    #         lets_wait = 1
-    #         while lets_wait:
-    #             moving = self.sync_get_moving()
-    #             if moving[3] == 0 & moving[4] == 0:
-    #                 b = datetime.now()
-    #                 lets_wait = 0
-    #
-    #         print(b - a)
-    #
-    #     print(datetime.now() - init_time)
-    #
-    # def move_change_to_neutral(self, side):
-    #     # sleeptimes = [0.2, 0.1, 0.2, 0.1]
-    #     init_time = datetime.now()
-    #     for i in range(len(dxlcx.N2C[side]) - 2, -1, -1):  # if length=4, counts 2 1 0
-    #         self.sync_set_position(dxlcx.IDs[side], dxlcx.N2C[side][i].tolist())
-    #         a = datetime.now()
-    #         time.sleep(.05)
-    #         lets_wait = 1
-    #         while lets_wait:
-    #             moving = self.sync_get_moving()
-    #             if moving[0] == 0 & moving[1] == 0:
-    #                 b = datetime.now()
-    #                 lets_wait = 0
-    #
-    #         print(b - a)
-    #
-    #     print(datetime.now() - init_time)
-    #
 
 
     ###################################################
@@ -193,6 +112,37 @@ class D2C(object):
         # only relevant if in correct mode, like current limited position mode
         result, error = self.packet_handler.write2ByteTxRx(self.port_handler, motor, dxlcx.ADDR_CURRENT_LIMIT, limit)
         self.error_handler('set_current_limit: ', result, error)
+
+    def get_accel_limit(self, motor):
+        val, result, error = self.packet_handler.read4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_ACCELERATION_LIMIT)
+        self.error_handler('get_accel_limit: ', result, error)
+        return val
+
+    def set_accel_limit(self, motor, accel):
+        result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_ACCELERATION_LIMIT, accel)
+        self.error_handler('set_position: ', result, error)
+
+    def get_profile_accel(self, motor):
+        # how fast we should accelerate, works with profile_velocity
+        val, result, error = self.packet_handler.read4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_PROFILE_ACCEL)
+        self.error_handler('get_profile_accel: ', result, error)
+        return val
+
+    def set_profile_accel(self, motor, accel):
+        # how fast we should accelerate, works with profile_velocity
+        result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_PROFILE_ACCEL, accel)
+        self.error_handler('set_profile_accel: ', result, error)
+
+    def get_profile_vel(self, motor):
+        # top speed, works with profile_acceleration
+        val, result, error = self.packet_handler.read4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_PROFILE_VEL)
+        self.error_handler('get_profile_accel: ', result, error)
+        return val
+
+    def set_profile_vel(self, motor, vel):
+        # top speed, works with profile_acceleration
+        result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_PROFILE_VEL, vel)
+        self.error_handler('set_profile_accel: ', result, error)
 
     def get_moving(self, motor):
         # returns 1 if motor is moving, 0 if not
@@ -354,8 +304,9 @@ class D2C(object):
         if rotation > 180 or rotation < -180:
             print('please give rotation in degrees in range -180 to 180')
             return 0
-
-
+        
+        #print('temp: angle requested is: ' + str(rotation))
+        #print('temp: number requested is: ' + str(dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)))
 
         armmult = arm * 2 - 1   # produces -1 for left and 1 for right
 
@@ -369,13 +320,23 @@ class D2C(object):
                         dxlcx.pick_pos[arm][1],
                         dxlcx.pick_pos[arm][2]]
         elif pos == 'prep_present':
+            ang = dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)
+            if ang < 0:
+                ang += 4096
+            elif ang > 4096:
+                ang -= 4096
             position = [dxlcx.pick_pos[arm][0] + 250 * armmult,
                         dxlcx.pick_pos[arm][1] + 2048 * armmult,
-                        dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)]
+                        ang]
         elif pos == 'present':
+            ang = dxlcx.pick_pos[arm][2] + round(rotation * 4096 / 360)
+            if ang < 0:
+                ang += 4096
+            elif ang > 4096:
+                ang -= 4096
             position = [dxlcx.pick_pos[arm][0] + 750 * armmult,
                         dxlcx.pick_pos[arm][1] + 2048 * armmult,
-                        dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)]
+                        ang]
         else:
             print('invalid position specified')
             return 0

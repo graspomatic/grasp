@@ -5,11 +5,17 @@ from struct import pack
 
 class AMC(object):
 
-    def __init__(self, motor_ip="10.10.10.10", motor_port=7775, local_port=60649):
+    def __init__(self, motor_ip="10.10.10.10", motor_port=7775, local_port=60649, belt='standard'):
         self.bound_buff = 2  # distance from hardware limits to software limits in mm
         self.motor_ip = motor_ip
         self.motor_port = motor_port
         self.local_port = local_port
+        if belt == 'standard':
+            self.mmscale = 303.03
+        elif belt == 'steel':
+            self.mmscale = 285.71
+        else:
+            print('specify belt=standard or steel')
 
         print("UDP target IP:", self.motor_ip)
         print("UDP target port:", self.motor_port)
@@ -41,7 +47,7 @@ class AMC(object):
         # APR: Alarm, probably at one of the bounds
         # in transition from mr to pr, sometimes just R
 
-        time.sleep(0.01)        #without this, sometimes i would miss something in read-udp-all
+        # time.sleep(0.01)        #without this, sometimes i would miss something in read-udp-all
         self.read_udp_all()     # clear out the read buffer first
         self.send_command("RS")
         resp = self.read_udp_once()
@@ -62,14 +68,23 @@ class AMC(object):
     def get_position(self):
         # get current position
         self.read_udp_all()             # clear buffer first
-        self.send_command("EP")         # request position
-        return self.read_udp_once()     # get response
+        # self.send_command("EP")         # request position
+        self.send_command("IP")  # request position
+        position = self.read_udp_once()  # get response
+        while len(position) == 0:
+            print('didnt receive a position from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+            self.send_command("IP")  # request position
+            time.sleep(0.003)
+            position = self.read_udp_once()  # get response
+        return int(position[3:len(position)])
 
     def move_distance_count(self, distance, accel=25.0, decel=25.0, vel=3.0):
         # move specified distance in counts. positive is clockwise
-        cmds = ['AC' + str(accel), # units rev/s/s
-                'DE' + str(decel), # units rev/s/s
-                'VE' + str(vel), # units rev/s
+        cmds = ['AC' + str(accel),      # units rev/s/s
+                'DE' + str(decel),      # units rev/s/s
+                'VE' + str(vel),        # units rev/s
                 'FL' + str(distance)]
 
         self.send_command(cmds)
@@ -98,11 +113,29 @@ class AMC(object):
         #get cw bound
         self.read_udp_all()
         self.send_command('LP') #cw bound
+        time.sleep(0.003) 
         cw_bound = self.read_udp_once()
+        
+        while len(cw_bound) == 0:
+            print('didnt receive a cw bound from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+            self.send_command('LP') #cw bound
+            time.sleep(0.003)
+            cw_bound = self.read_udp_once()  # get response
+        
         cw_bound = int(cw_bound[3:len(cw_bound)])
 
         self.send_command('LM')  # ccw bound
+        time.sleep(0.003) 
         ccw_bound = self.read_udp_once()
+        while len(ccw_bound) == 0:
+            print('didnt receive a ccw bound from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+            self.send_command('LM') #cw bound
+            time.sleep(0.003)
+            ccw_bound = self.read_udp_once()  # get response
         ccw_bound = int(ccw_bound[3:len(ccw_bound)])
 
         target = cw_bound - self.mm_to_count(location) + self.mm_to_count(self.bound_buff)
@@ -117,7 +150,8 @@ class AMC(object):
                 'FP' + str(target)]
 
         self.send_command(cmds)
-        self.wait_for_stop()
+        return target
+        #self.wait_for_stop()
 
 
     def wait_for_stop(self):
@@ -136,7 +170,7 @@ class AMC(object):
 
         print("Done!")
 
-    def find_bound(self, direction):
+    def find_bound(self, direction, current=0.8):
         # finds requested hard bound and sets the software limit accordingly
         if direction == 1:      # clockwise
             dval = "HO200"      # home offset, this decides which direction we seek
@@ -150,9 +184,11 @@ class AMC(object):
             print('direction must be 0 or 1')
             return
 
+        curPar = 'HC' + str(current)
+
         # parameters for finding cw or ccw bound
         cmds = ['HA1100', 'HL1100', 'HA2100', 'HL2100', 'HA3100',
-                'HL3100', 'HV15', 'HV25', 'HV35', 'HC0.8', dval, 'HS0']
+                'HL3100', 'HV15', 'HV25', 'HV35', curPar, dval, 'HS0']
 
         self.send_command(limit + str(0))  # set current position to software limit
         self.send_command(cmds)             # start moving towards bound
@@ -160,14 +196,33 @@ class AMC(object):
         self.move_distance_mm(buf, vel=0.2)    # move away from bound 1000 units
         self.wait_for_stop()                # wait until it stops
         pos = self.get_position()           # get that position
-        self.send_command(limit + pos[3:len(pos)])  # set current position to software limit
+        self.send_command(limit + str(pos))  # set current position to software limit
 
     def check_bounds(self):
         self.read_udp_all()
         self.send_command('LM')
+        time.sleep(0.003)
         first = self.read_udp_once()
+        
+        while len(first) == 0:
+            print('didnt receive a bound from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+            self.send_command('LM')
+            time.sleep(0.003)
+            first = self.read_udp_once()  # get response
+            
         self.send_command('LP')
+        time.sleep(0.003)
         second = self.read_udp_once()
+        
+        while len(second) == 0:
+            print('didnt receive a bound from the motor! trying again...')
+            self.read_udp_all()  # clear buffer
+            time.sleep(0.003)
+            self.send_command('LP')
+            time.sleep(0.003)
+            second = self.read_udp_once()  # get response
 
         ok = 1
 
@@ -177,14 +232,9 @@ class AMC(object):
         if second[3] == '0':
             print('CW limit not set!')
             ok = 0
-
-        print(first)
-        print(second)
-
         return ok
 
     def send_command(self, message):
-        print(message)
         # can take either single command in string or multiple commands in list of strings
         if not type(message) is str:
             message = '\r'.join(message)
@@ -216,8 +266,13 @@ class AMC(object):
             return ''
 
     def mm_to_count(self, mm):
-        scale = 302.66  # number of counts per mm
-        return round(mm * scale)
+        # TSM34IP-3DG is 20000 counts per rotation i think
+        # vertical (steel-reinforced belt) is 70 mm per revolution
+        # horizontal (neoprene belt) is 66 mm per revolution
+
+        #scale = 303.03  # horizontal counts per mm
+        #scale = 285.71  # vertical counts per mm
+        return round(mm * self.mmscale)
 
 
 # if __name__ == "__main__":

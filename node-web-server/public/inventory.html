@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+    <title>Grasp2 Inventory</title>
+    <style>
+        .imgContainerHolding {
+          overflow: hidden;
+        }
+
+        .imgContainer {
+            overflow: hidden;
+        }
+
+        .grid {
+
+          display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-flex-wrap: wrap;
+              -ms-flex-wrap: wrap;
+                  flex-wrap: wrap;
+        }
+
+
+
+        .column {
+            float: left;
+            height: 150px;
+            width: 150px;
+            padding: 5px;
+            overflow: hidden;
+            margin-top: -140px; // moves the two objects we're holding up
+
+        }
+
+        .rowOfHolding {
+            position: static;
+            width: 330px;
+            height: 170px;
+            overflow: hidden;
+        }
+
+
+
+        .holdingIMG {
+            overflow: hidden;
+            position: absolute;
+            clip: rect(125px, 360px, 275px, 210px);  // top from top, right from left, bottom from top, left from left
+        }
+
+
+
+    </style>
+    <script>
+
+
+        // websocket for handling redis pubsub
+        var socket = new WebSocket("ws://100.0.0.84:7379/.json");
+        socket.onopen = function() {
+            socket.send(JSON.stringify(["SUBSCRIBE", "WebClientInventory"]));
+        };
+        socket.onerror=function(event){
+            document.getElementById("redisServerConnected").style.color = "red";
+            document.getElementById("redisServerConnected").innerHTML = "No Connection";
+        }
+        socket.onmessage = function(evt)
+        {
+            //console.log(evt.data);
+            try {
+                var parsed = JSON.parse(JSON.parse(evt.data).SUBSCRIBE[2]);
+                console.log('message is from grasp_server');
+                if (parsed == '1') {
+                    document.getElementById("redisServerConnected").style.color = "green";
+                    document.getElementById("redisServerConnected").innerHTML = "Connected";
+
+                    var ip = '100.0.0.84:8888';
+                    var query = 'function=publish_inventory';
+                    var js = JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+                    $.get("http://" + ip, js, function() {
+                    })
+                      .done(function(data, textStatus, jqXHR) {
+                        console.log(jqXHR.statusText);
+                      })
+                      .fail(function(data) {
+                        alert( "manualcontrol failed" );
+                      });
+
+                } else {
+                    handlePub(parsed);
+                }
+            }
+            catch(err) {
+                message = JSON.parse(evt.data).SUBSCRIBE[2];
+                console.log(message);
+            }
+        };
+
+        function handlePub(message) {
+            console.log(message);
+
+            for (key in message) {
+                console.log(key);
+                if (key == 'holding') {
+                    m = JSON.parse(message[key]);
+                    console.log(m);
+                    console.log(m[0]);
+                    console.log(m[0][0]);
+
+                    if (m[0][0] == 'b') {
+                        changeImage('imgLeft', '/SVGs/' + m[0])
+                    } else {
+                        changeImage('imgLeft', '/SVGs/empty.jpg')
+                    }
+                    if (m[1][0] == 'b') {
+                        changeImage('imgRight', '/SVGs/' + m[1])
+                    } else {
+                        changeImage('imgRight', '/SVGs/empty.jpg')
+                    }
+
+                } else if (key == 'panel') {
+                    var m = JSON.parse(message[key]);
+                    var rows = m.length;
+                    var cols = m[0].length;
+                    var idCounter = 1;
+                    var objID = 0;
+                    for (row = 0; row < rows; row++) {
+                        for (col = 0; col < cols; col++) {
+                            objID = m[row][col];
+                            if (objID[0] == 'b') {
+                                changeImage('img' + idCounter.toString(), '/SVGs/' + objID)
+                            } else {
+                                changeImage('img' + idCounter.toString(), '/SVGs/empty.jpg')
+                            }
+                            idCounter++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Unsubscribe from redis when you close the window. otherwise it will crash the server.
+        window.onbeforeunload = function() {
+            socket.send(JSON.stringify(["UNSUBSCRIBE", "WebClientInventory"]));
+            return null;
+        };
+
+        function createGrid(cols,rows) {
+            // Make a container for all necessary locations
+            for(var i =1; i<= (cols * rows); i++){
+              $('#gridid').append($('<div/>', { id: 'r' + i,class:"imgContainer"}));
+              $('#r' + i).append($('<img>',{id: 'img' + i, title: 'eys', src:''}))
+            }
+
+            // Size all the images and restructure it into a grid shape
+            sizeGrid(cols,rows);
+        }
+
+        function sizeGrid(desired_cols, desired_rows) {
+            // Size all the images and restructure it into a grid shape
+            var window_width = $(window).width();
+            var window_height = $(window).height() - 180;                                // Subtract for header stuff
+            var max_row_height = Math.round(window_height/desired_rows)*.96;            // tallest row which would fit all rows on screen
+            var max_col_width = Math.round(window_width/desired_cols)*.96;              // widest col which would fit all cols on screen
+            var edge_size = Math.min(max_row_height, max_col_width);                    // we'll use squares that will fit all rows and all cols
+            var total_width = edge_size * desired_cols;                                 // width of all our columns
+
+            $('.imgContainer').css("width", edge_size);                                 // set width of each image container
+            $('.imgContainer').css("height", edge_size);                                // set height of each image container
+            $('.imgContainer img').css("width", edge_size * 4.5);                       // scale svg
+            $('.imgContainer img').css("margin-left", edge_size * -1.85);               // cut off some from the left
+            $('.imgContainer img').css("margin-top", edge_size * -1.1);                 // cut off some from the top
+            $('.grid').css("max-width" , total_width + "px");                           // set width of entire grid, determines when images will get stuck on the next row
+        }
+
+
+        function changeImage(port, filename) {
+            //var addr = "/SVGs/blob2001.dgz_0.0132_10_6_2_3_25_0_1_1.svg";
+            document.getElementById(port).src = filename;
+            document.getElementById(port).title = filename;
+        }
+
+        //createGridHolding(2,1);
+
+        $(document).ready(function () {
+            $("#addrow").on("click", add_a_row);
+
+            // When clicking the button to delete a row
+            $("table.order-list").on("click", ".ibtnDel", function (event) {
+                $(this).closest("tr").remove();
+                counter -= 1;
+            });
+
+            // When clicking the button to move a row up one
+            $("table.order-list").on("click", ".table-up", function (event) {
+                console.log("table up");
+                var $row = $(this).parents('tr');
+                console.log($row.index());
+                if ($row.index() === 0) return; // Don't go above the header
+                $row.prev().before($row.get(0));
+            });
+
+            // When clicking the button to move a row down one
+            $("table.order-list").on("click", ".table-down", function (event) {
+                console.log("table down");
+                var $row = $(this).parents('tr');
+                console.log($row.index());
+                $row.next().after($row.get(0));
+            });
+
+            // This prevents the dropdown box from closing as soon as you click on something
+            $(document).on('click', '.allow-focus', function (e) {
+                e.stopPropagation();
+            });
+
+        });
+
+        // add a new row to the table
+        var counter = 0;
+        function add_a_row() {
+            console.log("adding row " + counter);
+
+            var newRow = $("<tr>");
+            var cols = "";
+
+            cols += '<td class="pt-3-half tableAble" contenteditable="true" id="id_number' + counter + '"></td>';
+            cols += '<td><input type="text" contenteditable="false" class="form-control tableAble" id="filename' + counter + '"/></td>';
+            cols += '<td class="pt-3-half tableAble" contenteditable="true" id="channel_map' + counter + '"></td>';
+
+            cols += '<td class="pt-3-half">';
+            cols += '<span class="table-up arrowAble "><a href="#!" class="indigo-text"  ><i class="fas fa-long-arrow-alt-up "></i></a></span>';
+            cols += '<span class="table-down arrowAble " ><a href="#!" class="indigo-text" ><i class="fas fa-long-arrow-alt-down"></i></a></span>';
+            cols += '</td>';
+
+            cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger tableAble"  value="Delete"></td>';
+            newRow.append(cols);
+            $("table.order-list").append(newRow);
+            counter++;
+        }
+
+        function populateTable(res) {
+            deleteAllMainTable(); //before we add in table from database, delete what's currently there
+
+            let rows = Object.keys(res).length;
+            let cols = Object.keys(res[0]);
+            if (rows < 1 | cols.length != 8) {return;} // make sure input is n x 8
+
+            for (let i = 0; i <rows; i++) {
+                add_a_row();
+                document.getElementById("id_number" + i).innerHTML = res[i][0];
+                document.getElementById("filename" + i).value = res[i][1];
+                document.getElementById("channel_map" + i).innerHTML = res[i][2] + ', ' + res[i][3] + ', ' + res[i][4] + ', ' + res[i][5] + ', ' + res[i][6] + ', ' + res[i][7];
+            }
+        }
+
+
+        function deleteAllMainTable() {
+            let rows = document.getElementById('myTable').rows.length - 3; // There are 3 rows that dont hold data
+
+            console.log("deleting " + rows + " rows");
+
+            for (i = rows; i > 0; i--) {
+                console.log("deleting row " + i);
+                document.getElementById('myTable').rows[i].remove();
+            }
+            counter=0;
+        }
+
+        // read the table and send it to the database
+        function saveTable() {
+            console.log("function saveTable");
+
+            // Initialize the object that will hold main table data
+            tableData = {
+                "IDCol":[],
+                "fileCol":[],
+                "channelMapCol":[]
+            };
+
+            // Step through each row of the table and fill the object
+            var rows = document.getElementById('myTable').rows.length - 3; // There are 3 rows that dont hold data
+            for (i = 0; i < rows; i++) {
+                //When the user manually re-orders the table, the element ids move as well.
+                //We need to first get that id number so we can store to DB in same order as user-ordered table.
+                var thisRowID = document.getElementById('myTable').rows[i+1].cells[0].id;
+                var r = thisRowID.replace(/[^0-9]/g,'');
+
+                tableData.IDCol[i] = document.getElementById("id_number" + r).innerHTML;
+                tableData.fileCol[i] = document.getElementById("filename" + r).value;
+                tableData.channelMapCol[i] = document.getElementById("channel_map" + r).innerHTML;
+            }
+
+            //var tab = JSON.stringify(tableData);
+            //,"file":JSON.stringify(tableData.fileCol),"channelMap":JSON.stringify(tableData.channelMapCol)
+            //console.log(tab);
+            var ip = '100.0.0.84:8888';
+            var cmd = { "function":"update_object_database","ID":JSON.stringify(tableData.IDCol) };
+            console.log(cmd);
+            $.get("http://" + ip, cmd, function() {
+            })
+              .done(function(data, textStatus, jqXHR) {
+                console.log(jqXHR.statusText);
+              })
+              .fail(function(data) {
+                alert( "publish_object_database failed" );
+              });
+
+
+        }
+
+    </script>
+</head>
+<body onload="createGrid(7,12)" onresize="sizeGrid(7,12)">
+<!--<body onload="createGridHolding(2,1)" onresize="createGridHolding(2,1)">-->
+<div class="container">
+    <div class="form-group row mt-10">
+        <div class="input-group mb-1 col-10">
+            <div class="input-group-prepend">
+                <span class="input-group-text">webdis Server IP</span>
+            </div>
+            <input type="text" class="form-control col-4" value="100.0.0.84:7379" id="RedisIP">
+            <div class="input-group-append">
+                <button class="btn btn-outline-dark disabled" id="redisServerConnected">Connecting...</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="rowOfHolding" id="holdinggridid">
+  <div class="column">
+    <img src= "" alt="Left" class="holdingIMG" id="imgLeft">
+  </div>
+  <div class="column">
+    <img src="" alt="Right" class="holdingIMG" id="imgRight">
+  </div>
+</div>
+
+
+<div class="grid" id="gridid"></div>
+
+
+<div class="col-sm-9 card card-body">
+
+    <table id="myTable" class="table table-bordered table-responsive-md table-striped text-center order-list">
+
+        <thead>
+            <tr>
+                  <th class="text-center" style="width: 25px">ID#</th>
+                  <th class="text-center" style="width: 20px">FileName</th>
+                  <th class="text-center" style="width: 20px">Channel Map</th>
+                  <th class="text-center" style="width: 15px">Order</th>
+                  <th class="text-center" style="width: 30px">Delete</th>
+            </tr>
+        </thead>
+
+        <tbody id="myTableBody">
+
+            <!-- placeholder for body which is handled with javascript -->
+
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="9" style="text-align: left;">
+                    <input type="button" class="btn btn-lg btn-block tableAble" id="addrow" value="Add Row" />
+                </td>
+            </tr>
+            <tr>
+            </tr>
+        </tfoot>
+    </table>
+    </div>
+<button type="button" onclick="saveTable()">Save Table</button>
+</body>
+</html>
