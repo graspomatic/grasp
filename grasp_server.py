@@ -175,12 +175,15 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
 
     left_angle = left_angle - 180      # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
     right_angle = right_angle - 180    # subtract 180 because, at zero rotation, object is actually upside-down compared to SVG and DGZ
-    if left_angle > 360 or left_angle < 0:
-        print('left_angle is out of bounds!')
-        return
-    if right_angle > 360 or right_angle < 0:
-        print('right_angle is out of bounds!')
-        return
+
+    left_angle = left_angle % 360
+    right_angle = right_angle % 360
+    # if left_angle > 360 or left_angle < 0:
+    #     print('left_angle is out of bounds!')
+    #     return
+    # if right_angle > 360 or right_angle < 0:
+    #     print('right_angle is out of bounds!')
+    #     return
     if left_angle > 180:
         left_angle = left_angle - 360
     if right_angle > 180:
@@ -561,14 +564,13 @@ async def get_dxl_positions():
     print(pos)
 
 async def set_dxl_positions(side=[-1], position=['blah']):
+    # works to set position explicitly using triplet for an arm (e.g., 50, 100, 1050) or prescribed settings (e.g., prep_pick)
     print('setting positions of one arm')
     side = int(side[0])
     position = str(position[0])
 
     print(position)
     print(position.split(','))
-
-
 
 
     if (side != 0 and side != 1):
