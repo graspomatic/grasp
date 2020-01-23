@@ -323,13 +323,14 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
 
 
 
-async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180]):
+async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180], dont_present=[-1]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
     # left_id (integer) object id to present using left arm
     # right_id (integer) object id to present using right arm
     # left_angle (integer) rotation in degrees for left object. positive angle is counter-clockwise rotation
+    # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
 
     global redisslow
 
@@ -340,6 +341,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     right_id = int(right_id[0])
     left_angle = int(round(float(left_angle[0])))     # convert from string to float, round it, convert to int
     right_angle = int(round(float(right_angle[0])))
+    dont_present = int(round(float(dont_present[0])))
 
 
 
@@ -411,8 +413,12 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     await toggle_touch(1)
 
     # move arms to present
-    await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle, hide_panel='yes')
-
+    if dont_present == -1:
+        await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle, hide_panel='yes')
+    else if dont_present == 0:
+        await present(arms=arms, hand=hand, right_angle=right_angle, hide_panel='yes')
+    else if dont_present == 1:
+        await present(arms=arms, hand=hand, left_angle=left_angle, hide_panel='yes')
 
     # await redisfast.set('get_left', '1')
     # await redisfast.set('get_right', '1')
