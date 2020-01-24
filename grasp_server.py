@@ -153,7 +153,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     sock.recv(4096)
 
 
-async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide_panel='no'):
+async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide_panel='no', xoffset=0):
     # present objects on specified arms to specified hand
     print('Presenting objects on ' + str(arms) + ' arms to hand ' + str(hand))
     global redisslow
@@ -162,6 +162,10 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     # input variables"
     # arms (list of ints) 'left', 'right', 'both', or 'neither'
     # hand (list of single int) [0] for left, [1] for right
+    # left_angle (integer) angle to rotate left arm
+    # right_angle (integer) angle to rotate right arm
+    # hide_panel (yes or no) after moving arms into place, do we want to move the panel down to ensure it's out of the way?
+    # xoffset (integer) custom x axis offset to position arm(s) relative to standard left and right hand position
 
     # if arms is empty or -1, ask for arms
     if arms == 'neither':
@@ -224,9 +228,9 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     await wait_for_dxl(300)
 
     if arms == 'both' or arms == 'left':
-        await pub.publish_json('WebClient', {"leftarm": "present", "xpos": str(hand_xs[hand])})
+        await pub.publish_json('WebClient', {"leftarm": "present", "xpos": str(hand_xs[hand]+xoffset)})
     if arms == 'both' or arms == 'right':
-        await pub.publish_json('WebClient', {"rightarm": "present", "xpos": str(hand_xs[hand])})
+        await pub.publish_json('WebClient', {"rightarm": "present", "xpos": str(hand_xs[hand]+xoffset)})
 
 
 async def wait_for_dxl(distance_thresh=180):
@@ -323,7 +327,7 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
 
 
 
-async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180], dont_present=[-1]):
+async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180], dont_present=[-1], xoffset=[0]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
@@ -331,6 +335,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # right_id (integer) object id to present using right arm
     # left_angle (integer) rotation in degrees for left object. positive angle is counter-clockwise rotation
     # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
+    # xoffset (integer) custom x axis offset from default left hand or right hand position
 
     print('Picking and Placing')
     print(dont_present)
@@ -345,6 +350,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     left_angle = int(round(float(left_angle[0])))     # convert from string to float, round it, convert to int
     right_angle = int(round(float(right_angle[0])))
     dont_present = int(round(float(dont_present[0])))
+    xoffset = int(round(float(xoffset[0])))
 
 
     if hand == -1:
@@ -417,13 +423,13 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # move arms to present
     if dont_present == -1:
         print("presenting both")
-        await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle, hide_panel='yes')
+        await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle, hide_panel='yes', xoffset=xoffset)
     elif dont_present == 0:
         print("presenting right only")
-        await present(arms='right', hand=hand, right_angle=right_angle, hide_panel='yes')
+        await present(arms='right', hand=hand, right_angle=right_angle, hide_panel='yes', xoffset=xoffset)
     elif dont_present == 1:
         print("presenting left only")
-        await present(arms='left', hand=hand, left_angle=left_angle, hide_panel='yes')
+        await present(arms='left', hand=hand, left_angle=left_angle, hide_panel='yes', xoffset=xoffset)
 
     # await redisfast.set('get_left', '1')
     # await redisfast.set('get_right', '1')
