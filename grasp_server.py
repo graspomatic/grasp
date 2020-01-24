@@ -208,7 +208,7 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     hand_xs = await redisslow.get('hand_xs')
     hand_xs = np.array(json.loads(hand_xs))
 
-    xtarg = x.move_location(location=float(hand_xs[hand]), accel=xy_accel, vel=20)
+    xtarg = x.move_location(location=float(hand_xs[hand]+xoffset), accel=xy_accel, vel=20)
     if hide_panel == 'yes':
         ytarg = y.move_location(location=150, accel=25, vel=40)
     await loop.create_task(wait_for_xy(xtarg=xtarg, distance_thresh=(100 + xy_accel * 200)))
