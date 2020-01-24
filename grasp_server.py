@@ -346,9 +346,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     right_angle = int(round(float(right_angle[0])))
     dont_present = int(round(float(dont_present[0])))
 
-    print(dont_present)
-
-
 
     if hand == -1:
         print('specify which hand to present to, 0 or 1 for left or right')
@@ -423,10 +420,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle, hide_panel='yes')
     elif dont_present == 0:
         print("presenting right only")
-        await present(arms=arms, hand=hand, right_angle=right_angle, hide_panel='yes')
+        await present(arms='right', hand=hand, right_angle=right_angle, hide_panel='yes')
     elif dont_present == 1:
         print("presenting left only")
-        await present(arms=arms, hand=hand, left_angle=left_angle, hide_panel='yes')
+        await present(arms='left', hand=hand, left_angle=left_angle, hide_panel='yes')
 
     # await redisfast.set('get_left', '1')
     # await redisfast.set('get_right', '1')
