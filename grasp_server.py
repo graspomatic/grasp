@@ -415,9 +415,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # move arms to present
     if dont_present == -1:
         await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle, hide_panel='yes')
-    else if dont_present == 0:
+    elif dont_present == 0:
         await present(arms=arms, hand=hand, right_angle=right_angle, hide_panel='yes')
-    else if dont_present == 1:
+    elif dont_present == 1:
         await present(arms=arms, hand=hand, left_angle=left_angle, hide_panel='yes')
 
     # await redisfast.set('get_left', '1')
