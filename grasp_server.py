@@ -332,6 +332,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # left_angle (integer) rotation in degrees for left object. positive angle is counter-clockwise rotation
     # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
 
+    print('Picking and Placing')
+    print(dont_present)
+
     global redisslow
 
     starttime = time.time()
@@ -342,6 +345,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     left_angle = int(round(float(left_angle[0])))     # convert from string to float, round it, convert to int
     right_angle = int(round(float(right_angle[0])))
     dont_present = int(round(float(dont_present[0])))
+
+    print(dont_present)
 
 
 
