@@ -386,10 +386,15 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         arms = 'neither'
 
     print('This is what Im holding: ')
-    print(holding.tolist())
+
+    holding_list = holding.tolist()
+
+    print(holding_list)
+    holding_list[np.where(holding_list == 0)[0]] = -1
+    print(holding_list)
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
-    panel, orders = pf.plan_path(holding.tolist(), picking, panel, arm_offset)
+    panel, orders = pf.plan_path(holding_list, picking, panel, arm_offset)
 
     # make sure we're still communicating with the dynamixel arms. sometimes the USB craps out and the XY motors still move, causing havoc
     try:
