@@ -338,7 +338,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # xoffset (integer) custom x axis offset from default left hand or right hand position
 
     print('Picking and Placing')
-    print(dont_present)
 
     global redisslow
 
@@ -385,6 +384,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     else:
         arms = 'neither'
+
+    print('This is what Im holding: ')
+    print(holding.tolist())
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
     panel, orders = pf.plan_path(holding.tolist(), picking, panel, arm_offset)
