@@ -390,7 +390,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     holding_list = holding.tolist()
 
     print(holding_list)
-    holding_list[np.where(holding_list == 0)[0]] = -1
+    print(holding_list == 0)
+    print(np.nonzero(holding_list == 0))
+    print(np.nonzero(holding_list == 0)[0])
+    holding_list[np.nonzero(holding_list == 0)[0]] = -1
     print(holding_list)
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
