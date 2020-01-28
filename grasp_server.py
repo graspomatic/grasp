@@ -396,7 +396,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     print('Will be updating holding to: ')
     print(picking)
 
-    picking_list = picking
+    picking_list = picking.copy()
     if dont_return > -1:
         holding_list[dont_return] = 0
         picking_list[dont_return] = 0
