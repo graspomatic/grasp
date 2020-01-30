@@ -327,14 +327,14 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
 
 
 
-async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180], dont_return=[-1], dont_present=[-1], xoffset=[0]):
+async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180], return_duplicates=[1], dont_present=[-1], xoffset=[0]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
     # left_id (integer) object id to present using left arm
     # right_id (integer) object id to present using right arm
     # left_angle (integer) rotation in degrees for left object. positive angle is counter-clockwise rotation
-    # dont_return (integer) -1 for returning whatever im holding, 0 to not return left, 1 to not return right
+    # return_duplicates (integer) If we want an object on same arm thats already holding it, do we return it (1) or not (0)?
     # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
     # xoffset (integer) custom x axis offset from default left hand or right hand position
 
@@ -397,9 +397,13 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     print(picking)
 
     picking_list = picking.copy()
-    if dont_return > -1:
-        holding_list[dont_return] = 0
-        picking_list[dont_return] = 0
+    if return_duplicates == 0:
+        if picking_list[0] == holding_list[0]:
+            holding_list[0] = 0
+            picking_list[0] = 0
+        if picking_list[1] == holding_list[1]:
+            holding_list[1] = 0
+            picking_list[1] = 0
 
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
