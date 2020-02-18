@@ -131,7 +131,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
 
     # when arm has reached target location, energize magnet
-    await loop.create_task(wait_for_dxl(190))
+    await loop.create_task(wait_for_dxl(150))  # was 190, trying to improve occasional failed pickup. maybe
     await loop.create_task(mags.energize(side))
     await asyncio.sleep(0.1)  # need to wait a bit for the magnet to suck in the object
     if side == 0:
@@ -141,7 +141,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
-    await loop.create_task(wait_for_dxl(120))  # at 180, sometimes rips off
+    await loop.create_task(wait_for_dxl(130))  # at 180, sometimes rips off. then, increased from 120 for speed
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": str(objid)})
         sendString = '%set sensor:0:objectid=' + str(objid)
@@ -387,24 +387,19 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     else:
         arms = 'neither'
 
-    print('This is what Im holding: ')
-
+    # lists of what we're holding and what we want to be holding which will be sent to pf.plan_path
     holding_list = holding.tolist()
-
-    print(holding_list)
-
-    print('Will be updating holding to: ')
-    print(picking)
-
     picking_list = picking.copy()
+
+    print('Im holding: ' + str(holding_list) + ' and will be holding: ' + str(picking_list))
+
+    # if we're not supposed to return duplicates, we need to lie to pf.plan_path about what's going on
+    #  we'll tell it that whichever arm is not needing to be changed isn't holding anything and shouldnt be
     if return_duplicates == 0:
         if picking_list[0] == holding_list[0]:
-            holding_list[0] = 0
-            picking_list[0] = 0
+            holding_list[0], picking_list[0] = 0, 0
         if picking_list[1] == holding_list[1]:
-            holding_list[1] = 0
-            picking_list[1] = 0
-
+            holding_list[1], picking_list[1] = 0, 0
 
     # now we know what we're holding and what we need, lets plan the path of how we're going to get it
     panel, orders = pf.plan_path(holding_list, picking_list, panel, arm_offset)
@@ -451,8 +446,6 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         print("presenting left only")
         await present(arms='left', hand=hand, left_angle=left_angle, hide_panel='yes', xoffset=xoffset)
 
-    # await redisfast.set('get_left', '1')
-    # await redisfast.set('get_right', '1')
 
     print('Updating holding to: ')
     print(picking)
