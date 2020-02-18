@@ -131,7 +131,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
 
     # when arm has reached target location, energize magnet
-    await loop.create_task(wait_for_dxl(10))  # was 190, trying to improve occasional failed pickup. maybe
+    await loop.create_task(wait_for_dxl(20))  # was 190, trying to improve occasional failed pickup. maybe
     await asyncio.sleep(0.15)  # need to wait a bit for the magnet to suck in the object. was 0.1
     await loop.create_task(mags.energize(side))
     await asyncio.sleep(0.15)  # need to wait a bit for the magnet to suck in the object. was 0.1
