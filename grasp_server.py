@@ -141,7 +141,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
-    await loop.create_task(wait_for_dxl(130))  # at 180, sometimes rips off. then, increased from 120 for speed
+    await loop.create_task(wait_for_dxl(150))  # at 180, sometimes rips off. then, increased from 120 for speed
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": str(objid)})
         sendString = '%set sensor:0:objectid=' + str(objid)
