@@ -131,9 +131,9 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
 
     # when arm has reached target location, energize magnet
-    await loop.create_task(wait_for_dxl(100))  # was 190, trying to improve occasional failed pickup. maybe
+    await loop.create_task(wait_for_dxl(50))  # was 190, trying to improve occasional failed pickup. maybe
     await loop.create_task(mags.energize(side))
-    await asyncio.sleep(0.05)  # need to wait a bit for the magnet to suck in the object. was 0.1
+    #await asyncio.sleep(0.05)  # need to wait a bit for the magnet to suck in the object. was 0.1
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "pick", "leftmag": "1"})
     else:
@@ -141,7 +141,7 @@ async def retrieve(side=-1, objid=0, add=[0,0]):
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
-    await loop.create_task(wait_for_dxl(150))  # at 180, sometimes rips off. then, increased from 120 for speed
+    await loop.create_task(wait_for_dxl(130))  # at 180, sometimes rips off. then, increased from 120 for speed
     if side == 0:
         await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": str(objid)})
         sendString = '%set sensor:0:objectid=' + str(objid)
