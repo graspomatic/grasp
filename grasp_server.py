@@ -77,7 +77,7 @@ async def return_object(side=-1, add=[0,0]):
     await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
 
     dxl.move_arm_to_pos(arm=side, pos='pick')
-    await loop.create_task(wait_for_dxl(10))  # 190 seems too high, 180 once dropped off way too early
+    await loop.create_task(wait_for_dxl(30))  # 190 seems too high, 180 once dropped off way too early
 
     # de-energize magnet
     await loop.create_task(mags.deenergize(side))
