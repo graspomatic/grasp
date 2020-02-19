@@ -1,5 +1,5 @@
 import numpy as np
-import dynamixel_sdk as dxlfx                    # Uses Dynamixel SDK library
+import dynamixel_sdk as dxlfx  # Uses Dynamixel SDK library
 import dynamixel_constants as dxlcx
 import time
 from datetime import datetime
@@ -8,7 +8,7 @@ import atexit
 
 class D2C(object):
     def __init__(self):
-        atexit.register(self.exit_handler)       # register the function to run on exit
+        atexit.register(self.exit_handler)  # register the function to run on exit
 
         self.port_handler = dxlfx.PortHandler(dxlcx.DEVICENAME)
         self.packet_handler = dxlfx.PacketHandler(dxlcx.PROTOCOL)
@@ -27,28 +27,30 @@ class D2C(object):
 
         # Set up groups for sync reads and writes
         self.groupMoving = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_MOVING, 1)
-        for i in range(0, len(dxlcx.IDs)):                          # for each arm
-            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
-                self.groupMoving.addParam(dxlcx.IDs[i][ii])         # add this motor to list
+        for i in range(0, len(dxlcx.IDs)):  # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
+                self.groupMoving.addParam(dxlcx.IDs[i][ii])  # add this motor to list
 
-        self.groupErrorStatus = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_HARDWARE_ERROR, 1)
-        for i in range(0, len(dxlcx.IDs)):                          # for each arm
-            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
-                self.groupErrorStatus.addParam(dxlcx.IDs[i][ii])         # add this motor to list
+        self.groupErrorStatus = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_HARDWARE_ERROR,
+                                                    1)
+        for i in range(0, len(dxlcx.IDs)):  # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
+                self.groupErrorStatus.addParam(dxlcx.IDs[i][ii])  # add this motor to list
 
-        self.groupGetPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_PRESENT_POSITION, 4)
-        for i in range(0, len(dxlcx.IDs)):                          # for each arm
-            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
-                self.groupGetPosition.addParam(dxlcx.IDs[i][ii])    # add this motor to list
+        self.groupGetPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_PRESENT_POSITION,
+                                                    4)
+        for i in range(0, len(dxlcx.IDs)):  # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
+                self.groupGetPosition.addParam(dxlcx.IDs[i][ii])  # add this motor to list
 
-        self.groupGetGoalPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION, 4)
+        self.groupGetGoalPosition = dxlfx.GroupSyncRead(self.port_handler, self.packet_handler,
+                                                        dxlcx.ADDR_GOAL_POSITION, 4)
         for i in range(0, len(dxlcx.IDs)):  # for each arm
             for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
                 self.groupGetGoalPosition.addParam(dxlcx.IDs[i][ii])  # add this motor to list
 
-        self.groupSetPosition = dxlfx.GroupSyncWrite(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION, 4)
-
-
+        self.groupSetPosition = dxlfx.GroupSyncWrite(self.port_handler, self.packet_handler, dxlcx.ADDR_GOAL_POSITION,
+                                                     4)
 
         # check connection to motors
         result = self.sync_get_position()
@@ -57,11 +59,9 @@ class D2C(object):
         else:
             print("Failed to connect to servos, 12v power missing?")
 
-
     ###################################################
     ## Simple reads/writes
     ###################################################
-
 
     def get_moving_thresh(self, motor):
         val, result, error = self.packet_handler.read4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_MOVING_THRESH)
@@ -119,7 +119,8 @@ class D2C(object):
         return val
 
     def set_accel_limit(self, motor, accel):
-        result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_ACCELERATION_LIMIT, accel)
+        result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_ACCELERATION_LIMIT,
+                                                           accel)
         self.error_handler('set_position: ', result, error)
 
     def get_profile_accel(self, motor):
@@ -174,7 +175,7 @@ class D2C(object):
         return val
 
     def set_goal_pwm(self, motor, limit):
-        #determines, in part, how much torque the motor will apply
+        # determines, in part, how much torque the motor will apply
         result, error = self.packet_handler.write2ByteTxRx(self.port_handler, motor, dxlcx.ADDR_GOAL_PWM, limit)
         self.error_handler('set_goal_pwm: ', result, error)
 
@@ -187,8 +188,6 @@ class D2C(object):
         result, error = self.packet_handler.write4ByteTxRx(self.port_handler, motor, dxlcx.ADDR_MAX_POSITION, limit)
         self.error_handler('set_current_limit: ', result, error)
 
-
-
     ##############################################################
     ## Reads/writes for multiple motors
     ##############################################################
@@ -198,8 +197,8 @@ class D2C(object):
         self.error_handler('sync_moving: ', result, 0)
 
         moving = []
-        for i in range(0, len(dxlcx.IDs)):                          # for each arm
-            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
+        for i in range(0, len(dxlcx.IDs)):  # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
                 moving.append(self.groupMoving.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_MOVING_STATUS, 1))
 
         return moving
@@ -209,8 +208,8 @@ class D2C(object):
         self.error_handler('sync_error_status: ', result, 0)
 
         errs = []
-        for i in range(0, len(dxlcx.IDs)):                          # for each arm
-            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
+        for i in range(0, len(dxlcx.IDs)):  # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
                 errs.append(self.groupErrorStatus.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_HARDWARE_ERROR, 1))
 
         return errs
@@ -220,8 +219,8 @@ class D2C(object):
         self.error_handler('sync_get_position: ', result, 0)
 
         position = []
-        for i in range(0, len(dxlcx.IDs)):                          # for each arm
-            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
+        for i in range(0, len(dxlcx.IDs)):  # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
                 position.append(self.groupGetPosition.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_PRESENT_POSITION, 4))
 
         return position
@@ -231,12 +230,11 @@ class D2C(object):
         self.error_handler('sync_get_goal_position: ', result, 0)
 
         position = []
-        for i in range(0, len(dxlcx.IDs)):                          # for each arm
-            for ii in range(0, len(dxlcx.IDs[0])):                  # for each motor in each arm
+        for i in range(0, len(dxlcx.IDs)):  # for each arm
+            for ii in range(0, len(dxlcx.IDs[0])):  # for each motor in each arm
                 position.append(self.groupGetGoalPosition.getData(dxlcx.IDs[i][ii], dxlcx.ADDR_GOAL_POSITION, 4))
 
         return position
-
 
     def sync_set_position(self, motors, positions):
         # inputs must be arrays (can be length=1)
@@ -256,10 +254,9 @@ class D2C(object):
         for i in range(0, len(motors)):
             self.groupSetPosition.addParam(motors[i], self.int_to_bytes(positions[i]))
 
-        result = self.groupSetPosition.txPacket()               # send command
-        self.error_handler('sync_set_position: ', result, 0)    # check for errors
-        self.groupSetPosition.clearParam()                      # clean up
-
+        result = self.groupSetPosition.txPacket()  # send command
+        self.error_handler('sync_set_position: ', result, 0)  # check for errors
+        self.groupSetPosition.clearParam()  # clean up
 
     def set_torque_all(self, enable):
         # loop through all motors and turn the torque on or off
@@ -304,11 +301,11 @@ class D2C(object):
         if rotation > 180 or rotation < -180:
             print('please give rotation in degrees in range -180 to 180')
             return 0
-        
-        #print('temp: angle requested is: ' + str(rotation))
-        #print('temp: number requested is: ' + str(dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)))
 
-        armmult = arm * 2 - 1   # produces -1 for left and 1 for right
+        # print('temp: angle requested is: ' + str(rotation))
+        # print('temp: number requested is: ' + str(dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)))
+
+        armmult = arm * 2 - 1  # produces -1 for left and 1 for right
 
         # depending on arm and position specified, determine the dxl positions for three motors
         if pos == 'pick':
@@ -320,7 +317,7 @@ class D2C(object):
                         dxlcx.pick_pos[arm][1],
                         dxlcx.pick_pos[arm][2]]
         elif pos == 'prep_present':
-            ang = dxlcx.pick_pos[arm][2] + round(rotation * 4096/360)
+            ang = dxlcx.pick_pos[arm][2] + round(rotation * 4096 / 360)
             if ang < 0:
                 ang += 4096
             elif ang > 4096:
@@ -346,8 +343,6 @@ class D2C(object):
         self.sync_set_position(dxlcx.IDs[arm], position)
         return 1
 
-
-
     ###################################################
     ## Misc functions
     ###################################################
@@ -371,7 +366,5 @@ class D2C(object):
         print('Closing port...')
         self.port_handler.closePort()
 
-
 # if __name__ == "__main__":
 #     dxl = D2C()
-
