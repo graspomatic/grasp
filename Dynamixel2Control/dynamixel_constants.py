@@ -62,6 +62,6 @@ profile_accels_high = [[400, 0, 0],
 #motor 11, larger numbers means closer to panel
 #motor 21, smaller numbers means closer to panel
 
- pick_pos = [[2065, 3264, 2024],
+pick_pos = [[2065, 3264, 2024],
             [1515, 1040, 2010]]
 
