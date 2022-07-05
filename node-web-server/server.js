@@ -82,7 +82,7 @@ app.use('/SVGs', express.static('/home/root/grasp/shapes/SVGs'));
 // find my ip address
 var os = require('os');
 var ifaces = os.networkInterfaces();
-hostname = ifaces['eth0'][0]['address'];
+hostname = ifaces['eth1'][0]['address'];
 
 //start up server on port 8081
 var server = app.listen(8081, hostname, function(){
