@@ -44,7 +44,9 @@ sock = socket.create_connection(("localhost", 4620))
 sock.settimeout(0.2)
 
 # connection to qnx machine running the experiment
-qnxsock = socket.create_connection(("100.0.0.2", 4620))
+# qnxsock = socket.create_connection(("100.0.0.2", 4620)) # old version of QNX
+qnxsock = socket.create_connection(("192.168.88.253", 4620)) # new RPi4 version of QNX
+
 qnxsock.settimeout(0.2)
 
 
