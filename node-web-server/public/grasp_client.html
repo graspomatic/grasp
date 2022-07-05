@@ -670,7 +670,7 @@
     // websocket for handling node.js pubs
     // currently we're using similar functionality to received messages from redis via webdis
     $(function () {
-        var socketio = io('100.0.0.84:3000');
+        var socketio = io('192.168.88.84:3000');
         socketio.on('chat message', function(msg){
             var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
             // step through each line of data from the server
@@ -699,7 +699,7 @@
 
         // websocket for handling redis pubsub
 
-            var socket = new WebSocket("ws://100.0.0.84:7379/.json");
+            var socket = new WebSocket("ws://192.168.88.84:7379/.json");
                 socket.onopen = function() {
                     socket.send(JSON.stringify(["SUBSCRIBE", "WebClient"]));
                 };
@@ -858,7 +858,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">Grasp Server IP</span>
             </div>
-            <input type="text" class="form-control col-4" value="100.0.0.84:8888" id="GraspIP">
+            <input type="text" class="form-control col-4" value="192.168.88.84:8888" id="GraspIP">
             <div class="input-group-append">
                 <button class="btn btn-outline-dark disabled" id="graspServerConnected">Connecting...</button>
             </div>
@@ -867,7 +867,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">webdis Server IP</span>
             </div>
-            <input type="text" class="form-control col-4" value="100.0.0.84:7379" id="RedisIP">
+            <input type="text" class="form-control col-4" value="192.168.88.84:7379" id="RedisIP">
             <div class="input-group-append">
                 <button class="btn btn-outline-dark disabled" id="redisServerConnected">Connecting...</button>
             </div>
