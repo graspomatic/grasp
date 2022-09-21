@@ -64,7 +64,7 @@
 
 
         // websocket for handling redis pubsub
-        var socket = new WebSocket("ws://100.0.0.84:7379/.json");
+        var socket = new WebSocket("ws://192.168.88.84:7379/.json");
         socket.onopen = function() {
             socket.send(JSON.stringify(["SUBSCRIBE", "WebClientInventory"]));
         };
