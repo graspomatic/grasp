@@ -8,6 +8,7 @@ import atexit
 import time
 import math
 import sqlite3
+import re
 
 active_task = 0
 
@@ -325,7 +326,7 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
 
 
 async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180],
-                         return_duplicates=[1], dont_present=[-1], xoffset=[0]):
+                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
@@ -335,6 +336,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # return_duplicates (integer) If we want an object on same arm thats already holding it, do we return it (1) or not (0)?
     # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
     # xoffset (integer) custom x axis offset from default left hand or right hand position
+    # reset_dial (integer 0 or 1) if 1, will reset the dial (chan 1) to 2048 and disable the torque at the end
 
     print('Picking and Placing')
 
@@ -350,6 +352,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     return_duplicates = int(round(float(return_duplicates[0])))
     dont_present = int(round(float(dont_present[0])))
     xoffset = int(round(float(xoffset[0])))
+    reset_dial = int(round(float(xoffset[0])))
 
     if hand == -1:
         print('specify which hand to present to, 0 or 1 for left or right')
@@ -414,6 +417,11 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     except:
         print('dynamixel motors incommunicado? try resetting USB connection and restarting grasp_server.py')
 
+    # reset the dial if requested
+    if (reset_dial):
+        dxl.set_torque(1,1)
+        dxl.set_position(1,2048)
+                             
     # step through the plan
     for i in range(len(orders)):
         order = orders[i][0][0]
@@ -445,6 +453,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     elif dont_present == 1:
         print("presenting left only")
         await present(arms='left', hand=hand, left_angle=left_angle, hide_panel='yes', xoffset=xoffset)
+
+    # turn off torque on dial if using
+    if (reset_dial):
+        dxl.set_torque(1,0)
 
     # await redisfast.set('get_left', '1')
     # await redisfast.set('get_right', '1')
@@ -608,15 +620,22 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
         print('side must be 0 (left) or 1 (right)')
         return
 
-    if rotation == "m1":
+    # Check if rotation is in the form "m1-<angle>"
+    match = re.match(r"m1-(\d+)", str(rotation))
+    if rotation == "m1" or match:
         motor1_pos = dxl.get_position(1)  # Read motor 1 position
         if 0 <= motor1_pos <= 4096:
-            rotation = (motor1_pos / 4096) * 360 - 180  # Convert to degrees in range -180 to 180
+            motor1_deg = (motor1_pos / 4096) * 360 - 180  # Convert to degrees in range -180 to 180
+            if match:
+                base_angle = int(match.group(1))
+                rotation = base_angle + motor1_deg
+            else:
+                rotation = motor1_deg  # Standard "m1" case
         else:
             print(f'Invalid motor 1 position: {motor1_pos}')
             return
 
-    rotation = int(rotation)  # Convert to integer after processing "m1"
+    rotation = int(rotation)  # Convert to integer after processing
 
     if len(position.split(',')) == 1:
         print('heading to move arm to pos')
