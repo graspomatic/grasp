@@ -59,6 +59,78 @@ class D2C(object):
         else:
             print("Failed to connect to servos, 12v power missing?")
 
+        ######################################### init the dial
+        DXL_ID = 1
+
+        # -------------------------------------
+        # Disable torque to allow setting modes
+        # -------------------------------------
+        dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, 0)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+        
+        # -------------------------------------
+        # Set Operating Mode = Position(3)
+        # (0=Current, 1=Velocity, 3=Position, etc.)
+        # -------------------------------------
+        dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_OPERATING_MODE, 3)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+        
+        # -------------------------------------
+        # Tweak Gains to make it less "snappy"
+        # (Lower P means lower response near goal)
+        # -------------------------------------
+        P_GAIN = 100   # typical range 0~16000 in some firmware
+        I_GAIN = 0
+        D_GAIN = 0
+        dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_POSITION_P_GAIN, P_GAIN)
+        dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_POSITION_I_GAIN, I_GAIN)
+        dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_POSITION_D_GAIN, D_GAIN)
+        
+        # -------------------------------------
+        # Set a "PWM Limit" so the servo won't
+        # apply maximum torque.
+        # (Range is typically 0 ~ 885 for MX servos.)
+        # -------------------------------------
+        PWM_LIMIT = 200  # try 200 ~ 300 as a start
+        dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, DXL_ID, ADDR_PWM_LIMIT, PWM_LIMIT)
+        
+        # -------------------------------------
+        # "Moving Threshold" controls how big
+        # a velocity must be to consider the servo "moving."
+        # This does NOT truly create a torque deadband,
+        # but if set high, small motions won't flag it as 'moving.'
+        # -------------------------------------
+        MOVING_THRESHOLD = 50
+        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, ADDR_MOVING_THRESH, MOVING_THRESHOLD)
+        
+        # -------------------------------------
+        # Re-enable torque
+        # -------------------------------------
+        dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, 1)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+        
+        # -------------------------------------
+        # Command a "Goal Position" = 2000
+        # (Approx. half range if 0~4095)
+        # -------------------------------------
+        GOAL_POSITION = 2000
+        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, DXL_ID, ADDR_GOAL_POSITION, GOAL_POSITION)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+        
+        print("Initialization done. Motor should move toward position 2000 with a limited PWM.")
+
     ###################################################
     ## Simple reads/writes
     ###################################################
