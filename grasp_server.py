@@ -611,7 +611,7 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
     if rotation == "m1":
         motor1_pos = dxl.get_position(1)  # Read motor 1 position
         if 0 <= motor1_pos <= 4096:
-            rotation = (motor1_pos / 4096) * 360  # Convert to degrees
+            rotation = (motor1_pos / 4096) * 360 - 180  # Convert to degrees in range -180 to 180
         else:
             print(f'Invalid motor 1 position: {motor1_pos}')
             return
