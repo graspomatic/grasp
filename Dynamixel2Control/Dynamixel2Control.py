@@ -65,21 +65,21 @@ class D2C(object):
         # -------------------------------------
         # Disable torque to allow setting modes
         # -------------------------------------
-        dxl_comm_result, dxl_error = self.packetHandler.write1ByteTxRx(self.portHandler, DXL_ID, ADDR_TORQUE_ENABLE, 0)
+        dxl_comm_result, dxl_error = self.packet_handler.write1ByteTxRx(self.port_handler, DXL_ID, ADDR_TORQUE_ENABLE, 0)
         if dxl_comm_result != COMM_SUCCESS:
-            print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
+            print("%s" % self.packet_handler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
-            print("%s" % self.packetHandler.getRxPacketError(dxl_error))
+            print("%s" % self.packet_handler.getRxPacketError(dxl_error))
         
         # -------------------------------------
         # Set Operating Mode = Position(3)
         # (0=Current, 1=Velocity, 3=Position, etc.)
         # -------------------------------------
-        dxl_comm_result, dxl_error = self.packetHandler.write1ByteTxRx(self.portHandler, DXL_ID, ADDR_OPERATING_MODE, 3)
+        dxl_comm_result, dxl_error = self.packet_handler.write1ByteTxRx(self.port_handler, DXL_ID, ADDR_OPERATING_MODE, 3)
         if dxl_comm_result != COMM_SUCCESS:
-            print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
+            print("%s" % self.packet_handler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
-            print("%s" % self.packetHandler.getRxPacketError(dxl_error))
+            print("%s" % self.packet_handler.getRxPacketError(dxl_error))
         
         # -------------------------------------
         # Tweak Gains to make it less "snappy"
@@ -88,9 +88,9 @@ class D2C(object):
         P_GAIN = 100   # typical range 0~16000 in some firmware
         I_GAIN = 0
         D_GAIN = 0
-        dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID, ADDR_POSITION_P_GAIN, P_GAIN)
-        dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID, ADDR_POSITION_I_GAIN, I_GAIN)
-        dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID, ADDR_POSITION_D_GAIN, D_GAIN)
+        dxl_comm_result, dxl_error = self.packet_handler.write2ByteTxRx(self.port_handler, DXL_ID, ADDR_POSITION_P_GAIN, P_GAIN)
+        dxl_comm_result, dxl_error = self.packet_handler.write2ByteTxRx(self.port_handler, DXL_ID, ADDR_POSITION_I_GAIN, I_GAIN)
+        dxl_comm_result, dxl_error = self.packet_handler.write2ByteTxRx(self.port_handler, DXL_ID, ADDR_POSITION_D_GAIN, D_GAIN)
         
         # -------------------------------------
         # Set a "PWM Limit" so the servo won't
@@ -98,7 +98,7 @@ class D2C(object):
         # (Range is typically 0 ~ 885 for MX servos.)
         # -------------------------------------
         PWM_LIMIT = 200  # try 200 ~ 300 as a start
-        dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID, ADDR_PWM_LIMIT, PWM_LIMIT)
+        dxl_comm_result, dxl_error = self.packet_handler.write2ByteTxRx(self.port_handler, DXL_ID, ADDR_PWM_LIMIT, PWM_LIMIT)
         
         # -------------------------------------
         # "Moving Threshold" controls how big
@@ -107,27 +107,27 @@ class D2C(object):
         # but if set high, small motions won't flag it as 'moving.'
         # -------------------------------------
         MOVING_THRESHOLD = 50
-        dxl_comm_result, dxl_error = self.packetHandler.write4ByteTxRx(self.portHandler, DXL_ID, ADDR_MOVING_THRESH, MOVING_THRESHOLD)
+        dxl_comm_result, dxl_error = self.packet_handler.write4ByteTxRx(self.port_handler, DXL_ID, ADDR_MOVING_THRESH, MOVING_THRESHOLD)
         
         # -------------------------------------
         # Re-enable torque
         # -------------------------------------
-        dxl_comm_result, dxl_error = self.packetHandler.write1ByteTxRx(self.portHandler, DXL_ID, ADDR_TORQUE_ENABLE, 1)
+        dxl_comm_result, dxl_error = self.packet_handler.write1ByteTxRx(self.port_handler, DXL_ID, ADDR_TORQUE_ENABLE, 1)
         if dxl_comm_result != COMM_SUCCESS:
-            print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
+            print("%s" % self.packet_handler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
-            print("%s" % self.packetHandler.getRxPacketError(dxl_error))
+            print("%s" % self.packet_handler.getRxPacketError(dxl_error))
         
         # -------------------------------------
         # Command a "Goal Position" = 2000
         # (Approx. half range if 0~4095)
         # -------------------------------------
         GOAL_POSITION = 2000
-        dxl_comm_result, dxl_error = self.packetHandler.write4ByteTxRx(self.portHandler, DXL_ID, ADDR_GOAL_POSITION, GOAL_POSITION)
+        dxl_comm_result, dxl_error = self.packet_handler.write4ByteTxRx(self.port_handler, DXL_ID, ADDR_GOAL_POSITION, GOAL_POSITION)
         if dxl_comm_result != COMM_SUCCESS:
-            print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
+            print("%s" % self.packet_handler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
-            print("%s" % self.packetHandler.getRxPacketError(dxl_error))
+            print("%s" % self.packet_handler.getRxPacketError(dxl_error))
         
         print("Initialization done. Motor should move toward position 2000 with a limited PWM.")
 
