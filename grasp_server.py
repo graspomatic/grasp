@@ -336,7 +336,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # return_duplicates (integer) If we want an object on same arm thats already holding it, do we return it (1) or not (0)?
     # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
     # xoffset (integer) custom x axis offset from default left hand or right hand position
-    # reset_dial (integer 0 or 1) if 1, will reset the dial (chan 1) to 2048 and disable the torque at the end
+    # reset_dial (integer 0 or 1) if 1, will reset the dial (chan 1) to 1024 and disable the torque at the end
 
     print('Picking and Placing')
 
@@ -420,7 +420,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # reset the dial if requested
     if (reset_dial):
         dxl.set_torque(1,1)
-        dxl.set_position(1,2048)
+        dxl.set_position(1, 1024)
                              
     # step through the plan
     for i in range(len(orders)):
@@ -625,7 +625,7 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
     if rotation == "m1" or match:
         motor1_pos = dxl.get_position(1)  # Read motor 1 position
         if 0 <= motor1_pos <= 4096:
-            motor1_deg = (motor1_pos / 4096) * 360 - 180  # Convert to degrees in range -180 to 180
+            motor1_deg = (motor1_pos / 4096) * 360 - 270  # Convert to degrees in range -180 to 180
             if match:
                 base_angle = int(match.group(1))
                 rotation = base_angle + motor1_deg
