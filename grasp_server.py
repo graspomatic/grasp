@@ -595,35 +595,42 @@ async def get_dxl_positions():
 
 
 async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
-    # works to set position explicitly using triplet for an arm (e.g., 50, 100, 1050) or prescribed settings (e.g., prep_pick)
+    # Works to set position explicitly using triplet for an arm (e.g., 50, 100, 1050) or prescribed settings (e.g., prep_pick)
     print('setting positions of one arm')
     side = int(side[0])
     position = str(position[0])
-    rotation = int(rotation[0])
+    rotation = rotation[0]  # Keep as string to check for "m1"
 
     print(position)
     print(position.split(','))
 
-    if (side != 0 and side != 1):
+    if side not in [0, 1]:
         print('side must be 0 (left) or 1 (right)')
         return
 
+    if rotation == "m1":
+        motor1_pos = dxl.get_position(1)  # Read motor 1 position
+        if 0 <= motor1_pos <= 4096:
+            rotation = (motor1_pos / 4096) * 360  # Convert to degrees
+        else:
+            print(f'Invalid motor 1 position: {motor1_pos}')
+            return
+
+    rotation = int(rotation)  # Convert to integer after processing "m1"
+
     if len(position.split(',')) == 1:
         print('heading to move arm to pos')
-
         dxl.move_arm_to_pos(arm=side, pos=position, rotation=rotation)
         await loop.create_task(wait_for_dxl(50))
+        
         if side == 0:
             await pub.publish_json('WebClient', {"leftarm": position})
         else:
             await pub.publish_json('WebClient', {"rightarm": position})
+    
     elif len(position.split(',')) == 3:
         print('heading to sync set position')
-        if side == 0:
-            motors = [11, 12, 13]
-        elif side == 1:
-            motors = [21, 22, 23]
-
+        motors = [11, 12, 13] if side == 0 else [21, 22, 23]
         dxl.sync_set_position(motors, json.loads(position))
 
 
