@@ -58,18 +58,6 @@ class D2C(object):
             print("Communicating with servos")
         else:
             print("Failed to connect to servos, 12v power missing?")
-
-        ######################################### init the dial
-        DXL_ID = 1
-        COMM_SUCCESS = 0
-        # -------------------------------------
-        # Disable torque to allow setting modes
-        # -------------------------------------
-        dxl_comm_result, dxl_error = self.packet_handler.write1ByteTxRx(self.port_handler, DXL_ID, dxlcx.ADDR_TORQUE_ENABLE, 0)
-        if dxl_comm_result != COMM_SUCCESS:
-            print("%s" % self.packet_handler.getTxRxResult(dxl_comm_result))
-        elif dxl_error != 0:
-            print("%s" % self.packet_handler.getRxPacketError(dxl_error))
         
 
     ###################################################
