@@ -61,7 +61,7 @@ class D2C(object):
 
         ######################################### init the dial
         DXL_ID = 1
-
+        COMM_SUCCESS = 0
         # -------------------------------------
         # Disable torque to allow setting modes
         # -------------------------------------
