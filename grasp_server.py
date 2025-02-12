@@ -12,6 +12,14 @@ import re
 
 active_task = 0
 
+# Shared dictionary for controlling the motor following behavior
+follow_settings = {
+    "enabled": False,  # Whether to follow the dial motor
+    "offset": 0,    # Offset in degrees
+    "dial_motor": 1,   # Motor ID of the dial motor
+    "target_arm": 0    # Arm ID of the follower motor (0 for left, 1 for right)
+}
+
 # XY motors
 import AppliedMotionControl
 
@@ -305,6 +313,33 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
 
     print('target reached')
     return 1
+
+async def set_motor_to_dial():
+    """
+    Continuously checks 'follow_settings["enabled"]'.
+    If True, reads the specified dial motor's position, applies the offset,
+    and commands the specified target arm motor accordingly.
+    """
+    try:
+        while True:
+            if follow_settings["enabled"]:
+                # Read the dial motor position
+                dial_pos = dxl.get_position(follow_settings["dial_motor"])
+                
+                # Convert to degrees (assuming 4096 units = 360° with offset correction)
+                dial_deg = (dial_pos / 4096) * 360 - 270
+                
+                # Compute the target angle with the specified offset
+                target_angle = dial_deg + follow_settings["offset"]
+                
+                # Move the target arm motor
+                dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
+
+            # Yield control to avoid blocking other tasks
+            await asyncio.sleep(0.002)
+
+    except asyncio.CancelledError:
+        print("Motor follow task was cancelled.")
 
 
 # async def redis_interact(req, vari, val = 0):
@@ -658,6 +693,19 @@ async def check_dxl_errors():
     errs = dxl.sync_error_status()
     print(errs)
 
+async def follow_dial(follow=['True'], offset=[0], dial_motor=[1], target_arm=[0]):
+    enable = follow[0].lower() == "true"
+
+    if enable:
+        follow_settings["offset"] = int(offset[0])
+        follow_settings["dial_motor"] = int(dial_motor[0])
+        follow_settings["target_arm"] = int(target_arm[0])
+
+    follow_settings["enabled"] = enable  # Always set this last
+
+    print(f"Updated follow settings: {follow_settings}")
+
+
 
 async def enable_xy():
     print('enabling x-y motors')
@@ -995,6 +1043,7 @@ fx_list = {
     'get_dxl_positions': get_dxl_positions,
     'set_dxl_positions': set_dxl_positions,
     'check_dxl_errors': check_dxl_errors,
+    'follow_dial': follow_dial,
 
     'enable_xy': enable_xy,
     'disable_xy': disable_xy,
@@ -1102,6 +1151,7 @@ coro = asyncio.start_server(handle_request, '192.168.88.84', 8888, loop=loop)  #
 # coro = asyncio.start_server(handle_request, '100.0.0.84', 8888, loop=loop)  # start a socket server
 # coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
 server = loop.run_until_complete(coro)
+follow_task = asyncio.create_task(set_motor_to_dial()) # loop that runs continuosly and can be used to follow a dial with follow_settings["enabled"] = True  
 
 # Serve requests until Ctrl+C is pressed
 print('Serving on {}'.format(server.sockets[0].getsockname()))
