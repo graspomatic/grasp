@@ -319,6 +319,7 @@ async def set_motor_to_dial():
     Continuously checks 'follow_settings["enabled"]'.
     If True, reads the specified dial motor's position, applies the offset,
     and commands the specified target arm motor accordingly.
+    Positive offset moves CCW
     """
     try:
         while True:
@@ -327,7 +328,7 @@ async def set_motor_to_dial():
                 dial_pos = dxl.get_position(follow_settings["dial_motor"])
                 
                 # Convert to degrees (assuming 4096 units = 360° with offset correction)
-                dial_deg = (dial_pos / 4096) * 360 - 270
+                dial_deg = (dial_pos / 4096) * 360 - 90
                 
                 # Compute the target angle with the specified offset
                 target_angle = dial_deg + follow_settings["offset"]
