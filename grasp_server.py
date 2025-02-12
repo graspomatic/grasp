@@ -1147,11 +1147,12 @@ async def disconnect_redis():
 
 loop = asyncio.get_event_loop()  # makes a new event loop if one doesnt exist
 loop.create_task(connect_redis())
+loop.create_task(set_motor_to_dial()) # loop that runs continuosly and can be used to follow a dial with follow_settings["enabled"] = True  
+
 coro = asyncio.start_server(handle_request, '192.168.88.84', 8888, loop=loop)  # start a socket server
 # coro = asyncio.start_server(handle_request, '100.0.0.84', 8888, loop=loop)  # start a socket server
 # coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
 server = loop.run_until_complete(coro)
-follow_task = asyncio.create_task(set_motor_to_dial()) # loop that runs continuosly and can be used to follow a dial with follow_settings["enabled"] = True  
 
 # Serve requests until Ctrl+C is pressed
 print('Serving on {}'.format(server.sockets[0].getsockname()))
