@@ -1086,7 +1086,7 @@ async def handle_request(reader, writer):
                 loop.create_task(abort())
                 result = 'aborted'  # 200 ok
             else:
-                if len(asyncio.all_tasks(loop)) > 3:  # if we're already doing something
+                if len(asyncio.all_tasks(loop)) > 4:  # if we're already doing something
                     print('busy')
                     result = 'busy'  # 504 timeout
                 elif fx == 'ping':
