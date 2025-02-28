@@ -388,7 +388,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     return_duplicates = int(round(float(return_duplicates[0])))
     dont_present = int(round(float(dont_present[0])))
     xoffset = int(round(float(xoffset[0])))
-    reset_dial = int(round(float(xoffset[0])))
+    reset_dial = int(round(float(reset_dial[0])))
 
     if hand == -1:
         print('specify which hand to present to, 0 or 1 for left or right')
