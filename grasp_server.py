@@ -423,6 +423,13 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     holding = np.array(json.loads(holding))
     arm_offset = np.array(json.loads(arm_offset))
 
+    
+    
+                
+                             
+    returning = [holding[0]]
+    returning.append(holding[1])
+
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
     # first, if we're using a dummy object to throw off the user, check if its needed here
     if use_dummy == 1:
@@ -438,13 +445,12 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
             return
 
         # second, check if we need to swap the dummy shape
+        # if we want the object on the left arm that is already there, swap the right arm
         if holding[0] == left_id:
             right_id = dummy_ids[0] if dummy_ids[0] != holding[1] else dummy_ids[1]
-                  
-                
-                             
-    returning = [holding[0]]
-    returning.append(holding[1])
+        # if we arent holding anything with the right arm, get something
+        elif holding[1] == 0:
+            right_id = dummy_ids[0]
 
     await toggle_touch(0)
 
