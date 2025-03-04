@@ -392,7 +392,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     xoffset = int(round(float(xoffset[0])))
     reset_dial = int(round(float(reset_dial[0])))
     use_dummy = int(round(float(use_dummy[0])))
-    if len(dummy_ids) > 2:
+    if len(dummy_ids) == 2:
         dummy_ids = [int(dummy_ids[0]), int(dummy_ids[1])]
         if dummy_ids[0] == dummy_ids[1]:
             raise ValueError("dummy_ids must contain two different values!")
