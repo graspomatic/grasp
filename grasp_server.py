@@ -393,15 +393,15 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     reset_dial = int(round(float(reset_dial[0])))
     use_dummy = int(round(float(use_dummy[0])))
     # Ensure dummy_ids is a proper list of integers
-    if isinstance(dummy_ids, str):
-        print('its a string')            
+    if isinstance(dummy_ids, list) and len(dummy_ids) == 1 and isinstance(dummy_ids[0], str):
+        # If dummy_ids is a single-element list with a string like "2032,2062", split it
+        dummy_ids = list(map(int, dummy_ids[0].split(",")))
+    elif isinstance(dummy_ids, str):
         dummy_ids = list(map(int, dummy_ids.split(",")))
     elif isinstance(dummy_ids, (tuple, set)):
-        print('its a tuple')
         dummy_ids = list(dummy_ids)
     
     # Now perform validation
-    print('dummy_ids: ', dummy_ids, ' length: ', len(dummy_ids))
     if len(dummy_ids) == 2:
         dummy_ids = [int(dummy_ids[0]), int(dummy_ids[1])]
         if dummy_ids[0] == dummy_ids[1]:
