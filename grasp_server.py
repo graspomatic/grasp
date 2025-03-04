@@ -451,6 +451,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         # if we arent holding anything with the right arm, get something
         elif holding[1] == 0:
             right_id = dummy_ids[0]
+        elif holding[1] > 0:
+            right_id = holding[1]
 
     await toggle_touch(0)
 
