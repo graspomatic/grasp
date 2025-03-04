@@ -362,7 +362,7 @@ async def set_motor_to_dial():
 
 
 async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180],
-                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0]):
+                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0], use_dummy=[0], dummy_ids=[2024, 2036]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
@@ -373,6 +373,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
     # xoffset (integer) custom x axis offset from default left hand or right hand position
     # reset_dial (integer 0 or 1) if 1, will reset the dial (chan 1) to 1024 and disable the torque at the end
+    # use_dummy (integer 0 or 1) for conditions where you need to ensure the user cant tell if the shape changed or not, use a dummy on the right arm
+    # dummy_ids (list of two integers) if use_dummy, right arm will toggle between these two shapes when the left_id is the same as holding(0)
 
     print('Picking and Placing')
 
@@ -389,6 +391,14 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     dont_present = int(round(float(dont_present[0])))
     xoffset = int(round(float(xoffset[0])))
     reset_dial = int(round(float(reset_dial[0])))
+    use_dummy = int(round(float(use_dummy[0])))
+    if len(dummy_ids) > 2:
+        dummy_ids = [int(dummy_ids[0]), int(dummy_ids[1])]
+        if dummy_ids[0] == dummy_ids[1]:
+            raise ValueError("dummy_ids must contain two different values!")
+    else:
+        raise ValueError("dummy_ids must contain exactly two values!")
+                             
 
     if hand == -1:
         print('specify which hand to present to, 0 or 1 for left or right')
@@ -404,6 +414,25 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     arm_offset = np.array(json.loads(arm_offset))
 
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
+    # first, if we're using a dummy object to throw off the user, check if its needed here
+    if use_dummy:
+        # first, confirm that the client has sent a reasonable request regarding use_dummy
+        if right_id > -1:
+            print('if youre using a dummy, you cant request something with the right id!')
+            return
+        if return_duplicates:
+            print('if youre using a dummy, you shouldnt also return the duplicate. it defeats the purpose!')
+            return
+        if dont_present < 1:
+            print('if youre using a dummy, you need to set dont_present=1 so we dont present the dummy!')
+            return
+
+        # second, check if we need to swap the dummy shape
+        if holding[0] == left_id:
+            right_id = dummy_ids[0] if dummy_ids[0] != holding[1] else dummy_ids[1]
+                  
+                
+                             
     returning = [holding[0]]
     returning.append(holding[1])
 
