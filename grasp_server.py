@@ -415,12 +415,12 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     # make list of objects to return, assuming that database and sensor readings agree on what we're holding
     # first, if we're using a dummy object to throw off the user, check if its needed here
-    if use_dummy:
+    if use_dummy == 1:
         # first, confirm that the client has sent a reasonable request regarding use_dummy
         if right_id > -1:
             print('if youre using a dummy, you cant request something with the right id!')
             return
-        if return_duplicates:
+        if return_duplicates == 1:
             print('if youre using a dummy, you shouldnt also return the duplicate. it defeats the purpose!')
             return
         if dont_present < 1:
