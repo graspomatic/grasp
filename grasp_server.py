@@ -47,10 +47,10 @@ conn = sqlite3.connect('/shared/lab/stimuli/grasp/objects2.db')
 sqlc = conn.cursor()
 
 # connection to dserv on minnowboard
-import socket
+# import socket
 
-sock = socket.create_connection(("localhost", 4620))
-sock.settimeout(0.2)
+# sock = socket.create_connection(("localhost", 4620))
+# sock.settimeout(0.2)
 
 # connection to qnx machine running the experiment
 qnxhost = "192.168.88.40"
@@ -166,8 +166,8 @@ async def retrieve(side=-1, objid=0, add=[0, 0]):
         await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": str(objid)})
         sendString = '%set sensor:1:objectid=' + str(objid)
 
-    sock.sendall(bytes(sendString, 'utf-8'))
-    sock.recv(4096)
+    # sock.sendall(bytes(sendString, 'utf-8'))
+    # sock.recv(4096)
 
 
 async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide_panel='no', xoffset=0):
@@ -913,15 +913,16 @@ async def magnets(left_status=[-1], right_status=[-1]):
 #     return x, y
 
 async def toggle_touch(status):
-    if status:
-        sock.sendall(b'%set sensor:control:activate=0\n')
-        sock.sendall(b'%set sensor:control:activate=1\n')
-    else:
-        sock.sendall(b'%set sensor:control:deactivate=0\n')
-        sock.sendall(b'%set sensor:control:deactivate=1\n')
+    print('toggle_touch is deprecated')
+    # if status:
+        # sock.sendall(b'%set sensor:control:activate=0\n')
+        # sock.sendall(b'%set sensor:control:activate=1\n')
+    # else:
+        # sock.sendall(b'%set sensor:control:deactivate=0\n')
+        # sock.sendall(b'%set sensor:control:deactivate=1\n')
 
-    b = sock.recv(8192)
-    print(b.decode().strip())
+    # b = sock.recv(8192)
+    # print(b.decode().strip())
 
 
 async def change_address(row, col, shapeid):
@@ -1024,46 +1025,46 @@ async def publish_inventory():
 
 async def get_touch_status():
     # one shot retrieve all relevant information from dserv about the touch sensor status
+    print('get_touch_status is deprecated')
+    # sock.sendall(b'%set sensor:0:id=2012')
+    # b = sock.recv(4096)
+    # print(b.decode().strip())
+    # print('that was the first')
 
-    sock.sendall(b'%set sensor:0:id=2012')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the first')
+    # sock.sendall(b'%set sensor:1:id=2013')
+    # b = sock.recv(4096)
+    # print(b.decode().strip())
+    # print('that was the second')
 
-    sock.sendall(b'%set sensor:1:id=2013')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the second')
+    # sock.sendall(b'%get sensor:0:id')
+    # b = sock.recv(4096)
+    # print(b.decode().strip())
+    # print('that was the third')
 
-    sock.sendall(b'%get sensor:0:id')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the third')
+    # sock.sendall(b'%get sensor:1:id')
+    # b = sock.recv(4096)
+    # print(b.decode().strip())
+    # print('that was the fourth')
 
-    sock.sendall(b'%get sensor:1:id')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the fourth')
+    # sock.sendall(b'%get sensor:control:activate')
+    # b = sock.recv(4096)
+    # print(b.decode().strip())
+    # print('that was the fifth')
 
-    sock.sendall(b'%get sensor:control:activate')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the fifth')
+    # sock.sendall(b'%get sensor:control:deactivate')
+    # b = sock.recv(4096)
+    # print(b.decode().strip())
+    # print('that was the sixth')
 
-    sock.sendall(b'%get sensor:control:deactivate')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the sixth')
+    # sock.sendall(b'%get sensor:0:vals')
+    # b = sock.recv(4096)
+    # print(b.decode().strip())
+    # print('that was the seventh')
 
-    sock.sendall(b'%get sensor:0:vals')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the seventh')
-
-    sock.sendall(b'%get sensor:1:vals')
-    b = sock.recv(4096)
-    print(b.decode().strip())
-    print('that was the eighth')
+    # sock.sendall(b'%get sensor:1:vals')
+    # b = sock.recv(4096)
+    # print(b.decode().strip())
+    # print('that was the eighth')
 
 
 async def ping():
@@ -1215,5 +1216,5 @@ loop.run_until_complete(disconnect_redis())
 server.close()
 loop.run_until_complete(server.wait_closed())
 loop.close()
-sock.close()
+# sock.close()
 qnxsock.close()
