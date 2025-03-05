@@ -448,10 +448,11 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         # if we want the object on the left arm that is already there, swap the right arm
         if holding[0] == left_id:
             right_id = dummy_ids[0] if dummy_ids[0] != holding[1] else dummy_ids[1]
-        # if we arent holding anything with the right arm, get something
+        # if we arent holding anything with the right arm yet, get the first dummy object
         elif holding[1] == 0:
             right_id = dummy_ids[0]
-        elif holding[1] > 0:
+        # otherwise we already have a dummy object and we dont need to change the right object
+        else:
             right_id = holding[1]
 
     await toggle_touch(0)
