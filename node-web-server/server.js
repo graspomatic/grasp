@@ -22,7 +22,7 @@ var dserv_rx = net.createServer(function (socket) {
 // Tell the dserv server what we're interested in
 dserv_rx.on('listening', function() {
     dservclient = new net.Socket();
-    var host = '127.0.0.1';
+    var host = '192.168.88.40';
     var port = 4620;
     var registered = false;
 
@@ -87,7 +87,7 @@ hostname = ifaces['eth1'][0]['address'];
 //start up server on port 8081
 var server = app.listen(8081, hostname, function(){
     var port = server.address().port;
-    console.log('Server running at http://${hostname}:${port}/');
+    console.log(`Server running at http://${hostname}:${port}/`);
 });
 
 
