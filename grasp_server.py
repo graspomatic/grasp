@@ -47,7 +47,7 @@ conn = sqlite3.connect('/shared/lab/stimuli/grasp/objects2.db')
 sqlc = conn.cursor()
 
 # connection to dserv on minnowboard
-# import socket
+import socket
 
 # sock = socket.create_connection(("localhost", 4620))
 # sock.settimeout(0.2)
