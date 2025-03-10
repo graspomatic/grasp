@@ -379,6 +379,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     print('Picking and Placing')
 
     global redisslow
+    qnxsock.sendall(b'%set grasp/available=0')
 
     starttime = time.time()
 
@@ -555,7 +556,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     # send message to qnx to store this time as the "stimulus onset time"
     # note two spaces at end necessary for this particular QNX server
-    qnxsock.sendall(b'%set stim_request=target_on  ')
+    #qnxsock.sendall(b'%set stim_request=target_on  ')
+    qnxsock.sendall(b'%set grasp/available=1')
 
     endtime = time.time()
     print(endtime - starttime)
@@ -570,6 +572,8 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     # get_next (binary). if 1, that means we need to extend the arm to prepare to put another object away
 
     global redisslow
+
+    qnxsock.sendall(b'%set grasp/available=0')
 
     side = int(side[0])
     left_id = int(left_id[0])
@@ -724,6 +728,9 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
     if len(position.split(',')) == 1:
         print('heading to move arm to pos')
         dxl.move_arm_to_pos(arm=side, pos=position, rotation=rotation)
+        if position != 'present':
+            qnxsock.sendall(b'%set grasp/available=0')
+        
         await loop.create_task(wait_for_dxl(50))
         
         if side == 0:
