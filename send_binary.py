@@ -81,7 +81,7 @@ def send_to_dataserver(socket, varname, datatype, data):
     # Create a TCP socket
     try:
         # Send the binary data
-        client_socket.sendall(dpoint)
+        socket.sendall(dpoint)
             
     except Exception as e:
         print(f"An error occurred: {e}")
