@@ -39,7 +39,8 @@ import path_find
 pf = path_find.path_find()
 
 # library to manage sending packets to the dataserver without expecting a response
-from send_binary import send_to_dataserver, DservType
+# from send_binary import send_to_dataserver, DservType
+from binary_dpoint import send_to_dataserver, DservType
 
 # stores information about the shapes
 # conn = sqlite3.connect('/home/root/grasp/shapes/objects2.db')
@@ -309,7 +310,7 @@ async def set_motor_to_dial():
                 
                 # Move the target arm motor
                 dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
-                send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, struct.pack("<i", int(target_angle)))
+                send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle))
 
             # Yield control to avoid blocking other tasks
             await asyncio.sleep(0.002)
@@ -345,7 +346,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     global redisslow
     # qnxsock.sendall(b'%set grasp/available=0')
-    send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, b"0")
+    send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, "0")
                                  
     await follow_dial(follow=["False"])
 
@@ -517,7 +518,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     # send message to qnx to store this time as the "stimulus onset time"
     # qnxsock.sendall(b'%set grasp/available=1')
-    send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, b"1")
+    send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, "1")
 
     print(f"pick_and_place took {time.time() - starttime:.2f} seconds")
 
@@ -533,7 +534,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     global redisslow
 
     # qnxsock.sendall(b'%set grasp/available=0')
-    send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, b"0")
+    send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, "0")
     await follow_dial(follow=["False"])
 
     side = int(side[0])
@@ -690,7 +691,7 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
         dxl.move_arm_to_pos(arm=side, pos=position, rotation=rotation)
         if position != 'present':
             # qnxsock.sendall(b'%set grasp/available=0')
-            send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, b"0")
+            send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, "0")
             await follow_dial(follow=["False"])
         
         await loop.create_task(wait_for_dxl(50))
