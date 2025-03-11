@@ -338,7 +338,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     global redisslow
     qnxsock.sendall(b'%set grasp/available=0')
-    await follow_dial(follow=False)
+    await follow_dial(follow=[False])
 
     starttime = time.time()
 
@@ -504,7 +504,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     # if we're supposed to turn on dial following, do that now
     if dial_following:
-        await follow_dial(follow=True, offset=left_angle)
+        await follow_dial(follow=[True], offset=[left_angle])
 
     # send message to qnx to store this time as the "stimulus onset time"
     qnxsock.sendall(b'%set grasp/available=1')
@@ -679,7 +679,7 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
         dxl.move_arm_to_pos(arm=side, pos=position, rotation=rotation)
         if position != 'present':
             qnxsock.sendall(b'%set grasp/available=0')
-            await follow_dial(follow=False)
+            await follow_dial(follow=[False])
         
         await loop.create_task(wait_for_dxl(50))
         
