@@ -296,7 +296,9 @@ async def set_motor_to_dial():
                 dial_pos = dxl.get_position(follow_settings["dial_motor"])
                 
                 # Convert to degrees (assuming 4096 units = 360° with offset correction)
-                dial_deg = (dial_pos / 4096) * 360 - 90
+                # subtract 90 because thats the center position of the dial
+                # subtract 180 because thats the center position of the object
+                dial_deg = (dial_pos / 4096) * 360 - 90 - 180
                 
                 # Compute the target angle with the specified offset
                 target_angle = dial_deg + follow_settings["offset"]
