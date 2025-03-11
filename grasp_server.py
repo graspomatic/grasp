@@ -310,7 +310,7 @@ async def set_motor_to_dial():
                 
                 # Move the target arm motor
                 dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
-                send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle))
+                send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle % 360))
 
             # Yield control to avoid blocking other tasks
             await asyncio.sleep(0.002)
@@ -615,9 +615,9 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         await loop.create_task(wait_for_dxl(100))  #
         await present(arms='left', hand=1)
         await loop.create_task(mags.energize(0))
-        if left_id > 0:
+        if side == 0 or side == 2:
             await pub.publish_json('WebClient', {"leftmag": "1"})
-        if right_id > 0:
+        if side == 1 or side == 2:
             await pub.publish_json('WebClient', {"rightmag": "1"})
 
     # update redis with what the panel looks like
