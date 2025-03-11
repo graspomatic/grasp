@@ -9,6 +9,7 @@ import time
 import math
 import sqlite3
 import re
+import struct
 
 active_task = 0
 
