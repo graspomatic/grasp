@@ -525,7 +525,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     global redisslow
 
     qnxsock.sendall(b'%set grasp/available=0')
-    await follow_dial(follow=False)
+    await follow_dial(follow=["False"])
 
     side = int(side[0])
     left_id = int(left_id[0])
