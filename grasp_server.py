@@ -22,23 +22,19 @@ follow_settings = {
 
 # XY motors
 import AppliedMotionControl
-
 x = AppliedMotionControl.AMC(motor_ip="100.0.0.110", local_port=60649, belt='standard')
 y = AppliedMotionControl.AMC(motor_ip="100.0.0.111", local_port=60648, belt='steel')
 
 # servos
 import Dynamixel2Control
-
 dxl = Dynamixel2Control.D2C()
 
 # magnets
 import MagControl
-
 mags = MagControl.MAGS()
 
 # algorithm for determining order of pickup and dropoff of objects
 import path_find
-
 pf = path_find.path_find()
 
 # stores information about the shapes
@@ -46,18 +42,11 @@ pf = path_find.path_find()
 conn = sqlite3.connect('/shared/lab/stimuli/grasp/objects2.db')
 sqlc = conn.cursor()
 
-# connection to dserv on minnowboard
+# connection to dserv on machine running the experiment
 import socket
-
-# sock = socket.create_connection(("localhost", 4620))
-# sock.settimeout(0.2)
-
-# connection to qnx machine running the experiment
 qnxhost = "192.168.88.40"
 qnxsock = socket.create_connection((qnxhost, 4620)) # new RPi4 version of QNX
-
 qnxsock.settimeout(0.2)
-
 
 async def return_object(side=-1, add=[0, 0]):
     # Put away the object currently held on specified side in
@@ -264,14 +253,11 @@ async def wait_for_dxl(distance_thresh=180):
 
 
 async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
-    print('waiting for x-y motors to stop moving')
+    # print('waiting for x-y motors to stop moving')
 
     # 1 mm is ~300 units
     xpos = x.get_position()
     ypos = y.get_position()
-
-    # print(xpos)
-    # print(ypos)
 
     if xtarg == '*':
         distance = abs(ypos - ytarg)
@@ -279,7 +265,6 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
         distance = abs(xpos - xtarg)
     else:
         distance = math.sqrt(abs(xpos - xtarg) ** 2 + abs(ypos - ytarg) ** 2)
-    # print('xy distance: ' + str(distance))
 
     while distance > distance_thresh:
         await asyncio.sleep(0.001)
@@ -293,25 +278,8 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
             xpos = x.get_position()
             ypos = y.get_position()
             distance = math.sqrt(abs(xpos - xtarg) ** 2 + abs(ypos - ytarg) ** 2)
-
-        # print('xy distance: ' + str(distance))
-        # print(time.time())
-    #
-    #
-    #
-    #
-    #
-    #
-    # xstatus = x.get_status()
-    # ystatus = y.get_status()
-    # await asyncio.sleep(0.01)
-    #
-    # while xstatus[3] == 'M' or xstatus[3] == 'H' or ystatus[3] == 'M' or ystatus[3] == 'H':
-    #     xstatus = x.get_status()
-    #     ystatus = y.get_status()
-    #     await asyncio.sleep(0.01)
-
-    print('target reached')
+            
+    # print('target reached')
     return 1
 
 async def set_motor_to_dial():
@@ -343,17 +311,6 @@ async def set_motor_to_dial():
         print("Motor follow task was cancelled.")
 
 
-# async def redis_interact(req, vari, val = 0):
-#     if req == 'get':
-#         a = np.array(json.loads(r.get(vari)))
-#         return a
-#
-#     elif req == 'set':
-#         r.set(vari, json.dumps(val.tolist()))
-#
-#     await asyncio.sleep(10)
-
-
 ################################################################################################################################################################################################
 
 #  Functions callable from client
@@ -362,7 +319,7 @@ async def set_motor_to_dial():
 
 
 async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180],
-                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0], use_dummy=[0], dummy_ids=[2024, 2036]):
+                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0], follow_dial=[0], use_dummy=[0], dummy_ids=[2024, 2036]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
@@ -373,6 +330,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
     # xoffset (integer) custom x axis offset from default left hand or right hand position
     # reset_dial (integer 0 or 1) if 1, will reset the dial (chan 1) to 1024 and disable the torque at the end
+    # follow_dial (integer 0 or 1) if 1, will turn on dial following. left arm will follow motor 1 with offset left_angle until instructed to stop                             
     # use_dummy (integer 0 or 1) for conditions where you need to ensure the user cant tell if the shape changed or not, use a dummy on the right arm
     # dummy_ids (list of two integers) if use_dummy, right arm will toggle between these two shapes when the left_id is the same as holding(0)
 
@@ -380,6 +338,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     global redisslow
     qnxsock.sendall(b'%set grasp/available=0')
+    await follow_dial(follow='False')
 
     starttime = time.time()
 
@@ -392,7 +351,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     dont_present = int(round(float(dont_present[0])))
     xoffset = int(round(float(xoffset[0])))
     reset_dial = int(round(float(reset_dial[0])))
+    follow_dial = int(round(float(follow_dial[0])))
     use_dummy = int(round(float(use_dummy[0])))
+                             
     # Ensure dummy_ids is a proper list of integers
     if isinstance(dummy_ids, list) and len(dummy_ids) == 1 and isinstance(dummy_ids[0], str):
         # If dummy_ids is a single-element list with a string like "2032,2062", split it
@@ -423,11 +384,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     panel = np.array(json.loads(panel))
     holding = np.array(json.loads(holding))
     arm_offset = np.array(json.loads(arm_offset))
-
-    
-    
-                
-                             
+           
     returning = [holding[0]]
     returning.append(holding[1])
 
@@ -472,15 +429,10 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     else:
         arms = 'neither'
 
-    print('This is what Im holding: ')
-
     holding_list = holding.tolist()
-
-    print(holding_list)
-
-    print('Will be updating holding to: ')
-    print(picking)
-
+    print('This is what Im holding: ', holding_list)
+    print('Will be updating holding to: ', picking)
+                             
     picking_list = picking.copy()
     if return_duplicates == 0:
         if picking_list[0] == holding_list[0]:
@@ -543,24 +495,21 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     if (reset_dial):
         dxl.set_torque(1,0)
 
-    # await redisfast.set('get_left', '1')
-    # await redisfast.set('get_right', '1')
-
-    print('Updating holding to: ')
-    print(picking)
+    print('Updating holding to: ', picking)
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
     fut2 = redisslow.set('holding', json.dumps(picking))
     await asyncio.gather(fut1, fut2)
 
+    # if we're supposed to turn on dial following, do that now
+    if follow_dial:
+        await follow_dial(follow='True', offset=left_angle)
+
     # send message to qnx to store this time as the "stimulus onset time"
-    # note two spaces at end necessary for this particular QNX server
-    #qnxsock.sendall(b'%set stim_request=target_on  ')
     qnxsock.sendall(b'%set grasp/available=1')
 
-    endtime = time.time()
-    print(endtime - starttime)
+    print(f"pick_and_place took {time.time() - starttime:.2f} seconds")
 
 
 async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
@@ -574,6 +523,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     global redisslow
 
     qnxsock.sendall(b'%set grasp/available=0')
+    await follow_dial(follow='False')
 
     side = int(side[0])
     left_id = int(left_id[0])
@@ -689,9 +639,8 @@ async def disable_arms():
 
 
 async def get_dxl_positions():
-    print('getting positions of all 6 dxl motors')
     pos = dxl.sync_get_position()
-    print(pos)
+    print('positions of all 6 dxl motors: ', pos)
 
 
 async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
@@ -730,6 +679,7 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
         dxl.move_arm_to_pos(arm=side, pos=position, rotation=rotation)
         if position != 'present':
             qnxsock.sendall(b'%set grasp/available=0')
+            await follow_dial(follow='False')
         
         await loop.create_task(wait_for_dxl(50))
         
@@ -847,77 +797,36 @@ async def move_xy_to_location(axis=['a'], location=[-1], accel=[25], vel=[3]):
 
 async def magnets(left_status=[-1], right_status=[-1]):
     # left_status = 0 means turn off that magnet, 1 turn on
-    # global redisfast
 
     left_status = int(left_status[0])
     right_status = int(right_status[0])
 
     if left_status == 0:
-        # await redisfast.set('get_left', '0')
-        # await redisfast.set('get_right', '0')
         await toggle_touch(0)  # off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(0))
-        # await redisfast.set('get_left', '1')
-        # await redisfast.set('get_right', '1')
         await toggle_touch(1)  # left on
         await pub.publish_json('WebClient', {"leftmag": "0"})
 
     elif left_status == 1:
-        # await redisfast.set('get_left', '0')
-        # await redisfast.set('get_right', '0')
         await toggle_touch(0)  # left off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(0))
-        # await redisfast.set('get_left', '1')
-        # await redisfast.set('get_right', '1')
         await toggle_touch(1)  # left on
         await pub.publish_json('WebClient', {"leftmag": "1"})
 
     if right_status == 0:
-        # await redisfast.set('get_left', '0')
-        # await redisfast.set('get_right', '0')
         await toggle_touch(0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(1))
-        # await redisfast.set('get_left', '1')
-        # await redisfast.set('get_right', '1')
         await toggle_touch(1)  # right on
         await pub.publish_json('WebClient', {"rightmag": "0"})
     elif right_status == 1:
-        # await redisfast.set('get_left', '0')
-        # await redisfast.set('get_right', '0')
         await toggle_touch(0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(1))
-        # await redisfast.set('get_left', '1')
-        # await redisfast.set('get_right', '1')
         await toggle_touch(1)  # right on
         await pub.publish_json('WebClient', {"rightmag": "1"})
-
-
-# async def find_address(shapeid=0):
-#     global redisslow
-#
-#     if shapeid <= 1:
-#         print('need a number >1')
-#         return -1
-#
-#     panel = await redisslow.get('panel')
-#     panel = np.array(json.loads(panel))
-#     add = np.where(panel[:, :, 0] == shapeid)
-#
-#     if len(add[0]) == 0:
-#         print('object not found on panel')
-#         return -1
-#     elif len(add[0]) > 1:
-#         print('object on panel multiple times')
-#         return -1
-#
-#     x = panel[add[0][0], add[1][0], 1]
-#     y = panel[add[0][0], add[1][0], 2]
-#
-#     return x, y
 
 async def toggle_touch(status):
     if status:
@@ -1016,17 +925,6 @@ async def publish_inventory():
 
     await pub.publish_json('WebClientInventory',
                            {"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(hstring.tolist())})
-
-
-# async def publish_object_database():
-#     global redisslow
-#     shapeData = await redisslow.get('shapeData')
-#     shapeData = np.array(json.loads(shapeData))
-#     await pub.publish_json('WebClientInventory', {"shapeData": json.dumps(shapeData.tolist())})
-#
-# async def update_object_database(table=''):
-#     global redisslow
-#     print(table)
 
 
 async def get_touch_status():
