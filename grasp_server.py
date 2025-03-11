@@ -319,7 +319,7 @@ async def set_motor_to_dial():
 
 
 async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180],
-                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0], follow_dial=[0], use_dummy=[0], dummy_ids=[2024, 2036]):
+                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0], dial_following=[0], use_dummy=[0], dummy_ids=[2024, 2036]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
@@ -330,7 +330,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # dont_present (integer) -1 for neither, 0 for left, 1 for right. For cases where we want to grab a shape but not present it
     # xoffset (integer) custom x axis offset from default left hand or right hand position
     # reset_dial (integer 0 or 1) if 1, will reset the dial (chan 1) to 1024 and disable the torque at the end
-    # follow_dial (integer 0 or 1) if 1, will turn on dial following. left arm will follow motor 1 with offset left_angle until instructed to stop                             
+    # dial_following (integer 0 or 1) if 1, will turn on dial following. left arm will follow motor 1 with offset left_angle until instructed to stop                             
     # use_dummy (integer 0 or 1) for conditions where you need to ensure the user cant tell if the shape changed or not, use a dummy on the right arm
     # dummy_ids (list of two integers) if use_dummy, right arm will toggle between these two shapes when the left_id is the same as holding(0)
 
@@ -338,7 +338,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
 
     global redisslow
     qnxsock.sendall(b'%set grasp/available=0')
-    await follow_dial(follow='False')
+    await follow_dial(follow=False)
 
     starttime = time.time()
 
@@ -351,7 +351,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     dont_present = int(round(float(dont_present[0])))
     xoffset = int(round(float(xoffset[0])))
     reset_dial = int(round(float(reset_dial[0])))
-    follow_dial = int(round(float(follow_dial[0])))
+    dial_following = int(round(float(dial_following[0])))
     use_dummy = int(round(float(use_dummy[0])))
                              
     # Ensure dummy_ids is a proper list of integers
@@ -503,8 +503,8 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     await asyncio.gather(fut1, fut2)
 
     # if we're supposed to turn on dial following, do that now
-    if follow_dial:
-        await follow_dial(follow='True', offset=left_angle)
+    if dial_following:
+        await follow_dial(follow=True, offset=left_angle)
 
     # send message to qnx to store this time as the "stimulus onset time"
     qnxsock.sendall(b'%set grasp/available=1')
@@ -523,7 +523,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
     global redisslow
 
     qnxsock.sendall(b'%set grasp/available=0')
-    await follow_dial(follow='False')
+    await follow_dial(follow=False)
 
     side = int(side[0])
     left_id = int(left_id[0])
@@ -679,7 +679,7 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
         dxl.move_arm_to_pos(arm=side, pos=position, rotation=rotation)
         if position != 'present':
             qnxsock.sendall(b'%set grasp/available=0')
-            await follow_dial(follow='False')
+            await follow_dial(follow=False)
         
         await loop.create_task(wait_for_dxl(50))
         
