@@ -308,7 +308,7 @@ async def set_motor_to_dial():
                 
                 # Move the target arm motor
                 dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
-                send_to_dataserver(client_socket, "grasp/left_angle", DservType.INT.value, struct.pack("<i", target_angle))
+                send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, struct.pack("<i", target_angle))
 
             # Yield control to avoid blocking other tasks
             await asyncio.sleep(0.002)
