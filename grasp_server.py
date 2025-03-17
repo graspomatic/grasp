@@ -716,7 +716,7 @@ async def follow_dial(follow=['True'], offset=[0], dial_motor=[1], target_arm=[0
     enable = follow[0].lower() == "true"
 
     if enable:
-        follow_settings["offset"] = int(-1 * offset[0])
+        follow_settings["offset"] = int(-1 * offset[0] + 360)
         follow_settings["dial_motor"] = int(dial_motor[0])
         follow_settings["target_arm"] = int(target_arm[0])
 
