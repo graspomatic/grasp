@@ -331,15 +331,16 @@ async def set_motor_to_dial_or_pattern():
                     match = re.search(r'\{(.*?)\}', result)
                     if match:
                         sine_value_returned = float(match.group(1))
-                        print(sine_value_returned)  # Output: 3.14
-
-
-
-
+                        print("sine_value_returned: " + sine_value_returned)  # Output: 3.14
+                    else:
+                        # Handle the error or set a default value
+                        print("No match found, setting sine_value_returned to 0.0")
+                        sine_value_returned = 0.0
                     
                     target_angle = int(sine_value_returned + follow_settings["offset"])
                     dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
                     send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle % 360))
+
                 else:
                     print('follow_mode should be dial or pattern')
 
