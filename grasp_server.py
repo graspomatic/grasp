@@ -529,9 +529,9 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # if we're supposed to turn on dial following, do that now
     if dial_following and not pattern_following:
         await follow_dial_or_pattern(follow=["True"], mode=["dial"], offset=[left_angle])
-    elif if pattern_following and not dial_following:
+    elif pattern_following and not dial_following:
         await follow_dial_or_pattern(follow=["True"], mode=["pattern"], offset=[left_angle])
-    elif if pattern_following and dial_following:
+    elif pattern_following and dial_following:
         print('cant do both dial and pattern following')
 
     # send message to qnx to store this time as the "stimulus onset time"
