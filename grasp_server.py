@@ -331,7 +331,7 @@ async def set_motor_to_dial_or_pattern():
                     match = re.search(r'\{(.*?)\}', result)
                     if match:
                         sine_value_returned = float(match.group(1))
-                        print("sine_value_returned: " + sine_value_returned)  # Output: 3.14
+                        print(f"sine_value_returned: {sine_value_returned}")
                     else:
                         # Handle the error or set a default value
                         print("No match found, setting sine_value_returned to 0.0")
