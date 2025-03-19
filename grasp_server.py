@@ -321,8 +321,8 @@ async def set_motor_to_dial_or_pattern():
                     dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
                     send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle % 360))
                 elif follow_settings["follow_mode"] == "pattern":
-                    amplitude = 30     # will swing between +/- amplitude
-                    period = 2         # time in seconds of 1 rev
+                    amplitude = 60     # will swing between +/- amplitude
+                    period = 4         # time in seconds of 1 rev
                     elapsed = time.time() - follow_settings["start_time"]
                     sine_value = amplitude * math.sin(2 * math.pi * elapsed) / period
                     target_angle = int(sine_value + follow_settings["offset"])
