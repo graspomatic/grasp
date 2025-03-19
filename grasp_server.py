@@ -15,10 +15,12 @@ active_task = 0
 
 # Shared dictionary for controlling the motor following behavior
 follow_settings = {
-    "enabled": False,  # Whether to follow the dial motor
-    "offset": 0,    # Offset in degrees
-    "dial_motor": 1,   # Motor ID of the dial motor
-    "target_arm": 0    # Arm ID of the follower motor (0 for left, 1 for right)
+    "enabled": False,        # Whether to follow the dial/pattern
+    "follow_mode": "dial",   # follow "dial" or "pattern"
+    "offset": 0,             # Offset in degrees to apply to dial position so it is centered around displayed orientation
+    "dial_motor": 1,         # Motor ID of the dial motor
+    "target_arm": 0,         # Arm ID of the follower motor (0 for left, 1 for right)
+    "start_time": 0          # used to keep track of when angle-following started for the pattern
 }
 
 # XY motors
@@ -287,30 +289,40 @@ async def wait_for_xy(xtarg='*', ytarg='*', distance_thresh=200):
     # print('target reached')
     return 1
 
-async def set_motor_to_dial():
+async def set_motor_to_dial_or_pattern():
     """
     Continuously checks 'follow_settings["enabled"]'.
-    If True, reads the specified dial motor's position, applies the offset,
+    If True, determines target position from motor or pattern, applies the offset,
     and commands the specified target arm motor accordingly.
-    Positive offset moves CCW
     """
     try:
         while True:
             if follow_settings["enabled"]:
-                # Read the dial motor position
-                dial_pos = dxl.get_position(follow_settings["dial_motor"])
-                
-                # Convert to degrees (assuming 4096 units = 360° with offset correction)
-                # subtract 90 because thats the center position of the dial
-                # subtract 180 because thats the center position of the object
-                dial_deg = (dial_pos / 4096) * 360 - 90 - 180
-                
-                # Compute the target angle with the specified offset
-                target_angle = dial_deg + follow_settings["offset"]
-                
-                # Move the target arm motor
-                dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
-                send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle % 360))
+                if follow_settings["follow_mode"] == "dial":
+                    # Read the dial motor position
+                    dial_pos = dxl.get_position(follow_settings["dial_motor"])
+                    
+                    # Convert to degrees (assuming 4096 units = 360° with offset correction)
+                    # subtract 90 because thats the center position of the dial
+                    # subtract 180 because thats the center position of the object
+                    dial_deg = (dial_pos / 4096) * 360 - 90 - 180
+                    
+                    # Compute the target angle with the specified offset
+                    target_angle = dial_deg + follow_settings["offset"]
+                    
+                    # Move the target arm motor
+                    dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
+                    send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle % 360))
+                elif follow_settings["follow_mode"] == "pattern":
+                    amplitude = 60     # will swing between +/- amplitude
+                    period = 1         # time in seconds of 1 rev
+                    elapsed = time.time() - follow_settings["start_time"]
+                    sine_value = amplitude * math.sin(2 * math.pi * elapsed) / period
+                    target_angle = int(sine_value + follow_settings["offset"])
+                    dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
+                    send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle % 360))
+                else:
+                    print('follow_mode should be dial or pattern')
 
             # Yield control to avoid blocking other tasks
             await asyncio.sleep(0.002)
@@ -327,7 +339,7 @@ async def set_motor_to_dial():
 
 
 async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180], right_angle=[180],
-                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0], dial_following=[0], use_dummy=[0], dummy_ids=[2024, 2036]):
+                         return_duplicates=[1], dont_present=[-1], xoffset=[0], reset_dial=[0], dial_following=[0], pattern_following=[0], use_dummy=[0], dummy_ids=[2024, 2036]):
     # put away current objects, if any, get new objects, present those objects
     # input variables:
     # hand (integer) is position where we want to present object. 0 (left) or (1) right
@@ -339,6 +351,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # xoffset (integer) custom x axis offset from default left hand or right hand position
     # reset_dial (integer 0 or 1) if 1, will reset the dial (chan 1) to 1024 and disable the torque at the end
     # dial_following (integer 0 or 1) if 1, will turn on dial following. left arm will follow motor 1 with offset left_angle until instructed to stop                             
+    # pattern_following (integer 0 or 1) if 1, will turn on pattern following. left arm will follow sine wave with offset left_angle until instructed to stop                             
     # use_dummy (integer 0 or 1) for conditions where you need to ensure the user cant tell if the shape changed or not, use a dummy on the right arm
     # dummy_ids (list of two integers) if use_dummy, right arm will toggle between these two shapes when the left_id is the same as holding(0)
 
@@ -348,7 +361,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     # qnxsock.sendall(b'%set grasp/available=0')
     send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, "0")
                                  
-    await follow_dial(follow=["False"])
+    await follow_dial_or_pattern(follow=["False"])
 
     starttime = time.time()
 
@@ -362,6 +375,7 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     xoffset = int(round(float(xoffset[0])))
     reset_dial = int(round(float(reset_dial[0])))
     dial_following = int(round(float(dial_following[0])))
+    pattern_following = int(round(float(pattern_following[0])))
     use_dummy = int(round(float(use_dummy[0])))
                              
     # Ensure dummy_ids is a proper list of integers
@@ -513,12 +527,17 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
     await asyncio.gather(fut1, fut2)
 
     # if we're supposed to turn on dial following, do that now
-    if dial_following:
-        await follow_dial(follow=["True"], offset=[left_angle])
+    if dial_following and not pattern_following:
+        await follow_dial_or_pattern(follow=["True"], mode=["dial"], offset=[left_angle])
+    elif if pattern_following and not dial_following:
+        await follow_dial_or_pattern(follow=["True"], mode=["pattern"], offset=[left_angle])
+    elif if pattern_following and dial_following:
+        print('cant do both dial and pattern following')
 
     # send message to qnx to store this time as the "stimulus onset time"
     # qnxsock.sendall(b'%set grasp/available=1')
     send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, "1")
+    follow_settings["start_time"] = time.time()
 
     print(f"pick_and_place took {time.time() - starttime:.2f} seconds")
 
@@ -535,7 +554,7 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
 
     # qnxsock.sendall(b'%set grasp/available=0')
     send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, "0")
-    await follow_dial(follow=["False"])
+    await follow_dial_or_pattern(follow=["False"])
 
     side = int(side[0])
     left_id = int(left_id[0])
@@ -692,7 +711,7 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
         if position != 'present':
             # qnxsock.sendall(b'%set grasp/available=0')
             send_to_dataserver(qnxsock, "grasp/available", DservType.STRING.value, "0")
-            await follow_dial(follow=["False"])
+            await follow_dial_or_pattern(follow=["False"])
         
         await loop.create_task(wait_for_dxl(50))
         
@@ -712,15 +731,17 @@ async def check_dxl_errors():
     errs = dxl.sync_error_status()
     print(errs)
 
-async def follow_dial(follow=['True'], offset=[0], dial_motor=[1], target_arm=[0]):
+async def follow_dial_or_pattern(follow=['True'], mode=['dial'], offset=[0], dial_motor=[1], target_arm=[0]):
+    # Turns on dial following carried out by set_motor_to_dial_or_pattern()
     enable = follow[0].lower() == "true"
 
     if enable:
         follow_settings["offset"] = int(-1 * offset[0] + 360)
         follow_settings["dial_motor"] = int(dial_motor[0])
         follow_settings["target_arm"] = int(target_arm[0])
+        follow_settings["follow_mode"] = mode
 
-    follow_settings["enabled"] = enable  # Always set this last
+    follow_settings["enabled"] = enable
 
     print(f"Updated follow settings: {follow_settings}")
 
@@ -1009,7 +1030,7 @@ fx_list = {
     'get_dxl_positions': get_dxl_positions,
     'set_dxl_positions': set_dxl_positions,
     'check_dxl_errors': check_dxl_errors,
-    'follow_dial': follow_dial,
+    'follow_dial_or_pattern': follow_dial_or_pattern,
 
     'enable_xy': enable_xy,
     'disable_xy': disable_xy,
@@ -1113,7 +1134,7 @@ async def disconnect_redis():
 
 loop = asyncio.get_event_loop()  # makes a new event loop if one doesnt exist
 loop.create_task(connect_redis())
-loop.create_task(set_motor_to_dial()) # loop that runs continuosly and can be used to follow a dial with follow_settings["enabled"] = True  
+loop.create_task(set_motor_to_dial_or_pattern()) # loop that runs continuosly and can be used to follow a dial with follow_settings["enabled"] = True  
 
 coro = asyncio.start_server(handle_request, '192.168.88.84', 8888, loop=loop)  # start a socket server
 # coro = asyncio.start_server(handle_request, '100.0.0.84', 8888, loop=loop)  # start a socket server
