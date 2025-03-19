@@ -55,6 +55,13 @@ qnxhost = "192.168.88.40"
 qnxsock = socket.create_connection((qnxhost, 4620)) # new RPi4 version of QNX
 qnxsock.settimeout(0.2)
 
+qnxsock.sendall(b'%set grasp/pattern_pos=3.14\n')
+result = sock.makefile().readline()
+print(result)
+qnxsock.sendall(b'%get grasp/pattern_pos\n')
+result = sock.makefile().readline()
+print(result)
+
 async def return_object(side=-1, add=[0, 0]):
     # Put away the object currently held on specified side in
     print("put away " + str(side) + " at " + str(add))
@@ -739,7 +746,7 @@ async def follow_dial_or_pattern(follow=['True'], mode=['dial'], offset=[0], dia
         follow_settings["offset"] = int(-1 * offset[0] + 360)
         follow_settings["dial_motor"] = int(dial_motor[0])
         follow_settings["target_arm"] = int(target_arm[0])
-        follow_settings["follow_mode"] = mode
+        follow_settings["follow_mode"] = mode[0]
 
     follow_settings["enabled"] = enable
 
@@ -869,6 +876,9 @@ async def toggle_touch(status):
     else:
         qnxsock.sendall(b'%set sensor:control:deactivate=0\n')
         qnxsock.sendall(b'%set sensor:control:deactivate=1\n')
+
+   
+
 
     b = qnxsock.recv(8192)
     print(b.decode().strip())
