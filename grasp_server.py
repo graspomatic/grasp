@@ -55,16 +55,7 @@ qnxhost = "192.168.88.40"
 qnxsock = socket.create_connection((qnxhost, 4620)) # new RPi4 version of QNX
 qnxsock.settimeout(0.2)
 
-qnxsock.sendall(b'%set grasp/pattern_pos=3.14\n')
-result = qnxsock.makefile().readline()
-print(result)
-qnxsock.sendall(b'%get grasp/pattern_pos\n')
-result = qnxsock.makefile().readline()
-print(result)
-match = re.search(r'\{(.*?)\}', result)
-if match:
-    value = float(match.group(1))
-    print(value)  # Output: 3.14
+
 
 async def return_object(side=-1, add=[0, 0]):
     # Put away the object currently held on specified side in
@@ -329,7 +320,25 @@ async def set_motor_to_dial_or_pattern():
                     period = 2         # time in seconds of 1 rev
                     elapsed = time.time() - follow_settings["start_time"]
                     sine_value = amplitude * math.sin(2 * math.pi * elapsed / period)
-                    target_angle = int(sine_value + follow_settings["offset"])
+
+
+
+                    qnxsock.sendall(b'%set grasp/pattern_pos=' + sine_value + '3.14\n')
+                    result = qnxsock.makefile().readline()
+                    print(result)
+                    qnxsock.sendall(b'%get grasp/pattern_pos\n')
+                    result = qnxsock.makefile().readline()
+                    print(result)
+                    match = re.search(r'\{(.*?)\}', result)
+                    if match:
+                        sine_value_returned = float(match.group(1))
+                        print(sine_value_returned)  # Output: 3.14
+
+
+
+
+                    
+                    target_angle = int(sine_value_returned + follow_settings["offset"])
                     dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
                     send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(target_angle % 360))
                 else:
