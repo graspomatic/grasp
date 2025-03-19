@@ -63,7 +63,7 @@ result = qnxsock.makefile().readline()
 print(result)
 match = re.search(r'\{(.*?)\}', result)
 if match:
-    value = int(match.group(1))
+    value = float(match.group(1))
     print(value)  # Output: 3.14
 
 async def return_object(side=-1, add=[0, 0]):
