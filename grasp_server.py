@@ -56,10 +56,10 @@ qnxsock = socket.create_connection((qnxhost, 4620)) # new RPi4 version of QNX
 qnxsock.settimeout(0.2)
 
 qnxsock.sendall(b'%set grasp/pattern_pos=3.14\n')
-result = sock.makefile().readline()
+result = qnxsock.makefile().readline()
 print(result)
 qnxsock.sendall(b'%get grasp/pattern_pos\n')
-result = sock.makefile().readline()
+result = qnxsock.makefile().readline()
 print(result)
 
 async def return_object(side=-1, add=[0, 0]):
