@@ -321,9 +321,8 @@ async def set_motor_to_dial_or_pattern():
                     elapsed = time.time() - follow_settings["start_time"]
                     sine_value = amplitude * math.sin(2 * math.pi * elapsed / period)
 
-
-
-                    qnxsock.sendall(b'%set grasp/pattern_pos=' + sine_value + '3.14\n')
+                    command = f"%set grasp/pattern_pos={sine_value}\n"
+                    qnxsock.sendall(command.encode('utf-8'))
                     result = qnxsock.makefile().readline()
                     print(result)
                     qnxsock.sendall(b'%get grasp/pattern_pos\n')
