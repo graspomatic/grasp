@@ -528,12 +528,16 @@ async def pick_and_place(hand=[-1], left_id=[-1], right_id=[-1], left_angle=[180
         print("presenting both")
         await present(arms=arms, hand=hand, left_angle=left_angle, right_angle=right_angle, hide_panel='yes',
                       xoffset=xoffset)
+        send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(left_angle % 360))
+        send_to_dataserver(qnxsock, "grasp/right_angle", DservType.INT.value, int(right_angle % 360))
     elif dont_present == 0:
         print("presenting right only")
         await present(arms='right', hand=hand, right_angle=right_angle, hide_panel='yes', xoffset=xoffset)
+        send_to_dataserver(qnxsock, "grasp/right_angle", DservType.INT.value, int(right_angle % 360))
     elif dont_present == 1:
         print("presenting left only")
         await present(arms='left', hand=hand, left_angle=left_angle, hide_panel='yes', xoffset=xoffset)
+        send_to_dataserver(qnxsock, "grasp/left_angle", DservType.INT.value, int(left_angle % 360))
 
     # turn off torque on dial if using
     if (reset_dial):
