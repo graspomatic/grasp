@@ -42,8 +42,8 @@ dserv_rx.on('listening', function() {
     // tell dserv what patterns we're interested in
     dservclient.on('addmatch', function() {
         var every = 1
-        dservclient.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:0:vals ' + every);
-        dservclient.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' sensor:1:vals ' + every);
+        dservclient.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' grasp/sensor0/vals ' + every);
+        dservclient.write("%match " + dserv_rx_addr + ' ' + dserv_rx_port + ' grasp/sensor1/vals ' + every);
         registered = true;
     });
 
