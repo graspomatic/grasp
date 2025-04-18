@@ -315,6 +315,12 @@ async def set_motor_to_dial_or_pattern():
                     # Move the target arm motor
                     dxl.move_arm_to_pos(arm=follow_settings["target_arm"], pos='present', rotation=target_angle)
                     send_to_dataserver(qnxsock, "grasp/left_angle", DservType.SHORT.value, int(target_angle % 360))
+                elif follow_settings["follow_mode"] == "report_only":
+                    dial_pos = dxl.get_position(follow_settings["dial_motor"])
+                    # Convert to degrees (assuming 4096 units = 360° with offset correction)
+                    # subtract 90 because thats the center position of the dial
+                    dial_angle = (dial_pos / 4096) * 360 - 90
+                    send_to_dataserver(qnxsock, "grasp/dial_angle", DservType.SHORT.value, int(dial_angle % 360))
                 elif follow_settings["follow_mode"] == "pattern":
                     amplitude = 55     # will swing between +/- amplitude
                     period = 4         # time in seconds of 1 rev
@@ -342,7 +348,7 @@ async def set_motor_to_dial_or_pattern():
                     send_to_dataserver(qnxsock, "grasp/left_angle", DservType.SHORT.value, int(target_angle % 360))
 
                 else:
-                    print('follow_mode should be dial or pattern')
+                    print('follow_mode should be dial, report_only, or pattern')
 
             # Yield control to avoid blocking other tasks
             await asyncio.sleep(0.002)
@@ -755,17 +761,25 @@ async def check_dxl_errors():
     errs = dxl.sync_error_status()
     print(errs)
 
+async def reset_dial(dial_motor=[1]):
+    dxl.set_torque(int(dial_motor[0]),1)
+    dxl.set_position(int(dial_motor[0]), 1024)
+
+# call it dial_angle
+
 async def follow_dial_or_pattern(follow=['True'], mode=['dial'], offset=[0], dial_motor=[1], target_arm=[0]):
+    # mode="report_only" means dont do anything except read the dial_angle and send it to dserv
     # Turns on dial following carried out by set_motor_to_dial_or_pattern()
     enable = follow[0].lower() == "true"
-
+    
     if enable:
+        dxl.set_torque(int(dial_motor[0]), 0)                  # disable motor torque so you can turn it
         follow_settings["offset"] = int(-1 * offset[0] + 360)
         follow_settings["dial_motor"] = int(dial_motor[0])
         follow_settings["target_arm"] = int(target_arm[0])
         follow_settings["follow_mode"] = mode[0]
-
-    follow_settings["enabled"] = enable
+    
+    follow_settings["enabled"] = enable         # enables or disables according to follow setting
 
     print(f"Updated follow settings: {follow_settings}")
 
