@@ -1072,6 +1072,7 @@ fx_list = {
     'set_dxl_positions': set_dxl_positions,
     'check_dxl_errors': check_dxl_errors,
     'follow_dial_or_pattern': follow_dial_or_pattern,
+    'reset_dial': reset_dial,
 
     'enable_xy': enable_xy,
     'disable_xy': disable_xy,
