@@ -319,7 +319,8 @@ async def set_motor_to_dial_or_pattern():
                     dial_pos = dxl.get_position(follow_settings["dial_motor"])
                     # Convert to degrees (assuming 4096 units = 360° with offset correction)
                     # subtract 90 because thats the center position of the dial
-                    dial_angle = (dial_pos / 4096) * 360 - 90
+                    # multiply by negative one to get direction we want
+                    dial_angle = ((dial_pos / 4096) * 360 - 90) * -1
                     send_to_dataserver(qnxsock, "grasp/dial_angle", DservType.SHORT.value, int(dial_angle % 360))
                 elif follow_settings["follow_mode"] == "pattern":
                     amplitude = 55     # will swing between +/- amplitude
