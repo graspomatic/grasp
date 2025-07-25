@@ -33,8 +33,9 @@ from Dynamixel2Control.Dynamixel2Control import D2C
 dxl = D2C()
 
 # magnets
-from MagControl.MagControl import MAGS
-mags = MAGS()
+sys.path.append(os.path.join(os.path.dirname(__file__), 'GPIOD'))
+import MagControl
+mags = MagControl.MAGS()
 
 # algorithm for determining order of pickup and dropoff of objects
 import path_find
