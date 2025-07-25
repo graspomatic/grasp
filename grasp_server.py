@@ -29,12 +29,12 @@ x = AMC(motor_ip="100.0.0.110", local_port=60649, belt='standard')
 y = AMC(motor_ip="100.0.0.111", local_port=60648, belt='steel')
 
 # servos
-import Dynamixel2Control
-dxl = Dynamixel2Control.D2C()
+from Dynamixel2Control.Dynamixel2Control import D2C
+dxl = D2C()
 
 # magnets
-import MagControl
-mags = MagControl.MAGS()
+from MagControl.MagControl import MAGS
+mags = MAGS()
 
 # algorithm for determining order of pickup and dropoff of objects
 import path_find
