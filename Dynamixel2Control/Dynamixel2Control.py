@@ -1,5 +1,8 @@
 import numpy as np
 import dynamixel_sdk as dxlfx  # Uses Dynamixel SDK library
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
 import dynamixel_constants as dxlcx
 import time
 from datetime import datetime
