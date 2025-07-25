@@ -12,7 +12,7 @@ update-rc.d startup.sh defaults
 #cp ./redis_conf_files/redis_6379.conf /etc/redis/
 cp ./redis_conf_files/redis_6380.conf /etc/redis/
 #mkdir /var/lib/redis/6379
-mkdir /var/lib/redis/6380
+mkdir -p /var/lib/redis/6380
 
 redis-cli -p 6380 shutdown
 
