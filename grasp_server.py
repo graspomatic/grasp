@@ -24,9 +24,9 @@ follow_settings = {
 }
 
 # XY motors
-import AppliedMotionControl
-x = AppliedMotionControl.AMC(motor_ip="100.0.0.110", local_port=60649, belt='standard')
-y = AppliedMotionControl.AMC(motor_ip="100.0.0.111", local_port=60648, belt='steel')
+from AppliedMotionControl.AppliedMotionControl import AMC
+x = AMC(motor_ip="100.0.0.110", local_port=60649, belt='standard')
+y = AMC(motor_ip="100.0.0.111", local_port=60648, belt='steel')
 
 # servos
 import Dynamixel2Control
