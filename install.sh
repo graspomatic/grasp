@@ -13,6 +13,8 @@ update-rc.d startup.sh defaults
 cp ./redis_conf_files/redis_6380.conf /etc/redis/
 sudo chown redis:redis /etc/redis/redis_6380.conf
 sudo chmod 644 /etc/redis/redis_6380.conf
+sudo chown root:redis /etc/redis
+sudo chmod 755 /etc/redis
 #mkdir /var/lib/redis/6379
 mkdir -p /var/lib/redis/6380
 
