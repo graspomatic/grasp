@@ -3,7 +3,7 @@ import sys
 import asyncio
 import numpy as np
 import json
-import aioredis
+import redis.asyncio as redis
 import atexit
 import time
 import math
@@ -1155,12 +1155,13 @@ async def reader(ch):
 
 async def connect_redis():
     global redisslow, pub
-    # redisfast = await aioredis.create_redis(('localhost', 6379), loop=loop)
-    redisslow = await aioredis.create_redis(('localhost', 6380), loop=loop)
-    pub = await aioredis.create_redis(('localhost', 6379), loop=loop)
-    # await redisfast.set('get_left', '1')
-    # await redisfast.set('get_right', '1')
-    await pub.publish_json('WebClient', {"leftmag": "0", "rightmag": "0"})
+
+    # Create Redis connections (no loop needed)
+    redisslow = redis.Redis(host='localhost', port=6380)
+    pub = redis.Redis(host='localhost', port=6379)
+
+    # Publish a JSON message
+    await pub.publish('WebClient', redis.client.JsonEncoder().encode({"leftmag": "0", "rightmag": "0"}))
 
 
 async def disconnect_redis():
