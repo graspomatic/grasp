@@ -17,6 +17,15 @@ python3 -m venv grasp2
 source grasp2/bin/activate
 pip install numpy redis dynamixel-sdk
 
+```
 
+Install ethernet adapter for 2nd interface with motors
+
+```
+nmcli con show
+sudo nmcli con mod "Wired connection 2" ipv4.addresses 100.0.0.1/24
+sudo nmcli con mod "Wired connection 2" ipv4.method manual
+sudo nmcli con mod "Wired connection 2" ipv4.gateway ""
+sudo nmcli con mod "Wired connection 2" ipv4.dns ""
 
 ```
