@@ -15,7 +15,7 @@ sudo reboot
 cd ~/grasp
 python3 -m venv grasp2
 source grasp2/bin/activate
-pip install numpy redis dynamixel-sdk
+pip install numpy redis dynamixel-sdk gpiod
 
 ```
 
