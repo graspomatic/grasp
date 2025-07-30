@@ -29,3 +29,12 @@ sudo nmcli con mod "Wired connection 2" ipv4.gateway ""
 sudo nmcli con mod "Wired connection 2" ipv4.dns ""
 
 ```
+
+Install nodejs
+
+```
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+cd ~/grasp/node-web-server
+npm ci
+```
