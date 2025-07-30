@@ -36,5 +36,8 @@ Install nodejs
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
 cd ~/grasp/node-web-server
-npm ci
+rm -f package‑lock.json  
+rm -rf node_modules
+npm install express socket.io --save
+node server.js
 ```
