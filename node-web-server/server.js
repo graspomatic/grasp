@@ -73,8 +73,8 @@ setInterval(setFunc, 1500);
 setInterval(getFunc, 1500);
 
 // this is necessary for socket.io communication
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(3000, () => {
+  console.log('listening on all interfaces :3000');
 });
 
 app.use('/SVGs', express.static('/home/root/grasp/shapes/SVGs'));
