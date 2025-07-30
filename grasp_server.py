@@ -1162,8 +1162,9 @@ async def connect_redis():
     redisslow = redis.Redis(host='localhost', port=6380)
     pub = redis.Redis(host='localhost', port=6379)
 
-    # Publish a JSON message
-    await pub.publish('WebClient', redis.client.JsonEncoder().encode({"leftmag": "0", "rightmag": "0"}))
+    message = json.dumps({"leftmag":  "0", "rightmag": "0"})
+    sent = await pub.publish("WebClient", message)
+    print(f"Published message to {sent} subscriber(s)")
 
 
 async def disconnect_redis():
