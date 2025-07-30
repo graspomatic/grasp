@@ -1183,10 +1183,11 @@ loop = asyncio.get_event_loop()  # makes a new event loop if one doesnt exist
 loop.create_task(connect_redis())
 loop.create_task(set_motor_to_dial_or_pattern()) # loop that runs continuosly and can be used to follow a dial with follow_settings["enabled"] = True  
 
-coro = asyncio.start_server(handle_request, '192.168.88.84', 8888, loop=loop)  # start a socket server
+server = loop.run_until_complete(
+    asyncio.start_server(handle_request, '192.168.88.84', 8888)
+)  # start a socket server
 # coro = asyncio.start_server(handle_request, '100.0.0.84', 8888, loop=loop)  # start a socket server
 # coro = asyncio.start_server(handle_request, '127.0.0.1', 8888, loop=loop)  # start a socket server
-server = loop.run_until_complete(coro)
 
 # Serve requests until Ctrl+C is pressed
 print('Serving on {}'.format(server.sockets[0].getsockname()))
@@ -1194,11 +1195,15 @@ try:
     loop.run_forever()
 except KeyboardInterrupt:
     pass
+finally:
+    # 1. Disconnect Redis
+    loop.run_until_complete(disconnect_redis())
 
-# Close the server
-loop.run_until_complete(disconnect_redis())
-server.close()
-loop.run_until_complete(server.wait_closed())
-loop.close()
+    # 2. Tear down the server
+    server.close()
+    loop.run_until_complete(server.wait_closed())
+
+    # 3. Close the loop
+    loop.close()
 # sock.close()
 qnxsock.close()
