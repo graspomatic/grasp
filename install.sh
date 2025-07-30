@@ -27,5 +27,8 @@ chmod 644 /var/lib/redis/6380/appendonly6380.aof
 #/usr/bin/redis-server /etc/redis/redis_6379.conf
 /usr/bin/redis-server /etc/redis/redis_6380.conf
 
+sudo mkdir -p /shared/lab
+
+#(add appropriate fstab entry to mount with cifs)
 
 
