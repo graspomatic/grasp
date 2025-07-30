@@ -44,5 +44,5 @@ node server.js
 
 Install webdis
 ```
-
+sudo apt install webdis
 ```
