@@ -32,3 +32,5 @@ sudo mkdir -p /shared/lab
 #(add appropriate fstab entry to mount with cifs)
 
 
+sudo apt install webdis
+
