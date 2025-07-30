@@ -12,4 +12,4 @@ touch_sensor -i 10 -d
 
 /bin/mount diddy.neuro.brown.edu:/mnt/SharedDrives/Labfiles /shared/lab
 
-webdis /home/root/grasp/webdis_conf_files/webdis.json &
+webdis /home/lab/grasp/webdis_conf_files/webdis.json &
