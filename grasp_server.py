@@ -881,27 +881,27 @@ async def magnets(left_status=[-1], right_status=[-1]):
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(0))
         await toggle_touch(1)  # left on
-        await pub.publish_json('WebClient', {"leftmag": "0"})
+        await pub.publish('WebClient', json.dumps({"leftmag": "0"}))
 
     elif left_status == 1:
         await toggle_touch(0)  # left off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(0))
         await toggle_touch(1)  # left on
-        await pub.publish_json('WebClient', {"leftmag": "1"})
+        await pub.publish('WebClient', json.dumps({"leftmag": "1"}))
 
     if right_status == 0:
         await toggle_touch(0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.deenergize(1))
         await toggle_touch(1)  # right on
-        await pub.publish_json('WebClient', {"rightmag": "0"})
+        await pub.publish('WebClient', json.dumps({"rightmag": "0"}))
     elif right_status == 1:
         await toggle_touch(0)  # right off
         await asyncio.sleep(0.01)
         await loop.create_task(mags.energize(1))
         await toggle_touch(1)  # right on
-        await pub.publish_json('WebClient', {"rightmag": "1"})
+        await pub.publish('WebClient', json.dumps({"rightmag": "1"}))
 
 async def toggle_touch(status):
     if status:
