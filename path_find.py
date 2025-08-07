@@ -156,21 +156,21 @@ class path_find():
             print(pair)
 
             if drop[0]:
-                orders.append(np.array([['d'], [0], pair[0]]))  # add this location to list
+                orders.append(np.array([['d'], [0], pair[0]], dtype=object))  # add this location to list
                 panel, empties = self.change_panel_entry(panel, pair[0][0], pair[0][1], drop[0])  # update panel
 
             if drop[1]:
-                orders.append(np.array([['d'], [1], pair[1]]))  # add this location to list
+                orders.append(np.array([['d'], [1], pair[1]], dtype=object))  # add this location to list
                 panel, empties = self.change_panel_entry(panel, pair[1][0] + right_offset[0], pair[1][1] + right_offset[1], drop[1])  # update panel
 
             if pick[0]:
                 add = self.get_address(panel, pick[0], np.array([0, 0]))
-                orders.append(np.array([['p'], [0], add]))  # add this location to list
+                orders.append(np.array([['p'], [0], add], dtype=object))  # add this location to list
                 panel, empties = self.change_panel_entry(panel, add[0], add[1], 0)  # update panel
 
             if pick[1]:
                 add = self.get_address(panel, pick[1], right_offset)
-                orders.append(np.array([['p'], [1], add]))  # add this location to list
+                orders.append(np.array([['p'], [1], add], dtype=object))  # add this location to list
                 panel, empties = self.change_panel_entry(panel, add[0] + right_offset[0], add[1] + right_offset[1], 0)  # update panel
 
         else:                   # we know that the required objects are on the board
@@ -184,13 +184,13 @@ class path_find():
 
                 xy = self.find_nearest(add, empties)                             # find empty spot
                 print(xy)
-                orders.append(np.array([['d'], [0], xy]))                       # add this location to list
+                orders.append(np.array([['d'], [0], xy], dtype=object))                       # add this location to list
                 panel, empties = self.change_panel_entry(panel, xy[0], xy[1], drop[0])    # update panel
 
             if pick[0]:         # if we need to pick up an object on the left arm
                 add = self.get_address(panel, pick[0], np.array([0, 0]))
                 print(add)
-                orders.append(np.array([['p'], [0], add]))                      # add this location to list
+                orders.append(np.array([['p'], [0], add], dtype=object))                      # add this location to list
                 panel, empties = self.change_panel_entry(panel, add[0], add[1], 0)        # update panel
 
             if drop[1]:         # if we need to drop off an object with the right arm
@@ -198,18 +198,18 @@ class path_find():
                     add = self.get_address(panel, pick[1], right_offset)
                     xy = self.find_nearest(add, empties - right_offset)  # find empty spot
 
-                    orders.append(np.array([['d'], [1], xy]))  # add this location to list
+                    orders.append(np.array([['d'], [1], xy], dtype=object))  # add this location to list
                     panel, empties = self.change_panel_entry(panel, xy[0] + right_offset[0], xy[1] + right_offset[1], drop[1])  # update panel  I THINK THIS LINE GIVES ME PROBLEMS
                     empties = self.find_empty_spots(panel)  # update empties
 
                 else:   # we need to drop off right, but not pick up anything else
                     xy = self.find_nearest(self.mid_point, empties - right_offset)  # find empty spot
-                    orders.append(np.array([['d'], [1], xy]))  # add this location to list
+                    orders.append(np.array([['d'], [1], xy], dtype=object))  # add this location to list
                     panel, empties = self.change_panel_entry(panel, xy[0] + right_offset[0], xy[1] + right_offset[1], drop[1])  # update panel
 
             if pick[1]:
                 add = self.get_address(panel, pick[1], right_offset)
-                orders.append(np.array([['p'], [1], add]))  # add this location to list
+                orders.append(np.array([['p'], [1], add], dtype=object))  # add this location to list
 
 
                 print(add)
