@@ -671,12 +671,8 @@
     // currently we're using similar functionality to received messages from redis via webdis
     $(function () {
         var socketio = io('192.168.88.84:3000', {
-            transports: ['polling','websocket'],
-            transportOptions: {
-                polling: {
-                    withCredentials: false
-                }
-            }
+            transports: ['websocket'],
+            withCredentials: false
         });
         socketio.on('chat message', function(msg){
             var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
