@@ -670,10 +670,11 @@
     // websocket for handling node.js pubs
     // currently we're using similar functionality to received messages from redis via webdis
     $(function () {
-        var socketio = io('192.168.88.84:3000', {
+        var socketio = io({
             transports: ['websocket'],
             withCredentials: false
         });
+        socketio.io('connect', () => console.log('socket connected'));
         socketio.on('chat message', function(msg){
             var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
             // step through each line of data from the server
@@ -696,6 +697,7 @@
                 }
             }
         });
+        socketio.io('disconnect', () => console.log('socket disconnected'));
     });
 
 
