@@ -91,10 +91,10 @@ var ifaces = os.networkInterfaces();
 hostname = ifaces['eth1'][0]['address'];
 
 //start up server on port 8081
-var server = app.listen(8081, function(){
-    var port = server.address().port;
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
+// var server = app.listen(8081, function(){
+//     var port = server.address().port;
+//     console.log(`Server running at http://${hostname}:${port}/`);
+// });
 
 
 
