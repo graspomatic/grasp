@@ -90,7 +90,7 @@ async def return_object(side=-1, add=[0, 0]):
     # once everything is in position, move arm to 'pick' position
     await loop.create_task(wait_for_xy(xtarg=xtarg, ytarg=ytarg, distance_thresh=(100 + xy_accel * 30)))
     await loop.create_task(wait_for_dxl(300))
-    await pub.publish_json('WebClient', {"leftarm": "prep_pick", "rightarm": "prep_pick"})
+    await pub.publish('WebClient', json.dumps({"leftarm": "prep_pick", "rightarm": "prep_pick"}))
 
     dxl.move_arm_to_pos(arm=side, pos='pick')
     await loop.create_task(wait_for_dxl(180))  # 190 seems too high
@@ -98,9 +98,9 @@ async def return_object(side=-1, add=[0, 0]):
     # de-energize magnet
     await loop.create_task(mags.deenergize(side))
     if side == 0:
-        await pub.publish_json('WebClient', {"leftarm": "pick", "leftmag": "0"})
+        await pub.publish('WebClient', json.dumps({"leftarm": "pick", "leftmag": "0"}))
     else:
-        await pub.publish_json('WebClient', {"rightarm": "pick", "rightmag": "0"})
+        await pub.publish('WebClient', json.dumps({"rightarm": "pick", "rightmag": "0"}))
 
     # move arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
@@ -109,9 +109,9 @@ async def return_object(side=-1, add=[0, 0]):
     # await loop.create_task(wait_for_dxl(195))
 
     if side == 0:
-        await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": "0"})
+        await pub.publish('WebClient', json.dumps({"leftarm": "prep_pick", "leftsensor": "0"}))
     else:
-        await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": "0"})
+        await pub.publish('WebClient', json.dumps({"rightarm": "prep_pick", "rightsensor": "0"}))
 
 
 async def retrieve(side=-1, objid=0, add=[0, 0]):
@@ -144,26 +144,29 @@ async def retrieve(side=-1, objid=0, add=[0, 0]):
     # move specified arm to 'pick' position
     await loop.create_task(wait_for_dxl(200))
     dxl.move_arm_to_pos(arm=side, pos='pick')
-    await pub.publish_json('WebClient',
-                           {"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])})
+    await pub.publish('WebClient', json.dumps({"leftarm": "prep_pick", "rightarm": "prep_pick", "xpos": str(add[0]), "ypos": str(add[1])}))
 
     # when arm has reached target location, energize magnet
     await loop.create_task(wait_for_dxl(190))
     await loop.create_task(mags.energize(side))
     await asyncio.sleep(0.1)  # need to wait a bit for the magnet to suck in the object
     if side == 0:
-        await pub.publish_json('WebClient', {"leftarm": "pick", "leftmag": "1"})
+        # await pub.publish_json('WebClient', {"leftarm": "pick", "leftmag": "1"})
+        await pub.publish('WebClient', json.dumps({"leftarm": "pick", "leftmag": "1"}))
     else:
-        await pub.publish_json('WebClient', {"rightarm": "pick", "rightmag": "1"})
+        # await pub.publish_json('WebClient', {"rightarm": "pick", "rightmag": "1"})
+        await pub.publish('WebClient', json.dumps({"rightarm": "pick", "rightmag": "1"}))
 
     # move specified arm to 'prep-pick' position
     dxl.move_arm_to_pos(arm=side, pos='prep_pick')
     await loop.create_task(wait_for_dxl(120))  # at 180, sometimes rips off
     if side == 0:
-        await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": str(objid)})
+        # await pub.publish_json('WebClient', {"leftarm": "prep_pick", "leftsensor": str(objid)})
+        await pub.publish('WebClient', json.dumps({"leftarm": "prep_pick", "leftsensor": str(objid)}))
         sendString = '%set sensor:0:objectid=' + str(objid)
     else:
-        await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": str(objid)})
+        # await pub.publish_json('WebClient', {"rightarm": "prep_pick", "rightsensor": str(objid)})
+        await pub.publish('WebClient', json.dumps({"rightarm": "prep_pick", "rightsensor": str(objid)}))
         sendString = '%set sensor:1:objectid=' + str(objid)
 
     qnxsock.sendall(bytes(sendString, 'utf-8'))
@@ -236,17 +239,21 @@ async def present(arms='neither', hand=-1, left_angle=180, right_angle=180, hide
     # once xy is in position, move specified arms to present
     if arms == 'both' or arms == 'left':
         dxl.move_arm_to_pos(arm=0, pos='present', rotation=left_angle)
-        await pub.publish_json('WebClient', {"leftarm": "prep_present"})
+        # await pub.publish_json('WebClient', {"leftarm": "prep_present"})
+        await pub.publish('WebClient', json.dumps({"leftarm": "prep_present"}))
     if arms == 'both' or arms == 'right':
         dxl.move_arm_to_pos(arm=1, pos='present', rotation=right_angle)
-        await pub.publish_json('WebClient', {"rightarm": "prep_present"})
+        # await pub.publish_json('WebClient', {"rightarm": "prep_present"})
+        await pub.publish('WebClient', json.dumps({"rightarm": "prep_present"}))
 
     await wait_for_dxl(300)
 
     if arms == 'both' or arms == 'left':
-        await pub.publish_json('WebClient', {"leftarm": "present", "xpos": str(hand_xs[hand] + xoffset)})
+        # await pub.publish_json('WebClient', {"leftarm": "present", "xpos": str(hand_xs[hand] + xoffset)})
+        await pub.publish('WebClient', json.dumps({"leftarm": "present", "xpos": str(hand_xs[hand] + xoffset)}))
     if arms == 'both' or arms == 'right':
-        await pub.publish_json('WebClient', {"rightarm": "present", "xpos": str(hand_xs[hand] + xoffset)})
+        # await pub.publish_json('WebClient', {"rightarm": "present", "xpos": str(hand_xs[hand] + xoffset)})
+        await pub.publish('WebClient', json.dumps({"rightarm": "present", "xpos": str(hand_xs[hand] + xoffset)}))
 
 
 async def wait_for_dxl(distance_thresh=180):
@@ -668,9 +675,11 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
         await present(arms='left', hand=1)
         await loop.create_task(mags.energize(0))
         if side == 0 or side == 2:
-            await pub.publish_json('WebClient', {"leftmag": "1"})
+            # await pub.publish_json('WebClient', {"leftmag": "1"})
+            await pub.publish('WebClient', json.dumps({"leftmag": "1"}))
         if side == 1 or side == 2:
-            await pub.publish_json('WebClient', {"rightmag": "1"})
+            # await pub.publish_json('WebClient', {"rightmag": "1"})
+            await pub.publish('WebClient', json.dumps({"rightmag": "1"}))
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
@@ -749,9 +758,11 @@ async def set_dxl_positions(side=[-1], position=['blah'], rotation=[0]):
         await loop.create_task(wait_for_dxl(50))
         
         if side == 0:
-            await pub.publish_json('WebClient', {"leftarm": position})
+            # await pub.publish_json('WebClient', {"leftarm": position})
+            await pub.publish('WebClient', json.dumps({"leftarm": position}))
         else:
-            await pub.publish_json('WebClient', {"rightarm": position})
+            # await pub.publish_json('WebClient', {"rightarm": position})
+            await pub.publish('WebClient', json.dumps({"rightarm": position}))
     
     elif len(position.split(',')) == 3:
         print('heading to sync set position')
@@ -862,12 +873,14 @@ async def move_xy_to_location(axis=['a'], location=[-1], accel=[25], vel=[3]):
         print(int(xtarg))
         await loop.create_task(wait_for_xy(xtarg=xtarg))
         # await wait_for_xy()
-        await pub.publish_json('WebClient', {"xpos": str(location)})
+        # await pub.publish_json('WebClient', {"xpos": str(location)})
+        await pub.publish('WebClient', json.dumps({"xpos": str(location)}))
     else:
         ytarg = y.move_location(location=location, accel=accel, vel=vel)
         await loop.create_task(wait_for_xy(ytarg=ytarg))
         # await wait_for_xy
-        await pub.publish_json('WebClient', {"ypos": str(location)})
+        # await pub.publish_json('WebClient', {"ypos": str(location)})
+        await pub.publish('WebClient', json.dumps({"ypos": str(location)}))
 
 
 async def magnets(left_status=[-1], right_status=[-1]):
@@ -1001,8 +1014,9 @@ async def publish_inventory():
             if len(svg) == 1:
                 hstring[i] = svg[0][0]
 
-    await pub.publish_json('WebClientInventory',
-                           {"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(hstring.tolist())})
+    # await pub.publish_json('WebClientInventory',
+    #                        {"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(hstring.tolist())})
+    await pub.publish('WebClientInventory', json.dumps({"panel": json.dumps(pstring[:, :, 0].tolist()), "holding": json.dumps(hstring.tolist())}))
 
 
 async def get_touch_status():
