@@ -674,7 +674,7 @@
             transports: ['websocket'],
             withCredentials: false
         });
-        socketio.io('connect', () => console.log('socket connected'));
+        socketio.on('connect', () => console.log('socket connected'));
         socketio.on('chat message', function(msg){
             var linesSeparated = msg.split(/\n/g);  //this is an array of one or more strings, one for each line
             // step through each line of data from the server
@@ -697,7 +697,7 @@
                 }
             }
         });
-        socketio.io('disconnect', () => console.log('socket disconnected'));
+        socketio.on('disconnect', () => console.log('socket disconnected'));
     });
 
 
