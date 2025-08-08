@@ -46,3 +46,14 @@ Install webdis
 ```
 sudo apt install webdis
 ```
+
+Start everything
+```
+source grasp/grasp2/bin/activate
+python grasp/grasp_server.py
+
+sudo systemctl status webdis
+
+cd grasp/node-web-server
+node server.js
+'''
