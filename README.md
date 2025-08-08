@@ -52,6 +52,8 @@ Start everything
 source grasp/grasp2/bin/activate
 python grasp/grasp_server.py
 
+sudo /usr/bin/redis-server /etc/redis/redis_6380.conf
+
 sudo systemctl status webdis
 
 cd grasp/node-web-server
