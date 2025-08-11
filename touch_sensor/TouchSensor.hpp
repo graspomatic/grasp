@@ -129,13 +129,20 @@ private:
 
 public:
 
-  TouchSensor(int offset)
+  // New constructor allowing explicit I2C bus selection
+  TouchSensor(int i2cBus, int offset)
   {
 #ifdef __linux__
-    dev = new upm::MPR121(MPR121_I2C_BUS,
-			  MPR121_DEFAULT_I2C_ADDR+offset);
+    dev = new upm::MPR121(i2cBus,
+                          MPR121_DEFAULT_I2C_ADDR+offset);
     configure();
 #endif
+  }
+
+  // Existing constructor now delegates to bus 1 by default (Raspberry Pi)
+  TouchSensor(int offset)
+    : TouchSensor(1, offset)
+  {
   }
   
   ~TouchSensor()
