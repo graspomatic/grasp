@@ -1,5 +1,5 @@
 #include "Datapoint.hpp"
-#include "touch_sensor/TouchSensor.hpp"
+#include "TouchSensor.hpp"
 #include <iostream>
 #include <thread>
 #include <chrono>
