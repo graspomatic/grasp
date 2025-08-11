@@ -153,7 +153,7 @@ private:
     // Enable all 6 electrodes, and set a pre-calibration to avoid
     // excessive calibration delay on startup.
     // reg 0x5e
-    eleConf = 0x86;
+    eleConf = 0x8C; // Enable all 12 electrodes in run mode
     dev->writeBytes(0x5e, &eleConf, 1);
   }
 #endif
@@ -200,11 +200,11 @@ public:
   }
   
   void setEmptyBaseline() {
-    memcpy(empty_baseline, current, sizeof(current));
+    memcpy(empty_baseline, current, channels_to_read * sizeof(short));
   }
   
   void setObjectBaseline() {
-    memcpy(object_baseline, current, sizeof(current));
+    memcpy(object_baseline, current, channels_to_read * sizeof(short));
   }
   
   void activate()
@@ -224,12 +224,12 @@ public:
     update_maxs = update_mins = false;
 
     if (!active) {
-      memset(current, 0, sizeof(current));
-      memset(last, 0, sizeof(last));
+      memset(current, 0, channels_to_read * sizeof(short));
+      memset(last, 0, channels_to_read * sizeof(short));
       return false;
     }
 
-    memcpy(last, current, sizeof(current));
+    memcpy(last, current, channels_to_read * sizeof(short));
     
 #ifdef __linux__
     dev->readBytes(static_cast<uint8_t>(ELE0_FILTDATA_REG + electrode_start_index*2),
@@ -245,8 +245,8 @@ public:
     
     // track mins and maxs
     if (updatecount < 2) {
-        memcpy(maxs, current, sizeof(current));
-        memcpy(mins, current, sizeof(current));
+        memcpy(maxs, current, channels_to_read * sizeof(short));
+        memcpy(mins, current, channels_to_read * sizeof(short));
         update_maxs = update_mins = true;
     }
 
@@ -317,8 +317,8 @@ public:
   std::string strvals()
   {
     std::string str;
-    for (int i: current) {
-      str += std::to_string(i) + " ";
+    for (int i = 0; i < channels_to_read; i++) {
+      str += std::to_string(current[i]) + " ";
     }
     return str;
   }
