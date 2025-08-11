@@ -102,26 +102,15 @@ private:
     // Filtering when data is less than baseline
     // regs 0x2f-0x32
     uint8_t sectB[] = {0x01, 0x01, 0xff, 0x02};
-    dev->writeBytes(0x2f, sectB, 4);
+    dev->writeBytes(0x2F, sectB, 4);
     
     // Section C
     // Touch Threshold/Release registers, ELE0-ELE11
     // regs 0x41-0x58
     //                    __T_  __R_
-    uint8_t sectC[] =  {0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a,
-			0x0f, 0x0a};
-    
-    dev->writeBytes(0x41, sectC, 24);
+    for (int i=0; i<12; i++) {
+        dev->writeBytes(static_cast<uint8_t>(0x41 + i*2), new uint8_t[2]{0x0f, 0x0a}, 2);
+    }
     
     // Filter configuration (added)
     // reg 0x5c
