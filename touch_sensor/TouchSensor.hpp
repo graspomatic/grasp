@@ -51,11 +51,9 @@ private:
         throw std::runtime_error("i2c write failed");
     }
     void readBytes(uint8_t reg, unsigned char* data, int len) {
-      uint8_t r = reg;
-      if (mraa_i2c_write(i2c, &r, 1) != MRAA_SUCCESS)
-        throw std::runtime_error("i2c write(reg) failed");
-      int rd = mraa_i2c_read(i2c, data, len);
-      if (rd != len) throw std::runtime_error("i2c read failed");
+      if (mraa_i2c_read_bytes_data(i2c, reg, data, len) != len) {
+        throw std::runtime_error("i2c read_bytes_data failed");
+      }
     }
   };
   RawMPR121 *dev;
@@ -109,7 +107,8 @@ private:
     // regs 0x41-0x58
     //                    __T_  __R_
     for (int i=0; i<12; i++) {
-        dev->writeBytes(static_cast<uint8_t>(0x41 + i*2), new uint8_t[2]{0x0f, 0x0a}, 2);
+        uint8_t sectC_pair[] = {0x0f, 0x0a};
+        dev->writeBytes(static_cast<uint8_t>(0x41 + i * 2), sectC_pair, 2);
     }
     
     // Filter configuration (added)
