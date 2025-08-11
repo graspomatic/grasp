@@ -9,36 +9,34 @@ namespace Datapoint { enum DataType { DS_SHORT = 0 }; }
 #include <thread>
 #include <chrono>
 
-static TouchSensor* makeSensor(int offset, int start, int count) {
-  try { return new TouchSensor(1, offset, start, count); }
-  catch (...) { return new TouchSensor(0, offset, start, count); }
+static TouchSensor* makeSensor(int offset) {
+  // Prefer bus 1 on Raspberry Pi, then fall back to 0
+  try { return new TouchSensor(1, offset); }
+  catch (...) {
+    try { return new TouchSensor(0, offset); }
+    catch (...) { return nullptr; }
+  }
 }
 
 int main() {
-  // Read ch 0-5 and 6-11 for both addresses to verify mapping
-  TouchSensor* sA_lo = nullptr; // 0x5A, 0-5
-  TouchSensor* sA_hi = nullptr; // 0x5A, 6-11
-  TouchSensor* sB_lo = nullptr; // 0x5B, 0-5
-  TouchSensor* sB_hi = nullptr; // 0x5B, 6-11
+  TouchSensor* sA = nullptr; // 0x5A
+  TouchSensor* sB = nullptr; // 0x5B
 
-  try { sA_lo = makeSensor(0, 0, 6); } catch (const std::exception& e) { std::cerr << "0x5A(0-5) init failed: " << e.what() << "\n"; }
-  try { sA_hi = makeSensor(0, 6, 6); } catch (const std::exception& e) { std::cerr << "0x5A(6-11) init failed: " << e.what() << "\n"; }
-  try { sB_lo = makeSensor(1, 0, 6); } catch (const std::exception& e) { std::cerr << "0x5B(0-5) init failed: " << e.what() << "\n"; }
-  try { sB_hi = makeSensor(1, 6, 6); } catch (const std::exception& e) { std::cerr << "0x5B(6-11) init failed: " << e.what() << "\n"; }
+  sA = makeSensor(0);
+  sB = makeSensor(1);
 
-  if (!(sA_lo || sA_hi || sB_lo || sB_hi)) {
-    std::cerr << "No sensors initialized" << std::endl;
+  if (!sA && !sB) {
+    std::cerr << "No sensors initialized on bus 1 or 0 at 0x5A/0x5B" << std::endl;
     return 1;
   }
 
   for (int i = 0; i < 10; ++i) {
-    if (sA_lo) { sA_lo->update(); std::cout << "0x5A[0-5]:  " << sA_lo->strvals() << "\n"; }
-    if (sA_hi) { sA_hi->update(); std::cout << "0x5A[6-11]: " << sA_hi->strvals() << "\n"; }
-    if (sB_lo) { sB_lo->update(); std::cout << "0x5B[0-5]:  " << sB_lo->strvals() << "\n"; }
-    if (sB_hi) { sB_hi->update(); std::cout << "0x5B[6-11]: " << sB_hi->strvals() << "\n"; }
+    if (sA) { sA->update(); std::cout << "0x5A: " << sA->strvals() << "\n"; }
+    if (sB) { sB->update(); std::cout << "0x5B: " << sB->strvals() << "\n"; }
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
   }
 
-  delete sA_lo; delete sA_hi; delete sB_lo; delete sB_hi;
+  delete sA;
+  delete sB;
   return 0;
 }
