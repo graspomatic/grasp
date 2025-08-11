@@ -141,7 +141,7 @@ public:
 
   // Existing constructor now delegates to bus 1 by default (Raspberry Pi)
   TouchSensor(int offset)
-    : TouchSensor(1, offset)
+    : TouchSensor(0, offset)
   {
   }
   

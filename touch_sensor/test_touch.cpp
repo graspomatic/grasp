@@ -7,7 +7,7 @@ namespace Datapoint { enum DataType { DS_SHORT = 0 }; }
 #include <chrono>
 
 int main() {
-  TouchSensor sensor(1, 0);
+  TouchSensor sensor(0, 0);
   for (int i = 0; i < 10; ++i) {
     sensor.update();
     std::cout << sensor.strvals() << std::endl;
