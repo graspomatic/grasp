@@ -153,7 +153,7 @@ private:
     // excessive calibration delay on startup.
     // reg 0x5e
     eleConf = 0x86;
-    dev->writeBytes(0x5e, &eleConf, 3);
+    dev->writeBytes(0x5e, &eleConf, 1);
   }
 #endif
 
