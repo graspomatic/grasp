@@ -148,7 +148,7 @@ private:
     // Section E - this one must be set last, and switches to run mode
     // Enable the first 6 electrodes
     // reg 0x5e
-    uint8_t eleConf = 0x86; // Enable first 6 electrodes in run mode with baseline tracking
+    eleConf = 0x86; // Enable first 6 electrodes in run mode with baseline tracking
     dev->writeBytes(0x5e, &eleConf, 1);
   }
 #endif
