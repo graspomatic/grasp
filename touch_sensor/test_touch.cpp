@@ -1,11 +1,13 @@
-#include "Datapoint.hpp"
+// Minimal stub so TouchSensor.hpp compiles without the full project headers
+namespace Datapoint { enum DataType { DS_SHORT = 0 }; }
+
 #include "TouchSensor.hpp"
 #include <iostream>
 #include <thread>
 #include <chrono>
 
 int main() {
-  TouchSensor sensor(0); // if your MPR121 is at 0x5A; use 1 for 0x5B, etc.
+  TouchSensor sensor(0);
   for (int i = 0; i < 10; ++i) {
     sensor.update();
     std::cout << sensor.strvals() << std::endl;
