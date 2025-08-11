@@ -14,9 +14,11 @@
 #include <unistd.h>
 
 #include <iostream>
+#include <vector>
+#include <stdexcept>
 
 #ifdef __linux__
-#include <mpr121.hpp>
+#include <mraa/i2c.h>
 #endif
 
 
@@ -28,7 +30,35 @@ public:
 private:
   
 #ifdef __linux__
-  upm::MPR121 *dev;
+  struct RawMPR121 {
+    mraa_i2c_context i2c;
+    uint8_t addr;
+    RawMPR121(int bus, uint8_t address)
+      : i2c(mraa_i2c_init_raw(bus)), addr(address)
+    {
+      if (!i2c) throw std::invalid_argument("Invalid i2c bus");
+      if (mraa_i2c_address(i2c, addr) != MRAA_SUCCESS)
+        throw std::runtime_error("Failed to set i2c address");
+    }
+    ~RawMPR121() {
+      if (i2c) mraa_i2c_stop(i2c);
+    }
+    void writeBytes(uint8_t reg, const uint8_t* data, int len) {
+      std::vector<uint8_t> buf(static_cast<size_t>(len) + 1);
+      buf[0] = reg;
+      if (len > 0 && data) std::memcpy(&buf[1], data, static_cast<size_t>(len));
+      if (mraa_i2c_write(i2c, buf.data(), buf.size()) != MRAA_SUCCESS)
+        throw std::runtime_error("i2c write failed");
+    }
+    void readBytes(uint8_t reg, unsigned char* data, int len) {
+      uint8_t r = reg;
+      if (mraa_i2c_write(i2c, &r, 1) != MRAA_SUCCESS)
+        throw std::runtime_error("i2c write(reg) failed");
+      int rd = mraa_i2c_read(i2c, data, len);
+      if (rd != len) throw std::runtime_error("i2c read failed");
+    }
+  };
+  RawMPR121 *dev;
 #endif
   
   enum { ELE0_FILTDATA_REG = 0x04 };
@@ -133,8 +163,8 @@ public:
   TouchSensor(int i2cBus, int offset)
   {
 #ifdef __linux__
-    dev = new upm::MPR121(i2cBus,
-                          MPR121_DEFAULT_I2C_ADDR+offset);
+    dev = new RawMPR121(i2cBus,
+                        static_cast<uint8_t>(0x5a + offset));
     configure();
 #endif
   }
