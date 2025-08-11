@@ -65,19 +65,20 @@ private:
 
   bool active = true;		// is the sensor active
   int updatecount = 0;      // reset with each activate
-  int channels_to_read = 6;
-  short current[6] = {0, 0, 0, 0, 0, 0};
-  short last[6];			// last values
-  short mins[6];
-  short maxs[6];
+  int electrode_start_index = 0; // starting electrode to read
+  int channels_to_read = 6;      // number of electrodes to read
+  short current[12] = {0};
+  short last[12];		// last values
+  short mins[12];
+  short maxs[12];
   bool update_maxs, update_mins;
-  bool touched[6] = {false, false, false, false, false, false};
+  bool touched[12] = {false, false, false, false, false, false, false, false, false, false, false, false};
   bool connected = false;       //keeps track of whether there's a shape attached to left magnet
   bool connected_changed = false;
   int connected_thresh = 20;    //threshold for determining if shape is attached
   int touched_thresh = 10;
-  short object_baseline[6] = {0, 0, 0, 0, 0, 0};       // holds baseline calibration for currently held shape
-  short empty_baseline[6];      // holds baseline calibration for sensor with no object
+  short object_baseline[12] = {0};       // holds baseline calibration for currently held shape
+  short empty_baseline[12];      // holds baseline calibration for sensor with no object
 
 #ifdef __linux__
     // Local version of the sensor configuration for grasp
@@ -169,6 +170,22 @@ public:
 #endif
   }
 
+  // Constructor allowing explicit read window (start electrode and count)
+  TouchSensor(int i2cBus, int offset, int startElectrode, int count)
+  {
+#ifdef __linux__
+    dev = new RawMPR121(i2cBus,
+                        static_cast<uint8_t>(0x5a + offset));
+    configure();
+#endif
+    if (startElectrode < 0) startElectrode = 0;
+    if (startElectrode > 11) startElectrode = 11;
+    if (count < 1) count = 1;
+    if (startElectrode + count > 12) count = 12 - startElectrode;
+    electrode_start_index = startElectrode;
+    channels_to_read = count;
+  }
+
   // Existing constructor now delegates to bus 1 by default (Raspberry Pi)
   TouchSensor(int offset)
     : TouchSensor(0, offset)
@@ -215,7 +232,8 @@ public:
     memcpy(last, current, sizeof(current));
     
 #ifdef __linux__
-    dev->readBytes(ELE0_FILTDATA_REG, filtdata, channels_to_read*2);
+    dev->readBytes(static_cast<uint8_t>(ELE0_FILTDATA_REG + electrode_start_index*2),
+                   filtdata, channels_to_read*2);
     // move new readings to current
     for (auto i = 0; i < channels_to_read; i++) {
       current[i] = filtdata[i*2] | (filtdata[i*2+1] << 8);
