@@ -47,6 +47,42 @@ Install webdis
 sudo apt install webdis
 ```
 
+Check for I2C touch sensors
+```
+sudo i2cdetect -y 1
+BUS=1
+ADDR=0x5a
+sudo i2cset -y $BUS $ADDR 0x5E 0x00
+
+for E in {0..11}; do
+  T_REG=$((0x41 + E*2))
+  R_REG=$((0x42 + E*2))
+  sudo i2cset -y $BUS $ADDR $T_REG 0x0F
+  sudo i2cset -y $BUS $ADDR $R_REG 0x0A
+done
+
+sudo i2cset -y $BUS $ADDR 0x5E 0x8F
+
+sudo i2cget -y $BUS $ADDR 0x00 w
+(should be 0x0000)
+(touch)
+sudo i2cget -y $BUS $ADDR 0x00 w
+(should be not 0x0000)
+
+
+git clone https://github.com/SheinbergLab/mpr121_forwarder.git
+cd mpr121_fowarder
+chmod +x setup_i2c.sh
+./setup_i2c.sh
+sudo reboot
+i2cdetect -y 1
+cd mpr121_fowarder
+make
+./mpr121_forwarder 
+
+```
+
+
 Start everything
 ```
 source grasp/grasp2/bin/activate
