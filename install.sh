@@ -1,35 +1,46 @@
-SITEDIR=$(python3 -m site --user-site)
-mkdir -p "$SITEDIR"
-echo "$HOME/grasp/Dynamixel2Control" > "$SITEDIR/grasp.pth"
-echo "$HOME/grasp/AppliedMotionControl" >> "$SITEDIR/grasp.pth"
-echo "$HOME/grasp/GPIOD" >> "$SITEDIR/grasp.pth"
-echo "$HOME/grasp/controller" >> "$SITEDIR/grasp.pth"
+#!/usr/bin/env bash
+set -euo pipefail
 
-cp startup.sh /etc/init.d/
-chmod +x /etc/init.d/startup.sh
-update-rc.d startup.sh defaults
+# Figure out which user’s Python site-packages to modify
+TARGET_USER="${SUDO_USER:-$USER}"
+TARGET_HOME="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
+USER_SITE="$(sudo -u "$TARGET_USER" python3 -m site --user-site)"
 
-#cp ./redis_conf_files/redis_6379.conf /etc/redis/
-cp ./redis_conf_files/redis_6380.conf /etc/redis/
-sudo chown redis:redis /etc/redis/redis_6380.conf
-sudo chmod 644 /etc/redis/redis_6380.conf
-sudo chown root:redis /etc/redis
-sudo chmod 755 /etc/redis
-#mkdir /var/lib/redis/6379
-mkdir -p /var/lib/redis/6380
+# Write grasp.pth into that user’s site-packages
+sudo -u "$TARGET_USER" mkdir -p "$USER_SITE"
+{
+  echo "$TARGET_HOME/grasp/Dynamixel2Control"
+  echo "$TARGET_HOME/grasp/AppliedMotionControl"
+  echo "$TARGET_HOME/grasp/GPIOD"
+  echo "$TARGET_HOME/grasp/controller"
+} | sudo -u "$TARGET_USER" tee "$USER_SITE/grasp.pth" >/dev/null
 
-redis-cli -p 6380 shutdown
+# Install init script
+sudo cp startup.sh /etc/init.d/startup.sh
+sudo chmod +x /etc/init.d/startup.sh
+sudo update-rc.d startup.sh defaults
 
-cp ./redis_conf_files/redis-6380-backup/appendonly6380.aof /var/lib/redis/6380/
-chown redis:redis /var/lib/redis/6380/appendonly6380.aof
-chmod 644 /var/lib/redis/6380/appendonly6380.aof
+# Ensure redis config dir exists and copy config with correct perms
+sudo install -d -m 755 -o root -g redis /etc/redis
+sudo install -o redis -g redis -m 644 ./redis_conf_files/redis_6380.conf /etc/redis/redis_6380.conf
 
-#/usr/bin/redis-server /etc/redis/redis_6379.conf
-/usr/bin/redis-server /etc/redis/redis_6380.conf
+# Ensure data dir exists with redis ownership
+sudo install -d -m 770 -o redis -g redis /var/lib/redis/6380
 
+# Stop existing 6380 instance if present (ignore failure)
+redis-cli -p 6380 shutdown || true
+
+# Seed AOF backup if available
+if [ -f ./redis_conf_files/redis-6380-backup/appendonly6380.aof ]; then
+  sudo install -o redis -g redis -m 644 ./redis_conf_files/redis-6380-backup/appendonly6380.aof /var/lib/redis/6380/appendonly6380.aof
+fi
+
+# Start redis on 6380 with the provided config
+sudo /usr/bin/redis-server /etc/redis/redis_6380.conf
+
+# Make shared dir
 sudo mkdir -p /shared/lab
 
-#!/usr/bin/env bash
 set -euo pipefail
 
 # ---- CONFIG: change if paths differ ----
