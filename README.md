@@ -99,37 +99,37 @@ node server.js
 Check servers
 
 ```
-# One service (status + last few log lines)
+One service (status + last few log lines)
 systemctl status grasp-server.service
 systemctl status node-web.service
 systemctl status sensor-poller.service
 
-# Are they active? (machine-parsable)
+Are they active? (machine-parsable)
 systemctl is-active grasp-server.service node-web.service sensor-poller.service
 
-# Group target (what it includes)
+Group target (what it includes)
 systemctl status grasp-stack.target
 systemctl list-dependencies grasp-stack.target
 
-# Follow one service
+Follow one service
 journalctl -fu grasp-server.service
 journalctl -fu node-web.service
 journalctl -fu sensor-poller.service
 
-# (Optional) follow all three together
+(Optional) follow all three together
 journalctl -f -u grasp-server.service -u node-web.service -u sensor-poller.service
 
 journalctl -b -u grasp-server.service --no-pager
 journalctl -b -u node-web.service --no-pager
 journalctl -b -u sensor-poller.service --no-pager
 
-# Restart all three at once (recommended)
+Restart all three at once (recommended)
 sudo systemctl restart grasp-server.service node-web.service sensor-poller.service
 
-# or stop/start via the target (forces a full restart of the trio)
+or stop/start via the target (forces a full restart of the trio)
 sudo systemctl stop grasp-stack.target && sudo systemctl start grasp-stack.target
 
-# Restart just one
+Restart just one
 sudo systemctl restart grasp-server.service
 
 ```
