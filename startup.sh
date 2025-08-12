@@ -1,15 +1,15 @@
 ifdown eth0
 ifup eth0
-/usr/bin/redis-server /etc/redis/redis_6380.conf
+#/usr/bin/redis-server /etc/redis/redis_6380.conf
 
-dserv -d
-dserv_tcp -d
-dserv_send -d
-dserv_log -d
-obssync -d
-touch_sensor -i 10 -d
+#dserv -d
+#dserv_tcp -d
+#dserv_send -d
+#dserv_log -d
+#obssync -d
+#touch_sensor -i 10 -d
 
 
-/bin/mount diddy.neuro.brown.edu:/mnt/SharedDrives/Labfiles /shared/lab
+#/bin/mount diddy.neuro.brown.edu:/mnt/SharedDrives/Labfiles /shared/lab
 
-webdis /home/lab/grasp/webdis_conf_files/webdis.json &
+#webdis /home/lab/grasp/webdis_conf_files/webdis.json &
