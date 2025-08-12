@@ -16,13 +16,13 @@ sudo -u "$TARGET_USER" mkdir -p "$USER_SITE"
 
 # -------- Redis 6380 setup --------
 sudo install -d -m 755 -o root -g redis /etc/redis
-sudo install -o redis -g redis -m 644 ./redis_conf_files/redis_6380.conf /etc/redis/redis_6380.conf
+sudo install -o redis -g redis -m 644 ./redis_conf_files/redis-6380.conf /etc/redis/redis-6380.conf
 sudo install -d -m 770 -o redis -g redis /var/lib/redis/6380
-redis-cli -p 6380 shutdown || true
+sudo systemctl stop redis-server@6380 || true
 if [ -f ./redis_conf_files/redis-6380-backup/appendonly6380.aof ]; then
   sudo install -o redis -g redis -m 644 ./redis_conf_files/redis-6380-backup/appendonly6380.aof /var/lib/redis/6380/appendonly6380.aof
 fi
-sudo /usr/bin/redis-server /etc/redis/redis_6380.conf
+sudo systemctl enable --now redis-server@6380
 
 # -------- Misc system prep --------
 sudo mkdir -p /shared/lab
