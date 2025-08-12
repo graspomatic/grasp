@@ -29,16 +29,18 @@ DNU = np.array([[5, 3], [5, 4], [9, 3], [9, 4]])
 # br = np.array([6.5, 485.5])     # bottom right x,y position using left arm
 
 # new on 4/2/25
-tl = np.array([268, 11.5])     # top left x,y position using left arm
-tr = np.array([7.25, 10.5])     # top right x,y position using left arm
-bl = np.array([266.0, 489.5])   # bottom left x,y position using left arm
-br = np.array([5.25, 487.5])     # bottom right x,y position using left arm
+# tl = np.array([268, 11.5])     # top left x,y position using left arm
+# tr = np.array([7.25, 10.5])     # top right x,y position using left arm
+# bl = np.array([266.0, 489.5])   # bottom left x,y position using left arm
+# br = np.array([5.25, 487.5])     # bottom right x,y position using left arm
 
-# tlr = np.array([325, 9])     # top left x,y position using right arm
-# trr = np.array([64, 7])     # top right x,y position using right arm
-# blr = np.array([323.5, 486.5])   # bottom left x,y position using right arm
-# brr = np.array([62, 485.5])     # bottom right x,y position using right arm
-#
+# new on Aug 12 2025
+tl = np.array([266, 10.5])     # top left x,y position using left arm
+tr = np.array([5.5, 9])     # top right x,y position using left arm
+bl = np.array([265.0, 488.0])   # bottom left x,y position using left arm
+br = np.array([4.0, 486.5])     # bottom right x,y position using left arm
+
+
 # arm_offset = np.array([57.3, -0.3])
 
 
