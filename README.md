@@ -133,3 +133,10 @@ Restart just one
 sudo systemctl restart grasp-server.service
 
 ```
+
+Update panel locations
+
+```
+source grasp2/bin/activate
+python init_panel.py
+```
