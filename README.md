@@ -94,11 +94,11 @@ sudo systemctl status webdis
 
 cd grasp/node-web-server
 node server.js
-'''
+```
 
 Check servers
 
-'''
+```
 One service (status + last few log lines)
 systemctl status grasp-server.service
 systemctl status node-web.service
@@ -132,4 +132,4 @@ sudo systemctl stop grasp-stack.target && sudo systemctl start grasp-stack.targe
 Restart just one
 sudo systemctl restart grasp-server.service
 
-'''
+```
