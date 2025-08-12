@@ -41,6 +41,8 @@ sudo /usr/bin/redis-server /etc/redis/redis_6380.conf
 # Make shared dir
 sudo mkdir -p /shared/lab
 
+sudo apt install webdis
+
 set -euo pipefail
 
 # ---- CONFIG: change if paths differ ----
@@ -192,6 +194,18 @@ echo "  journalctl -u node-web.service -f"
 echo "  journalctl -u sensor-poller.service -f"
 echo "  systemctl list-dependencies grasp-stack.target"
 
+sudo tee /etc/systemd/system/grasp-stack.target >/dev/null <<'EOF'
+[Unit]
+Description=All Grasp services
+Wants=grasp-server.service node-web.service sensor-poller.service
+After=network-online.target
 
-sudo apt install webdis
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now grasp-stack.target
+
+
 
