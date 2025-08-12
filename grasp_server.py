@@ -683,7 +683,8 @@ async def put_away(side=[-1], left_id=[-1], right_id=[-1], get_next=[0]):
 
     # update redis with what the panel looks like
     fut1 = redisslow.set('panel', json.dumps(panel.tolist()))
-    fut2 = redisslow.set('holding', str(remaining))
+    fut2 = redisslow.set('holding', json.dumps([int(x) for x in remaining]))
+    # old that put numpy in...fut2 = redisslow.set('holding', str(remaining))
     await asyncio.gather(fut1, fut2)
 
 
