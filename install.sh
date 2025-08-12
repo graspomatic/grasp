@@ -169,7 +169,19 @@ cat >/etc/systemd/system/grasp-stack.target <<'EOF'
 Description=All Grasp services
 Wants=grasp-server.service node-web.service sensor-poller.service
 After=network-online.target
+
+[Install]
+WantedBy=multi-user.target
 EOF
+
+# ---- clean up any legacy SysV init script so it doesn't confuse things ----
+if systemctl list-unit-files | grep -q '^startup.service'; then
+  systemctl disable startup.service || true
+fi
+update-rc.d -f startup.sh remove 2>/dev/null || true
+rm -f /etc/init.d/startup.sh 2>/dev/null || true
+
+
 
 # ---- enable + start ----
 systemctl daemon-reload
