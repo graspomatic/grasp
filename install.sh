@@ -98,6 +98,7 @@ chmod +x "$SENSOR_BIN"
 # persistent journald logs (handy on Pi)
 mkdir -p /var/log/journal
 systemctl restart systemd-journald
+
 # ---- grasp-server.service ----
 cat >/etc/systemd/system/grasp-server.service <<EOF
 [Unit]
@@ -106,11 +107,11 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-User=\${APP_USER}
-Group=\${APP_USER}
-WorkingDirectory=\${PY_WORKDIR}
+User=${APP_USER}
+Group=${APP_USER}
+WorkingDirectory=${PY_WORKDIR}
 # Run Python unbuffered so print() shows up immediately in journald
-ExecStart=\${PYTHON_BIN} -u \${PY_APP}
+ExecStart=${PYTHON_BIN} -u ${PY_APP}
 Environment=PYTHONUNBUFFERED=1
 SyslogIdentifier=grasp-server
 Restart=on-failure
