@@ -139,4 +139,5 @@ Update panel locations
 ```
 source grasp2/bin/activate
 python init_panel.py
+systemctl restart grasp-server.service
 ```
